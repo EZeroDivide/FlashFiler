@@ -8,3 +8,4 @@ bin\**
 *.identcache
 *.local
 *.res
+*.dcu
