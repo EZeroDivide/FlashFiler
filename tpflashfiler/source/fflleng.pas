@@ -198,13 +198,13 @@ type
 
 {Begin !!.10}
       { Event logging }
-      procedure Log(const aMsg : string); virtual; abstract;
+      procedure Log(const aMsg : AnsiString); virtual; abstract;
         {-Use this method to log a string to the event log. }
 
-      procedure LogAll(const Msgs : array of string); virtual; abstract;
+      procedure LogAll(const Msgs : array of AnsiString); virtual; abstract;
         {-Use this method to log multiple strings to the event log. }
 
-      procedure LogFmt(const aMsg : string; args : array of const); virtual; abstract;
+      procedure LogFmt(const aMsg : AnsiString; args : array of const); virtual; abstract;
         {-Use this method to log a formatted string to the event log. }
 {End !!.10}
 
@@ -395,8 +395,8 @@ type
                        var aNewCursorID : TffCursorID) : TffResult; virtual; abstract;
       function CursorClose(aCursorID : TffCursorID) : TffResult; virtual; abstract;
       function CursorCompareBookmarks(aCursorID   : TffCursorID;
-                                      aBookmark1,
-                                      aBookmark2  : PffByteArray;
+                                      const aBookmark1,
+                                      aBookmark2  : TArray<Byte>;
                                   var aCompResult : Longint) : TffResult; virtual; abstract;
 {Begin !!.02}
       function CursorCopyRecords(aSrcCursorID,
@@ -404,7 +404,7 @@ type
                                 aCopyBLOBs : Boolean) : TffResult; virtual; abstract;
 {End !!.02}
       function CursorDeleteRecords(aCursorID : TffCursorID) : TffResult; virtual; abstract;  {!!.06}
-      function CursorGetBookmark(aCursorID : TffCursorID; aBookmark : PffByteArray) : TffResult; virtual; abstract;
+      function CursorGetBookmark(aCursorID : TffCursorID; const aBookmark : TffBookmark) : TffResult; virtual; abstract;
       function CursorGetBookmarkSize(aCursorID : TffCursorID;
                                  var aSize     : integer) : TffResult; virtual; abstract;
       {Begin !!.03}
@@ -430,7 +430,7 @@ type
       function CursorSetTimeout(const aCursorID : TffCursorID;
                                 const aTimeout : Longint) : TffResult; virtual; abstract;
       function CursorSetToBegin(aCursorID : TffCursorID) : TffResult; virtual; abstract;
-      function CursorSetToBookmark(aCursorID : TffCursorID; aBookmark : PffByteArray) : TffResult; virtual; abstract;
+      function CursorSetToBookmark(aCursorID : TffCursorID; const aBookmark : TArray<Byte>) : TffResult; virtual; abstract;
       function CursorSetToCursor(aDestCursorID : TffCursorID; aSrcCursorID : TffCursorID) : TffResult; virtual; abstract;
       function CursorSetToEnd(aCursorID : TffCursorID) : TffResult; virtual; abstract;
       function CursorSetToKey(aCursorID     : TffCursorID;
@@ -524,14 +524,14 @@ type
                        aStream : TStream) : TffResult; virtual; abstract;
       function SQLExecDirect(aClientID : TffClientID;
                              aDatabaseID : TffDatabaseID;
-                             aQueryText : PChar;
+                             aQueryText : PAnsiChar;
                              aTimeout : Longint;
                              aOpenMode : TffOpenMode;
                          var aCursorID : TffCursorID;
                              aStream : TStream) : TffResult; virtual; abstract;
       function SQLFree(aStmtID : TffSqlStmtID) : TffResult; virtual; abstract;
       function SQLPrepare(aStmtID : TffSqlStmtID;
-                          aQueryText : PChar;
+                          aQueryText : PAnsiChar;
                           aStream : TStream) : TffResult; virtual; abstract;
       function SQLSetParams(aStmtID : TffSqlStmtID;
                             aNumParams : word;

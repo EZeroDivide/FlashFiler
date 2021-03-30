@@ -64,6 +64,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   Classes,
   ffconst,
   ffhash,
@@ -1602,7 +1603,7 @@ type
   end;
 
 {$IFDEF RAMPageCheck}
-procedure Log(aMsg : string; args : array of const);
+procedure Log(aMsg : AnsiString; args : array of const);
 begin
   if aLog <> nil then
     aLog.WriteStringFmt(aMsg, args);
@@ -1811,7 +1812,7 @@ function FFAllocFileInfo(const aName   : TffFullFileName;
                          const aExt    : TffExtension;
                                aBufMgr : TffBufferManager) : PffFileInfo;
 var
-  S : string;
+  S : AnsiString;
 begin
   FFGetMem(Result, sizeof(TffFileInfo));
   try
@@ -2068,7 +2069,7 @@ var
   VolumeName       : array[0..MAX_PATH - 1] of AnsiChar;
   OSVersion        : TOSVersionInfo;
   OSNumber         : Byte;
-  FileDrive        : string;
+  FileDrive        : AnsiString;
 begin
   OSVersion.dwOSVersionInfoSize := SizeOf(OSVersion);
   GetVersionEx(OSVersion);
@@ -2085,9 +2086,9 @@ begin
     else
       OSNumber := 5; {Win2K}
   end;
-  FileDrive := PChar(ExtractFileDrive(aFI^.fiName^));
+  FileDrive := PAnsiChar(ExtractFileDrive(aFI^.fiName^));
   FileDrive := FileDrive + '\';
-  if GetVolumeInformation(PChar(FileDrive), VolumeName, Length(VolumeName), NIL, Maxfilenamelen, FileSysFlags, FileSysName, SizeOf(FileSysName)) then begin
+  if GetVolumeInformationA(PAnsiChar(FileDrive), VolumeName, Length(VolumeName), NIL, Maxfilenamelen, FileSysFlags, FileSysName, SizeOf(FileSysName)) then begin
     {!! check on other possibilites for types of filesystems}
     if FileSysName = 'FAT32' then begin
       if OSNumber = 5 then begin
@@ -2626,7 +2627,7 @@ function TffbmRAMPage.Block(aTrans : TffSrTransaction;
                         var aReleaseMethod : TffReleaseMethod) : PffBlock;
 {$IFDEF RAMPageCheck}
 var
-  PStr : array[0..8] of char;
+  PStr : array[0..8] of AnsiChar;
 {$ENDIF}
 begin
 {$IFDEF RAMPageCheck}
@@ -2674,7 +2675,7 @@ var
   aPrevItem : TffbmModifiedBlock;
   TempI64   : TffInt64;
   {$IFDEF RAMPageCheck}
-  PStr, PStr2 : array[0..8] of char;
+  PStr, PStr2 : array[0..8] of AnsiChar;
   {$ENDIF}
 begin
   {$IFDEF RAMPageCheck}
@@ -2927,7 +2928,7 @@ end;
 procedure TffbmRAMPage.Release(var aBlock: PffBlock);
 {$IFDEF RAMPageCheck}
 var
-  Pstr : array[0..8] of char;
+  Pstr : array[0..8] of AnsiChar;
 {$ENDIF}
 begin
 { Assumption: This method may be accessed by multiple threads at the same time.
@@ -4345,7 +4346,7 @@ begin
     jfrhBlockNumber := BlockNumber;
     jfrhBlockSize := BlockSize;
     jfrhBeforeImg := Longint(ord(aBeforeImage));
-    StrCopy(jfrhFileName, @FileInfo^.fiName^[1]);
+    AnsiStrings.StrCopy(jfrhFileName, @FileInfo^.fiName^[1]);
     FFPositionFileEOF(aTrans.JournalFile);
     FFWriteFileExact(aTrans.JournalFile, sizeof(RecHdr), RecHdr);
     if aBeforeImage then
@@ -5428,7 +5429,7 @@ begin
   {$IFDEF FF_DEBUG_THREADS}finally ThreadExit; end;{$ENDIF}
 end;
 {--------}
-procedure WriteToStream(const aMsg : string; aStream : TStream);
+procedure WriteToStream(const aMsg : AnsiString; aStream : TStream);
 begin
   aStream.Write(aMsg[1], Length(aMsg));
 end;
@@ -5443,7 +5444,7 @@ var
   anInx          : Longint;
   aSegItem       : TffBLOBSegListItem;
   aSegment       : TffInt64;
-  aStr           : string;
+  aStr           : AnsiString;
   BLOBBlock      : PffBlock;
   DelSegment     : PffBLOBSegmentHeaderDel;
   FileHeader     : PffBlockHeaderFile;

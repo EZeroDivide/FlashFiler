@@ -37,6 +37,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  AnsiStrings,
   Classes,
   ExtCtrls,
   ffllbase,

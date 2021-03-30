@@ -49,12 +49,11 @@ uses
   {$ENDIF}
   Windows,
   Classes,
-  {$IFNDEF DCC4OrLater}
-  DBTables,
-  {$ENDIF}
+  Generics.Collections,
   ComCtrls,
   Controls,
   SysUtils,
+  AnsiStrings,
   DB,
   {$IFDEF UsesBDE}
   bde,
@@ -235,7 +234,7 @@ type
   TffClientList     = class;
   TffSession        = class;
   TffSessionList    = class;
-  TffBaseTable      = class;  
+  TffBaseTable      = class;
   TffBaseDatabase   = class;
   TffDatabase       = class;
   TffDatabaseList   = class;
@@ -660,8 +659,8 @@ type
       slCurrSess : TffSession;
     protected
       function slGetCurrSess : TffSession;
-      function slGetItem(aInx : Integer) : TffSession; 
-      procedure slSetCurrSess(CS : TffSession); 
+      function slGetItem(aInx : Integer) : TffSession;
+      procedure slSetCurrSess(CS : TffSession);
     public
       property CurrentSession : TffSession
          read slGetCurrSess
@@ -719,7 +718,7 @@ type
       dsFilters         : TffCollection;
       dsFilterTimeout   : TffWord32;
       dsFuncFilter      : hDBIFilter;
-      dsOldValuesBuffer : PChar;
+      dsOldValuesBuffer : PByte;
       dsOpenMode        : TffOpenMode;
       dsPhyRecSize      : Integer;      {FlashFiler physical record size}
       dsProxy           : TffTableProxy;
@@ -795,10 +794,10 @@ type
       procedure dsUpdateFilterStatus;
 
       {---Record and key Buffer management---}
-      function GetActiveRecBuf(var aRecBuf : PChar): Boolean; virtual;
+      function GetActiveRecBuf(var aRecBuf : TRecordBuffer): Boolean; virtual;
       function GetCursorProps(var aProps : TffCursorProps) : TffResult; virtual;
       function dsGetNextRecord(eLock     : TffLockType;
-                               pRecBuff  : Pointer;
+                               pRecBuff  : TRecordBuffer;
                                RecProps  : pRECProps) : TffResult;
       function dsGetNextRecordPrim(aCursorID : TffCursorID;
                                    eLock     : TffLockType;
@@ -826,7 +825,7 @@ type
                                aFieldNo : Integer);
       function dsGetFieldDescItem(iField : Integer;
                               var FDI    : TffFieldDescItem) : Boolean;
-      function dsGetFieldNumber(FieldName : PChar) : Integer;
+      function dsGetFieldNumber(FieldName : PAnsiChar) : Integer;
       procedure dsReadFieldDescs;
       function dsTranslateCmp(var aFirst      : TffNodeValue;
                               var aSecond     : TffNodeValue;
@@ -877,22 +876,22 @@ type
       procedure OpenCursor(aInfoQuery : Boolean); override;
 
       {Bookmark management and use}
-      procedure GetBookmarkData(aBuffer : PChar; aData : Pointer); override;
-      function GetBookmarkFlag(aBuffer : PChar): TBookmarkFlag; override;
+      procedure GetBookmarkData(aBuffer : TRecordBuffer; aData : Pointer); override;
+      function GetBookmarkFlag(aBuffer : TRecordBuffer): TBookmarkFlag; override;
       procedure InternalGotoBookmark(aBookmark : TBookmark); override;
-      procedure SetBookmarkData(aBuffer : PChar; aData : Pointer); override;
-      procedure SetBookmarkFlag(aBuffer : PChar;
+      procedure SetBookmarkData(aBuffer : PByte; aData : Pointer); override;
+      procedure SetBookmarkFlag(aBuffer : PByte;
                                 aValue  : TBookmarkFlag); override;
 
       {Record Buffer allocation and disposal}
-      function AllocRecordBuffer : PChar; override;
-      procedure FreeRecordBuffer(var aBuffer : PChar); override;
+      function AllocRecordBuffer : TRecordBuffer; override;
+      procedure FreeRecordBuffer(var aBuffer : TRecordBuffer); override;
       function GetRecordSize : Word; override;
 
       {Field access and update}
-      procedure ClearCalcFields(aBuffer : PChar); override;
+      procedure ClearCalcFields(aBuffer : PByte); override;
       procedure CloseBlob(aField : TField); override;
-      procedure InternalInitRecord(aBuffer : PChar); override;
+      procedure InternalInitRecord(aBuffer : PByte); override;
       procedure SetFieldData(aField : TField; aBuffer : Pointer); override;
       function FreeBlob(                                { Free the blob }
                         pRecBuf : Pointer;              { Record Buffer }
@@ -902,7 +901,7 @@ type
       {Record access and update}
       function FindRecord(aRestart, aGoForward : Boolean) : Boolean; override;
       function GetRecNo: Integer; override;
-      function GetRecord(aBuffer  : PChar;
+      function GetRecord(aBuffer  : PByte;
                          aGetMode : TGetMode;
                          aDoCheck : Boolean): TGetResult; override;
       procedure InternalAddRecord(aBuffer : Pointer;
@@ -913,7 +912,7 @@ type
       procedure InternalFirst; override;
       procedure InternalLast; override;
       procedure InternalPost; override;
-      procedure InternalSetToRecord(aBuffer : PChar); override;
+      procedure InternalSetToRecord(aBuffer : PByte); override;
 
       {information}
       function GetCanModify : Boolean; override;
@@ -982,7 +981,7 @@ type
                                 aMode  : TBlobStreamMode) : TStream; override;
       procedure DeleteTable;
       procedure EmptyTable;
-      function GetCurrentRecord(aBuffer : PChar) : Boolean; override;
+      function GetCurrentRecord(aBuffer : PByte) : Boolean; override;
       function GetFieldData(aField  : TField;
                             aBuffer : Pointer): Boolean; override;
       function GetRecordBatch(
@@ -1122,7 +1121,7 @@ type
       property OnPostError;
   end;
 
-  
+
   TffBaseTable = class(TffDataSet)
     protected {private}
       btFieldsInIndex   : array [0..pred(ffcl_MaxIndexFlds)] of Integer;
@@ -1176,7 +1175,7 @@ type
       procedure dsAllocKeyBuffers; override;
       procedure btEndKeyBufferEdit(aCommit : Boolean);
       procedure btFreeKeyBuffers;
-      function GetActiveRecBuf(var aRecBuf : PChar): Boolean; override;
+      function GetActiveRecBuf(var aRecBuf : TRecordBuffer): Boolean; override;
       function btGetRecordForKey(aCursorID  : TffCursorID;
                                  bDirectKey : Boolean;
                                  iFields    : Word;
@@ -1244,7 +1243,7 @@ type
       procedure dsCheckMasterRange; override;
       procedure btMasterChanged(Sender : TObject);
       procedure btMasterDisabled(Sender : TObject);
-      procedure btSetLinkRange(aMasterFields : TList);
+      procedure btSetLinkRange(aMasterFields : TList<TField>);
 
       {---Handle stuff---}
       procedure btChangeHandleIndex;
@@ -1270,7 +1269,7 @@ type
       procedure dsDeactivateFilters; override;                         {!!.03}
 
       {information}
-      procedure DataEvent(aEvent: TDataEvent; aInfo: Longint); override;
+      procedure DataEvent(aEvent: TDataEvent; aInfo: NativeInt); override;
 
       {indexes - such that they exist at TDataSet level}
       procedure UpdateIndexDefs; override;
@@ -1690,7 +1689,7 @@ type
 
   TffBlobStream = class(TStream)
     private
-      bsRecBuf    : PChar;
+      bsRecBuf    : PByte;
       bsTable     : TffDataSet;
       bsField     : TBlobField;
       bsFieldNo   : Integer;
@@ -2037,7 +2036,11 @@ const
     fldVARBYTES, fldINT32, fldBLOB, fldBLOB, fldBLOB, fldBLOB, fldBLOB,
     fldBLOB, fldBLOB, fldCURSOR, fldZSTRING, fldZSTRING, fldINT64, fldADT,
     fldArray, fldREF, fldTABLE, fldBLOB, fldBLOB, fldUNKNOWN, fldUNKNOWN,
-    fldUNKNOWN, fldZSTRING, fldTIMESTAMP, fldBCD);
+    fldUNKNOWN, fldZSTRING, fldTIMESTAMP, fldBCD,
+    fldUNKNOWN, fldUNKNOWN, fldUNKNOWN, fldUNKNOWN, fldUNKNOWN, fldUNKNOWN,
+    fldUNKNOWN, fldUNKNOWN, fldUNKNOWN, fldUNKNOWN, fldUNKNOWN, fldUNKNOWN,
+    fldUNKNOWN, fldUNKNOWN
+    );
 
   DataTypeMap: array[0..MAXLOGFLDTYPES - 1] of TFieldType = (
     ftUnknown, ftString, ftDate, ftBlob, ftBoolean, ftSmallint,
@@ -2530,7 +2533,7 @@ function TffFilterListItem.fliEvaluateFieldNode(aNode   : PffFilterNode;
 var
   FieldDesc : TffFieldDescItem;
   RecBufAsBytes : PByteArray absolute aRecBuf;
-  FilterFldName : PChar;
+  FilterFldName : PAnsiChar;
 begin
   TffDataSet(fliOwner).dsGetFieldDescItem(aNode^.fnFIELD.iFieldNum, FieldDesc);
 
@@ -2980,7 +2983,7 @@ begin
     CheckInactive(False);
     ClientName := 'FFClient_' + IntToStr(Longint(Self));
   end;
-  
+
   bcAutoClientName := Value;
 end;
 {--------}
@@ -3021,7 +3024,7 @@ var
 begin
   if (Value = bcIsDefault) then
     Exit;
-    
+
   if Value then begin {making it the default}
     {find the current default engine, and make sure it's no longer
      the default}
@@ -3970,7 +3973,7 @@ function TffSession.OpenDatabase(const aName : string)
 begin
   Result := FindFFDatabaseName(Self, aName, True);
   if Assigned(Result) then
-    Result.Active := True; 
+    Result.Active := True;
 end;
 {Begin !!.06}
 {--------}
@@ -4448,7 +4451,7 @@ begin
     CheckInactive(False);
     DatabaseName := 'FFDB_' + IntToStr(Longint(Self));
   end;
-  
+
   bdAutoDBName := Value;
 end;
 {--------}
@@ -5034,7 +5037,7 @@ var
   aData  : Pointer;
 begin
   Assert(aFileName <> '');
-  aData := ActiveBuffer;
+  aData := Pointer(ActiveBuffer);
   if not (Dictionary.FieldType[Pred(aField)] in
            [fftBLOB..ffcLastBLOBType]) then begin
     Result := DBIERR_NOTABLOB;
@@ -5049,10 +5052,10 @@ begin
                             @BLOBNr);
   if not IsNull then begin
     {truncate it to 0}
-    Result := TruncateBLOB(ActiveBuffer, aField, 0);
+    Result := TruncateBLOB(Pointer(ActiveBuffer), aField, 0);
     {and now Free it}
     if Result = DBIERR_NONE then
-      Result := FreeBLOB(ActiveBuffer, aField);
+      Result := FreeBLOB(Pointer(ActiveBuffer), aField);
   end;
 
   if Result <> DBIERR_NONE then
@@ -5240,7 +5243,7 @@ begin
     aTaskID := -1;
 end;
 {--------}
-function TffDataSet.AllocRecordBuffer : PChar;
+function TffDataSet.AllocRecordBuffer : TRecordBuffer;
 begin
   FFGetZeroMem(Result, dsRecBufSize);
   Assert(Assigned(Result), 'Rec Buf not Assigned');
@@ -5282,14 +5285,14 @@ begin
     Resync([]);
 end;
 {--------}
-procedure TffDataSet.ClearCalcFields(aBuffer : PChar);
+procedure TffDataSet.ClearCalcFields(aBuffer : PByte);
 begin
   FillChar(aBuffer[dsCalcFldOfs], CalcFieldsSize, 0);
 end;
 {--------}
 procedure TffDataSet.CloseBlob(aField : TField);
 begin
-  FreeBlob(ActiveBuffer, aField.FieldNo);
+  FreeBlob(Pointer(ActiveBuffer), aField.FieldNo);
 end;
 {--------}
 procedure TffDataSet.CloseCursor;
@@ -5462,7 +5465,7 @@ begin
   end;
 end;
 {--------}
-procedure TffBaseTable.DataEvent(aEvent: TDataEvent; aInfo: Longint);
+procedure TffBaseTable.DataEvent(aEvent: TDataEvent; aInfo: NativeInt);
 begin
   if btIgnoreDataEvents then                                          {!!.06}
     Exit;                                                             {!!.06}
@@ -5475,7 +5478,7 @@ begin
     if State = dsEdit then begin
       FreeRecordBuffer(dsOldValuesBuffer);
       dsOldValuesBuffer := AllocRecordBuffer;
-      Move(ActiveBuffer^, dsOldValuesBuffer^, dsRecBufSize);
+      Move(Pointer(ActiveBuffer)^, dsOldValuesBuffer^, dsRecBufSize);
     end else begin
       FreeRecordBuffer(dsOldValuesBuffer);
       dsOldValuesBuffer := nil;
@@ -5659,7 +5662,7 @@ begin
   Result := Found;
 end;
 {--------}
-procedure TffDataSet.FreeRecordBuffer(var aBuffer : PChar);
+procedure TffDataSet.FreeRecordBuffer(var aBuffer : TRecordBuffer);
 begin
   if Assigned(aBuffer) then begin
     FFFreeMem(aBuffer, dsRecBufSize);
@@ -5667,12 +5670,12 @@ begin
   end;
 end;
 {--------}
-procedure TffDataSet.GetBookmarkData(aBuffer : PChar; aData : Pointer);
+procedure TffDataSet.GetBookmarkData(aBuffer : TRecordBuffer; aData : Pointer);
 begin
   Move(aBuffer[dsBookmarkOfs], aData^, BookmarkSize);
 end;
 {--------}
-function TffDataSet.GetBookmarkFlag(aBuffer : PChar): TBookmarkFlag;
+function TffDataSet.GetBookmarkFlag(aBuffer : TRecordBuffer): TBookmarkFlag;
 begin
   Result := PDataSetRecInfo(aBuffer + dsRecInfoOfs)^.riBookmarkFlag
 end;
@@ -5683,7 +5686,7 @@ begin
   Result := Active and (not ReadOnly);
 end;
 {--------}
-function TffDataSet.GetCurrentRecord(aBuffer : PChar) : Boolean;
+function TffDataSet.GetCurrentRecord(aBuffer : PByte) : Boolean;
 begin
   if (not IsEmpty) and (GetBookmarkFlag(ActiveBuffer) = bfCurrent) then begin
     UpdateCursorPos;
@@ -5702,7 +5705,7 @@ end;
 function TffDataSet.GetFieldData(aField : TField; aBuffer : Pointer): Boolean;
 var
   IsBlank : Boolean;
-  RecBuf  : PChar;
+  RecBuf  : TRecordBuffer;
   FDI : TffFieldDescItem;
   Status : TffResult;
 begin
@@ -5765,12 +5768,13 @@ begin
   Result := -1;
 end;
 {--------}
-function TffDataSet.GetRecord(aBuffer  : PChar;
+function TffDataSet.GetRecord(aBuffer  : PByte;
                               aGetMode : TGetMode;
                               aDoCheck : Boolean): TGetResult;
 var
   Status : TffResult;
-  Buff : Pointer;
+  Buff : TRecordBuffer;
+  Bookm: TBookmark;
 begin
   {read the current, next or prior record; no locks placed}
   case aGetMode of
@@ -5803,8 +5807,7 @@ begin
           riRecNo := 0;
         end;
         Buff := aBuffer + dsBookmarkOfs;
-        Check(ServerEngine.CursorGetBookmark(CursorID,
-                                             Buff));
+        Check(ServerEngine.CursorGetBookmark(CursorID, TffBookmark(Buff)));
         GetCalcFields(aBuffer);
         Result := grOK;
       end;
@@ -6092,7 +6095,7 @@ begin
     end;
 end;
 {--------}
-procedure TffDataSet.InternalInitRecord(aBuffer : PChar);
+procedure TffDataSet.InternalInitRecord(aBuffer : PByte);
 begin
   Dictionary.InitRecord(Pointer(aBuffer));
   Dictionary.SetDefaultFieldValues(Pointer(aBuffer));
@@ -6173,7 +6176,7 @@ begin
                                     Pointer(ActiveBuffer)));
 end;
 {--------}
-procedure TffDataSet.InternalSetToRecord(aBuffer: PChar);
+procedure TffDataSet.InternalSetToRecord(aBuffer: PByte);
 begin
   InternalGotoBookmark(aBuffer + dsBookmarkOfs);
 end;
@@ -6346,19 +6349,19 @@ begin
                                          aTimeout);
 end;
 {--------}
-procedure TffDataSet.SetBookmarkData(aBuffer : PChar; aData : Pointer);
+procedure TffDataSet.SetBookmarkData(aBuffer : PByte; aData : Pointer);
 begin
   Move(aData^, aBuffer[dsBookmarkOfs], BookmarkSize);
 end;
 {--------}
-procedure TffDataSet.SetBookmarkFlag(aBuffer : PChar; aValue : TBookmarkFlag);
+procedure TffDataSet.SetBookmarkFlag(aBuffer : PByte; aValue : TBookmarkFlag);
 begin
   PDataSetRecInfo(aBuffer + dsRecInfoOfs).riBookmarkFlag := aValue;
 end;
 {--------}
 procedure TffDataSet.SetFieldData(aField : TField; aBuffer : Pointer);
 var
-  RecBuf : PChar;
+  RecBuf : PByte;
   FDI    : TffFieldDescItem;
   Status : TffResult;
 begin
@@ -6452,7 +6455,7 @@ procedure TffBaseTable.dsDeactivateFilters;
 begin
   inherited;
   btDestroyLookupCursor;
-end;                                                                
+end;
 {End !!.03}
 {--------}
 procedure TffDataSet.SetFilterOptions(Value : TFilterOptions);
@@ -6465,7 +6468,7 @@ procedure TffDataSet.SetFilterText(const Value : string);
 begin
   dsSetFilterTextAndOptions(Value, FilterOptions, dsFilterEval,
                             dsFilterTimeOut);
-  { If the new filter string is blank, we may need to reset the Filtered flag }                          
+  { If the new filter string is blank, we may need to reset the Filtered flag }
   if (Value = '') and Filtered then
     Filtered := False;
 end;
@@ -6943,7 +6946,7 @@ begin
   end;
 end;
 {--------}
-function TffDataSet.dsGetFieldNumber(FieldName : PChar) : Integer;
+function TffDataSet.dsGetFieldNumber(FieldName : PAnsiChar) : Integer;
 var
   i   : Integer;
   FDI : TffFieldDescItem;
@@ -7113,7 +7116,7 @@ function TffDataSet.dsTranslateCmp(var aFirst      : TffNodeValue;
   end;
   {------}
   function ConvertStringValue(var aNode : TffNodeValue;
-                              var P : PChar) : Boolean;
+                              var P : PAnsiChar) : Boolean;
   var
     StrZ : TffStringZ;
   begin
@@ -7130,19 +7133,19 @@ function TffDataSet.dsTranslateCmp(var aFirst      : TffNodeValue;
         case TffFieldType(nvType) of
           fftChar :
             begin
-              P := StrAlloc(2);
-              P[0] := char(nvValue^);
+              P := AnsiStrings.AnsiStrAlloc(2);
+              P[0] := AnsiChar(nvValue^);
               P[1] := #0;
             end;
           fftShortString,
           fftShortAnsiStr :
             begin
-              P := StrNew(StrPCopy(StrZ, ShortString(nvValue^)));
+              P := AnsiStrings.StrNew(AnsiStrings.StrPCopy(StrZ, ShortString(nvValue^)));
             end;
           fftNullString,
           fftNullAnsiStr :
             begin
-              P := StrNew(nvValue);
+              P := AnsiStrings.StrNew(nvValue);
             end;
         else
           Result := False;
@@ -7217,13 +7220,13 @@ begin
         Result := FFAnsiStrLIComp(PChar1, PChar2, aPartLen)           {!!.06}{!!.07}
     else
       if (aPartLen = 0) then
-        Result := AnsiStrComp(PChar1, PChar2)                         {!!.06}
+        Result := AnsiStrings.StrComp(PChar1, PChar2)                         {!!.06}
       else
-        Result := AnsiStrLComp(PChar1, PChar2, aPartLen);             {!!.06}
+        Result := AnsiStrings.StrLComp(PChar1, PChar2, aPartLen);             {!!.06}
     if not aFirst.nvIsConst then
-      StrDispose(PChar1);
+      AnsiStrings.StrDispose(PChar1);
     if not aSecond.nvIsConst then
-      StrDispose(PChar2);
+      AnsiStrings.StrDispose(PChar2);
     Exit;
   end;
 
@@ -7411,7 +7414,7 @@ end;
 {--------}
 
 function TffDataSet.dsGetNextRecord(eLock     : TffLockType;
-                                    pRecBuff  : Pointer;
+                                    pRecBuff  : TRecordBuffer;
                                     RecProps  : pRECProps) : TffResult;
 var
   FoundNext : Boolean;
@@ -7457,7 +7460,7 @@ begin
     FillChar(RecProps^, sizeof(RECProps), 0);
 end;
 {------}
-function TffDataSet.GetActiveRecBuf(var aRecBuf : PChar): Boolean;
+function TffDataSet.GetActiveRecBuf(var aRecBuf : TRecordBuffer): Boolean;
 begin
   Result := True;
   case State of
@@ -7467,12 +7470,12 @@ begin
         Result := False;
       end
       else
-        aRecBuf := ActiveBuffer;
+        aRecBuf := Pointer(ActiveBuffer);
     dsEdit,
     dsInsert :
-      aRecBuf := ActiveBuffer;
+      aRecBuf := Pointer(ActiveBuffer);
     dsCalcFields :
-      aRecBuf := CalcBuffer;
+      aRecBuf := Pointer(CalcBuffer);
     dsFilter :
       aRecBuf := dsRecordToFilter;
     dsOldValue :
@@ -7486,12 +7489,12 @@ begin
   end;
 end;
 {--------}
-function TffBaseTable.GetActiveRecBuf(var aRecBuf : PChar): Boolean;
+function TffBaseTable.GetActiveRecBuf(var aRecBuf : TRecordBuffer): Boolean;
 begin
   Result := True;
   case State of
     dsSetKey :
-      aRecBuf := PChar(btKeyBuffer);
+      aRecBuf := btKeyBuffer;
   else
     Result := inherited GetActiveRecBuf(aRecBuf);
   end;
@@ -7840,12 +7843,12 @@ begin
 end;
 {--------}
 function TffBaseTable.btLocateRecord(const aKeyFields : string;
-                                 const aKeyValues : Variant;
+                                     const aKeyValues : Variant;
                                        aOptions   : TLocateOptions;
                                        aSyncCursor: Boolean): Boolean;
 var
   i, FieldCount, PartialLength : Integer;
-  OurBuffer    : PChar;
+  OurBuffer    : PByte;
   OurFields    : TList;
   LookupCursor : TffCursorID;
   FilterHandle : HDBIFilter;
@@ -7856,7 +7859,7 @@ begin
   CheckBrowseMode;
   CursorPosChanged;
   {get a temporary record Buffer}
-  OurBuffer := TempBuffer;
+  OurBuffer := Pointer(TempBuffer);
   {create list of fields}
   OurFields := TList.Create;
   try
@@ -8367,7 +8370,7 @@ end;
 {--------}
 function TffDataSet.dsGetRecordCountPrim(var iRecCount : Longint) : TffResult;
 var
-  BM     : pointer;
+  BM     : TBookmark;
   Buff   : pointer;
   Marked : Boolean;
 
@@ -8389,7 +8392,7 @@ begin
       try
         { Retrieve a bookmark so we can reset the cursor when we are done}
         BM := GetBookMark;
-        try
+        {try}
           Marked := Assigned(BM);
           try
             InternalFirst;
@@ -8404,9 +8407,11 @@ begin
             if Marked then
               InternalGotoBookmark(BM);
           end;
+        {
         finally
           FreeBookmark(BM);
         end;
+        }
       finally
         EnableControls;
       end;
@@ -8512,7 +8517,7 @@ begin
       else begin
 //      if BookmarkAvailable then begin                               {!!.06}
           GetMem(Bookmark, BookmarkSize);                             {!!.03}
-          Check(ServerEngine.CursorGetBookmark(aCursorID, Bookmark)); {!!.03}
+          Check(ServerEngine.CursorGetBookmark(aCursorID, TffBookmark(Bookmark))); {!!.03}
 //      end;                                                          {!!.06}
       end;
       {reset the range}
@@ -8541,10 +8546,11 @@ begin
       end;
       {reset the record position}
       if (Bookmark <> nil) and
-        BookmarkValid(Bookmark) then begin                            {!!.06}
+        BookmarkValid(TBookmark(Bookmark)) then begin                            {!!.06}
         Check(ServerEngine.CursorSetToBookmark(aCursorID,
-                                               Bookmark));
-        FreeBookmark(Bookmark);
+                                               TBookmark(Bookmark)));
+        // FreeBookmark(Bookmark);
+        SetLength(TBookmark(Bookmark), 0);
       end;
       if CreatedBuffer then
          FFFreeMem(pRecBuff, PhysicalRecordSize);
@@ -8584,7 +8590,7 @@ begin
   PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^.kriFieldCount := aValue;
 end;
 {--------}
-procedure TffBaseTable.btSetLinkRange(aMasterFields : TList);
+procedure TffBaseTable.btSetLinkRange(aMasterFields : TList<TField>);
 var
   i              : Integer;
   SaveState      : TDataSetState;
@@ -8748,7 +8754,7 @@ begin
     Request^.KeyIncl2 := bKey2Incl;
     Move(pKey1^, Request^.KeyData1, KeyLen1);
     pKeyData2 := PffByteArray(PAnsiChar(@Request^.KeyData1) + KeyLen1);
-    Move(pKey2^, pKeyData2^, KeyLen2);                         
+    Move(pKey2^, pKeyData2^, KeyLen2);
 
     Result := ServerEngine.CursorSetRange(aCursorID, bKeyItself,
                                           iFields1, iLen1, pKey1, bKey1Incl,
@@ -9709,7 +9715,7 @@ function TffQuery.Lookup(const aKeyFields    : string;
                          const aKeyValues    : Variant;
                          const aResultFields : string) : Variant;
 var
-  OurBuffer    : PChar;
+  OurBuffer    : PByte;
   OurFields    : TList;
   FilterHandle : HDBIFilter;
 begin
@@ -9719,7 +9725,7 @@ begin
   CheckBrowseMode;
   CursorPosChanged;
   {get a temporary record Buffer}
-  OurBuffer := TempBuffer;
+  OurBuffer := Pointer(TempBuffer);
   {create list of fields}
   OurFields := TList.Create;
   try
@@ -9857,7 +9863,7 @@ function TffQuery.quLocateRecord(const aKeyFields : string;
                                        aOptions   : TLocateOptions;
                                        aSyncCursor: Boolean): Boolean;
 var
-  OurBuffer    : PChar;
+  OurBuffer    : TRecordBuffer;
   OurFields    : TList;
   FilterHandle : HDBIFilter;
   Status       : TffResult;
@@ -9866,7 +9872,7 @@ begin
   CheckBrowseMode;
   CursorPosChanged;
   { Get a temporary record buffer. }
-  OurBuffer := TempBuffer;
+  OurBuffer := Pointer(TempBuffer);
   { Create list of fields. }
   OurFields := TList.Create;
   try

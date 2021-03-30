@@ -52,6 +52,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   Classes,
   DB,
   {$IFDEF DCC6OrLater}
@@ -94,7 +95,7 @@ type
     FParent : TffSqlNode;
     FOwner : TffSqlStatement;
     FOwnerStmt: TffSqlColumnListOwner;                                 {!!.11}
-    procedure WriteStr(Stream: TStream; const S: string);
+    procedure WriteStr(Stream: TStream; const S: AnsiString);
     procedure WriteEOF(Stream: TStream);
     procedure AddTableReference(Select: TffSqlSELECT); virtual;
     procedure AddColumnDef(Target: TffSqlColumnListOwner); virtual;
@@ -110,11 +111,11 @@ type
     function GetOwner: TffSqlStatement;
     function GetOwnerSelect : TffSqlSelect;
     function GetOwnerStmt: TFFSqlColumnListOwner;                      {!!.11}
-    procedure SQLError(const ErrorMsg: string);
+    procedure SQLError(const ErrorMsg: AnsiString);
     procedure AssignError(Source: TffSqlNode);
     procedure TypeMismatch;
     function BindField(const TableName,
-      FieldName: string): TFFSqlFieldProxy; virtual;
+      FieldName: AnsiString): TFFSqlFieldProxy; virtual;
     function IsAggregate: Boolean; virtual;
   public
     constructor Create(AParent: TffSqlNode);
@@ -123,7 +124,7 @@ type
     property OwnerSelect : TffSqlSelect read GetOwnerSelect;
     property OwnerStmt: TFFSqlColumnListOwner read GetOwnerStmt;       {!!.11}
     procedure EmitSQL(Stream : TStream); virtual;
-    function SQLText: string;
+    function SQLText: AnsiString;
     function Equals(Other: TffSqlNode): Boolean; virtual; abstract;
     procedure Assign(const Source: TffSqlNode); virtual; abstract;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean);
@@ -132,8 +133,8 @@ type
 
   TffSqlFieldRef = class(TffSqlNode)
   protected
-    FFieldName: string;
-    FTableName: string;
+    FFieldName: AnsiString;
+    FTableName: AnsiString;
     TypeKnown : Boolean;
     FType : TffFieldType;
     FField : TFFSqlFieldProxy;
@@ -142,7 +143,7 @@ type
     procedure ClearBinding; override;
     function GetDecimals: Integer; override;
     function GetSize: Integer; override;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     function GetType: TffFieldType; override;
     procedure CheckType;
     procedure MatchType(ExpectedType: TffFieldType);
@@ -151,15 +152,15 @@ type
   public
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
     procedure Assign(const Source: TffSqlNode); override;
-    property TableName : string read FTableName write FTableName;
-    property FieldName : string read FFieldName write FFieldName;
+    property TableName : AnsiString read FTableName write FTableName;
+    property FieldName : AnsiString read FFieldName write FFieldName;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
     function GetValue : Variant;
     property Field: TFFSqlFieldProxy read GetField;
     property GroupField : TffSqlFieldProxy read GetGroupField;
     function DependsOn(Table: TFFSqlTableProxy): Boolean;
-    function QualName : string;
+    function QualName : AnsiString;
     function IsNull: Boolean;
   end;
 
@@ -192,7 +193,7 @@ type
     FDistinct : Boolean;
     FCounter : TAggCounter;
     FSourceField: TFFSqlFieldProxy;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     procedure MatchType(ExpectedType: TffFieldType);
     function GetSize: Integer; override;
     function GetDecimals: Integer; override;
@@ -221,22 +222,22 @@ type
 
   TffSqlColumn = class(TffSqlNode)
   protected
-    FColumnName: string;
+    FColumnName: AnsiString;
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property ColumnName: string read FColumnName write FColumnName;
+    property ColumnName: AnsiString read FColumnName write FColumnName;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
   end;
 
   TffSqlBaseColumn = class(TffSqlNode)
   protected
-    FFieldName: string;
-    FTableName: string;
+    FFieldName: AnsiString;
+    FTableName: AnsiString;
   public
-    property TableName: string read FTableName write FTableName;
-    property FieldName: string read FFieldName write FFieldName;
+    property TableName: AnsiString read FTableName write FTableName;
+    property FieldName: AnsiString read FFieldName write FFieldName;
   end;
 
   TffSqlGroupColumn = class(TffSqlBaseColumn)
@@ -245,7 +246,7 @@ type
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
-    function QualColumnName: string; virtual;
+    function QualColumnName: AnsiString; virtual;
   end;
 
   TffSqlOrderColumn = class(TffSqlBaseColumn)
@@ -254,7 +255,7 @@ type
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
-    function QualColumnName: string;
+    function QualColumnName: AnsiString;
   end;
 
   TffSqlSelection = class;
@@ -277,7 +278,7 @@ type
     property Column[Index: Integer] : TffSqlGroupColumn read GetColumn write SetColumn;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
-    function Contains(const aColName : string;
+    function Contains(const aColName : AnsiString;
                             Se: TffSqlSelection): Boolean;
   end;
 
@@ -326,16 +327,16 @@ type
   TffSqlLikePattern = class(TffObject)
   protected
     LeadPattern,
-    TrailPattern : string;
+    TrailPattern : AnsiString;
     LeadMask,
-    TrailMask: string;
+    TrailMask: AnsiString;
     FloatPatterns,
     FloatMasks: TStringList;
   public
-    constructor Create(SearchPattern: string; const Escape: string);
+    constructor Create(SearchPattern: AnsiString; const Escape: AnsiString);
     {S is the search pattern; Escape is an optional one-character escape
     character}
-    {S contains the string to be searched for, and optionally one or more
+    {S contains the String to be searched for, and optionally one or more
     occurrences of
       '%' (match zero or more characters of any kind), and/or
       '_'  (match exactly one character of any kind)
@@ -369,7 +370,7 @@ type
     FBMCompat : Boolean;                                               {!!.11}
     BMCompatChecked : Boolean;                                         {!!.11}
     FBMTable: PBTable;                                                 {!!.11}
-    FBMPhrase: string;                                                 {!!.11}
+    FBMPhrase: AnsiString;                                                 {!!.11}
     FIgnoreCase: Boolean;                                              {!!.13}
     procedure CheckBMCompat;                                           {!!.11}
     function IsBMCompatible: Boolean;                                  {!!.11}
@@ -377,8 +378,8 @@ type
     function CanLimit: Boolean;
     function CanReplaceWithCompare: Boolean;
     procedure CheckIsConstant;
-    function GetLowLimit: string;
-    function GetHighLimit: string;
+    function GetLowLimit: AnsiString;
+    function GetHighLimit: AnsiString;
     function IsConstant: Boolean;
     procedure MatchType(ExpectedType: TffFieldType);
     function Reduce: Boolean;
@@ -395,7 +396,7 @@ type
     function AsBoolean(const TestValue: Variant): Boolean;
     function DependsOn(Table: TFFSqlTableProxy): Boolean;
     property BmTable: PBTable read GetBmTable;                         {!!.11}
-    property BmPhrase: string read FBmPhrase;                          {!!.11}
+    property BmPhrase: AnsiString read FBmPhrase;                          {!!.11}
     property IgnoreCase: Boolean read FIgnoreCase write FIgnoreCase;   {!!.13}
   end;
 
@@ -522,7 +523,7 @@ type
     function GetType: TffFieldType; override;
     function GetDecimals: Integer; override;
     function GetSize: Integer; override;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     function JustSimpleExpression: Boolean;
     procedure MatchType(ExpectedType: TffFieldType);                   {!!.11}
     function Reduce: Boolean;
@@ -577,7 +578,7 @@ type
     function GetType: TffFieldType; override;
     function GetDecimals: Integer; override;
     function GetSize: Integer; override;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     procedure MatchType(ExpectedType: TffFieldType);                   {!!.11}
     function Reduce: Boolean;
     procedure ResetConstant; override;
@@ -662,7 +663,7 @@ type
     procedure SetCondFactor(Index: Integer; const Value: TffSqlCondFactor);
     function GetCondFactorCount: Integer;
     function GetSize: Integer; override;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     function GetType: TffFieldType; override;
     function GetDecimals: Integer; override;
     function Reduce: Boolean;
@@ -748,7 +749,7 @@ type
     function Reduce: Boolean;
     function AsBooleanLevel(Level: Integer): Boolean;
     procedure SetLevelDep(List: TFFSqlTableProxySubsetList);
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
@@ -770,7 +771,7 @@ type
 
   TffSqlFloatLiteral = class(TffSqlNode)
   protected
-    FValue : string;
+    FValue : AnsiString;
     SingleValue : single;
     DoubleValue : double;
     ExtendedValue : extended;
@@ -784,7 +785,7 @@ type
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property Value : string read FValue write FValue;
+    property Value : AnsiString read FValue write FValue;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
     function GetValue: Variant;
@@ -792,7 +793,7 @@ type
 
   TffSqlIntegerLiteral = class(TffSqlNode)
   protected
-    FValue : string;
+    FValue : AnsiString;
     Int32Value: Integer;
     Converted: Boolean;
     procedure ConvertToNative;
@@ -801,7 +802,7 @@ type
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property Value : string read FValue write FValue;
+    property Value : AnsiString read FValue write FValue;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
     function GetValue: Variant;
@@ -809,15 +810,15 @@ type
 
   TffSqlStringLiteral = class(TffSqlNode)
   protected
-    FValue : string;
+    FValue : AnsiString;
     FType : TffFieldType;
     Converted : Boolean;
-    CharValue : Char;
+    CharValue : AnsiChar;
     WideCharValue : WideChar;
     ShortStringValue : ShortString;
     ShortAnsiStringValue : ShortString;
-    NullStringValue : string;
-    NullAnsiStrValue : string;
+    NullStringValue : AnsiString;
+    NullAnsiStrValue : AnsiString;
     WideStringValue : WideString;
     procedure ConvertToNative;
     procedure MatchType(ExpectedType: TffFieldType);
@@ -827,7 +828,7 @@ type
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
     procedure Assign(const Source: TffSqlNode); override;
     constructor Create(AParent: TffSqlNode);
-    property Value : string read FValue write FValue;
+    property Value : AnsiString read FValue write FValue;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
     function GetValue: Variant;
@@ -836,7 +837,7 @@ type
   TffSqlIntervalDef = (iUnspec, iYear, iMonth, iDay, iHour, iMinute, iSecond);
   TffSqlIntervalLiteral = class(TffSqlNode)
   protected
-    FValue : string;
+    FValue : AnsiString;
     FStartDef : TffSqlIntervalDef;
     FEndDef : TffSqlIntervalDef;
     Y1, M1, D1, H1, S1 : Integer;
@@ -849,7 +850,7 @@ type
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property Value : string read FValue write FValue;
+    property Value : AnsiString read FValue write FValue;
     property StartDef : TffSqlIntervalDef read FStartDef write FStartDef;
     property EndDef : TffSqlIntervalDef read FEndDef write FEndDef;
     procedure EmitSQL(Stream : TStream); override;
@@ -859,7 +860,7 @@ type
 
   TffSqlTimestampLiteral = class(TffSqlNode)
   protected
-    FValue : string;
+    FValue : AnsiString;
     DateTimeValue: TDateTime;
     Converted: Boolean;
     procedure ConvertToNative;
@@ -868,7 +869,7 @@ type
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property Value : string read FValue write FValue;
+    property Value : AnsiString read FValue write FValue;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
     function GetValue: Variant;
@@ -876,7 +877,7 @@ type
 
   TffSqlTimeLiteral = class(TffSqlNode)
   protected
-    FValue : string;
+    FValue : AnsiString;
     TimeValue : TDateTime;
     Converted : Boolean;
     procedure ConvertToNative;
@@ -885,7 +886,7 @@ type
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property Value : string read FValue write FValue;
+    property Value : AnsiString read FValue write FValue;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
     function GetValue: Variant;
@@ -893,7 +894,7 @@ type
 
   TffSqlDateLiteral = class(TffSqlNode)
   protected
-    FValue : string;
+    FValue : AnsiString;
     DateValue : TDateTime;
     Converted : Boolean;
     procedure ConvertToNative;
@@ -902,7 +903,7 @@ type
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property Value : string read FValue write FValue;
+    property Value : AnsiString read FValue write FValue;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
     function GetValue: Variant;
@@ -968,7 +969,7 @@ type
   protected
     FParmIndex: Integer;
     function GetSize: Integer; override;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     function GetType: TffFieldType; override;
     procedure MatchType(ExpectedType: TffFieldType);
     function GetDecimals: Integer; override;
@@ -1100,7 +1101,7 @@ type
     function IsConstant: Boolean;
     function IsFieldFrom(Table: TFFSqlTableProxy;
       var FieldReferenced: TFFSqlFieldProxy): Boolean;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     procedure MatchType(ExpectedType: TffFieldType);
     function GetDecimals: Integer; override;
     function GetSize: Integer; override;
@@ -1152,7 +1153,7 @@ type
     function GetSize: Integer; override;
     function GetType: TffFieldType; override;
     procedure CheckType;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     procedure MatchType(ExpectedType: TffFieldType);
     function IsAggregate: Boolean; override;
     function AddIntervalTo(Target: TDateTime): TDateTime;
@@ -1204,7 +1205,7 @@ type
     function GetSize: Integer; override;
     function GetType: TffFieldType; override;
     procedure CheckType;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     procedure MatchType(ExpectedType: TffFieldType);
     function IsAggregate: Boolean; override;
     //function GetAgg: TffSqlAggregate; override;
@@ -1254,7 +1255,7 @@ type
     function GetDecimals: Integer; override;
     function GetType: TffFieldType; override;
     procedure CheckType;
-    function GetTitle(const Qualified : boolean): string;              {!!.11}
+    function GetTitle(const Qualified : boolean): AnsiString;              {!!.11}
     procedure MatchType(ExpectedType: TffFieldType);
     function IsAggregate: Boolean; override;
     function IsConstant: Boolean;
@@ -1370,11 +1371,11 @@ type
 
   TffSqlTableRef = class(TffSqlNode)
   protected
-    FAlias : string;
-    FTableName : string;
+    FAlias : AnsiString;
+    FTableName : AnsiString;
     FTableExp: TffSqlTableExp;
     FColumnList: TFFSqlInsertColumnList;
-    FDatabaseName: string;
+    FDatabaseName: AnsiString;
     FTable: TffSqlTableProxy;
     procedure AddTableReference(Select: TffSqlSELECT); override;
     function DependsOn(Table: TFFSqlTableProxy): Boolean;
@@ -1382,18 +1383,18 @@ type
       var aLiveResult: Boolean; var aCursorID: TffCursorID;
       var RecordsRead: Integer);
     function GetResultTable: TFFSqlTableProxy;
-    function GetSQLName: string;
+    function GetSQLName: AnsiString;
     function BindFieldDown(const TableName,
-      FieldName: string): TFFSqlFieldProxy;
-    function BindTable(AOwner: TObject; const TableName: string): TFFSqlTableProxy;
+      FieldName: AnsiString): TFFSqlFieldProxy;
+    function BindTable(AOwner: TObject; const TableName: AnsiString): TFFSqlTableProxy;
     function Reduce: Boolean;                                          {!!.11}
     function TargetFieldFromSourceField(const F: TffSqlFieldProxy): TffSqlFieldProxy;
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property TableName : string read FTableName write FTableName;
-    property DatabaseName: string read FDatabaseName write FDatabaseName;
-    property Alias : string read FAlias write FAlias;
+    property TableName : AnsiString read FTableName write FTableName;
+    property DatabaseName: AnsiString read FDatabaseName write FDatabaseName;
+    property Alias : AnsiString read FAlias write FAlias;
     property TableExp:  TffSqlTableExp read FTableExp write FTableExp;
     property ColumnList  :  TFFSqlInsertColumnList
       read FColumnList write FColumnList;
@@ -1401,7 +1402,7 @@ type
     function Equals(Other: TffSqlNode): Boolean; override;
     procedure Clear;
     destructor Destroy; override;
-    property SQLName: string read GetSQLName;
+    property SQLName: AnsiString read GetSQLName;
     function GetTable(AOwner: TObject; const ExclContLock : Boolean): TffSqlTableProxy;
     property ResultTable: TFFSqlTableProxy read GetResultTable;
   end;
@@ -1410,7 +1411,7 @@ type
   protected
     FTableRefList : TList;
     function BindTable(AOwner: TObject;
-      const TableName: string): TFFSqlTableProxy;
+      const TableName: AnsiString): TFFSqlTableProxy;
     procedure Clear;
     function GetTableRef(Index: Integer): TffSqlTableRef;
     procedure SetTableRef(Index: Integer;
@@ -1418,26 +1419,26 @@ type
     function GetTableRefCount: Integer;
     function Reduce: Boolean;
     function BindFieldDown(const TableName,
-      FieldName: string): TFFSqlFieldProxy;
+      FieldName: AnsiString): TFFSqlFieldProxy;
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
     constructor Create(AParent: TffSqlNode);
     destructor Destroy; override;
     function AddTableRef(NewTableRef: TffSqlTableRef): TffSqlTableRef;
-    function GetNameForAlias(const Alias : string) : string;
+    function GetNameForAlias(const Alias : AnsiString) : AnsiString;
     property TableRefCount : Integer read GetTableRefCount;
     property TableRef[Index: Integer]: TffSqlTableRef
       read GetTableRef write SetTableRef;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
-    function GetFieldsFromTable(const TableName: string; List: TList): TffSqlTableProxy;
+    function GetFieldsFromTable(const TableName: AnsiString; List: TList): TffSqlTableProxy;
   end;
 
   TffSqlOrderItem = class(TffSqlNode)
   protected
     FColumn: TFFSqlOrderColumn;
-    FIndex: string;
+    FIndex: AnsiString;
     FDescending: Boolean;
   public
     procedure Assign(const Source: TffSqlNode); override;
@@ -1445,7 +1446,7 @@ type
     constructor Create(AParent: TffSqlNode);
     destructor Destroy; override;
     property Column: TFFSqlOrderColumn read FColumn write FColumn;
-    property Index: string read FIndex write FIndex;
+    property Index: AnsiString read FIndex write FIndex;
     property Descending: Boolean read FDescending write FDescending;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
@@ -1545,9 +1546,9 @@ type
     function CheckNoDups: Boolean;
     function DependsOn(Table: TFFSqlTableProxy): Boolean;
     function BindTable(AOwner: TObject;
-      const TableName: string): TFFSqlTableProxy;
+      const TableName: AnsiString): TFFSqlTableProxy;
     function BindFieldDown(const TableName,
-      FieldName: string): TFFSqlFieldProxy;
+      FieldName: AnsiString): TFFSqlFieldProxy;
     function TargetFieldFromSourceField(
       const F: TffSqlFieldProxy): TffSqlFieldProxy;
   public
@@ -1569,7 +1570,7 @@ type
     function Reduce: Boolean;
     procedure EmitSQL(Stream : TStream); override;
     property ResultTable: TFFSqlTableProxy read GetResultTable;
-    function GetFieldsFromTable(const TableName: string; List: TList):
+    function GetFieldsFromTable(const TableName: AnsiString; List: TList):
       TffSqlTableProxy;                     {!!.11}
   end;
 
@@ -1622,8 +1623,7 @@ type
     UsingCondExp: TFFSqlCondExp;
     FResultTable : TFFSqlTableProxy;
     HaveData: Boolean;
-    function BindTable(AOwner: TObject;
-      const TableName: string): TFFSqlTableProxy;
+    function BindTable(AOwner: TObject; const TableName: AnsiString): TFFSqlTableProxy;
     function GetResultTable: TffSqlTableProxy;
     function Execute2(NeedData: Boolean): TffSqlTableProxy;
     procedure Bind;
@@ -1632,16 +1632,15 @@ type
     function DependsOn(Table: TFFSqlTableProxy): Boolean;
     function DoJoin(NeedData: Boolean): TffSqlTableProxy;
     function BuildSimpleFieldExpr(AOwner: TffSqlNode; const ATableName,
-      AFieldName: string;
+      AFieldName: AnsiString;
       AField: TffSqlFieldProxy): TffSqlSimpleExpression;
     procedure EnsureResultTable(NeedData: Boolean);
     function BindFieldDown(const TableName,
-      FieldName: string): TFFSqlFieldProxy;
+      FieldName: AnsiString): TFFSqlFieldProxy;
     function TargetFieldFromSourceField(
       const F: TffSqlFieldProxy): TffSqlFieldProxy;
   public
-    function BindField(const TableName,
-      FieldName: string): TFFSqlFieldProxy; override;
+    function BindField(const TableName, FieldName: AnsiString): TFFSqlFieldProxy; override;
     property JoinType: TffSqlJoinType read FJoinType write FJoinType;
     property Natural: Boolean read FNatural write FNatural;
     property TableRef1: TffSqlTableRef read FTableRef1 write FTableRef1;
@@ -1659,7 +1658,7 @@ type
     procedure EmitSQL(Stream : TStream); override;
     constructor Create(AParent: TffSqlNode);
     property ResultTable: TffSqlTableProxy read GetResultTable;
-    function GetFieldsFromTable(const TableName: string; List: TList):
+    function GetFieldsFromTable(const TableName: AnsiString; List: TList):
       TffSqlTableProxy;                     {!!.11}
   end;
 
@@ -1671,13 +1670,11 @@ type
     FValueList: TffSqlValueList;
     FNonJoinTableExp:  TffSqlNonJoinTableExp;
     FTableRef:  TffSqlTableRef;
-    function BindTable(AOwner: TObject;
-      const TableName: string): TFFSqlTableProxy;
+    function BindTable(AOwner: TObject; const TableName: AnsiString): TFFSqlTableProxy;
     function DependsOn(Table: TFFSqlTableProxy): Boolean;
     procedure EnsureResultTable(NeedData: Boolean);
     function GetResultTable: TffSqlTableProxy;
-    function BindFieldDown(const TableName,
-      FieldName: string): TFFSqlFieldProxy;
+    function BindFieldDown(const TableName, FieldName: AnsiString): TFFSqlFieldProxy;
     function TargetFieldFromSourceField(
       const F: TffSqlFieldProxy): TffSqlFieldProxy;
   public
@@ -1703,12 +1700,12 @@ type
   protected
     FNonJoinTablePrimary: TffSqlNonJoinTablePrimary;
     function BindTable(AOwner: TObject;
-      const TableName: string): TFFSqlTableProxy;
+      const TableName: AnsiString): TFFSqlTableProxy;
     function DependsOn(Table: TFFSqlTableProxy): Boolean;
     procedure EnsureResultTable(NeedData: Boolean);
     function GetResultTable: TffSqlTableProxy;
     function BindFieldDown(const TableName,
-      FieldName: string): TFFSqlFieldProxy;
+      FieldName: AnsiString): TFFSqlFieldProxy;
     function TargetFieldFromSourceField(
       const F: TffSqlFieldProxy): TffSqlFieldProxy;
   public
@@ -1734,9 +1731,9 @@ type
     function GetResultTable: TffSqlTableProxy;
     procedure EnsureResultTable(NeedData: Boolean);
     function BindTable(AOwner: TObject;
-      const TableName: string): TFFSqlTableProxy;
+      const TableName: AnsiString): TFFSqlTableProxy;
     function BindFieldDown(const TableName,
-      FieldName: string): TFFSqlFieldProxy;
+      FieldName: AnsiString): TFFSqlFieldProxy;
     function TargetFieldFromSourceField(
       const F: TffSqlFieldProxy): TffSqlFieldProxy;
   public
@@ -1752,7 +1749,7 @@ type
     function Reduce: Boolean;
     procedure EmitSQL(Stream : TStream); override;
     property ResultTable: TffSqlTableProxy read GetResultTable;
-    function GetFieldsFromTable(const TableName: string; List: TList):
+    function GetFieldsFromTable(const TableName: AnsiString; List: TList):
       TffSqlTableProxy;                     {!!.11}
   end;
 
@@ -1838,8 +1835,7 @@ type
                                       FieldRef : TffSqlFieldRef;
                                       List: TList);                    {!!.11}
     procedure Bind;
-    function BindTable(AOwner: TObject;
-      const TableName: string): TFFSqlTableProxy;
+    function BindTable(AOwner: TObject; const TableName: AnsiString): TFFSqlTableProxy;
     procedure AddTableRefs(Node: TffSqlNode);
     procedure AddColumns(Node: TffSqlNode);
     procedure BuildSortList(Table: TffSqlTableProxy;
@@ -1864,9 +1860,8 @@ type
     procedure ResetIsConstant(Node: TffSqlNode);
     procedure FlagAggregates(Node: TffSqlNode);
     procedure EnumAggregates(Node: TffSqlNode);
-    function BindField(const TableName,
-      FieldName: string): TFFSqlFieldProxy; override;
-    function FindField(const FieldName: string): TFFSqlFieldProxy;
+    function BindField(const TableName, FieldName: AnsiString): TFFSqlFieldProxy; override;
+    function FindField(const FieldName: AnsiString): TFFSqlFieldProxy;
     procedure ExpandWildcards;
     procedure MatchType(ExpectedType: TffFieldType; AllowMultiple: Boolean);
     function NormalQueryResult(NeedData: Boolean): TffSqlTableProxy;
@@ -1888,7 +1883,7 @@ type
     function GetResultTable: TFFSqlTableProxy;
     function TargetFieldFromSourceField(
       const F: TffSqlFieldProxy): TffSqlFieldProxy;
-    function TableWithCount(const ColumnName: string): TffSqlTableProxy; {!!.12}
+    function TableWithCount(const ColumnName: AnsiString): TffSqlTableProxy; {!!.12}
   public
     property InWhere: Boolean read FInWhere write FInWhere; //used only during parsing
     procedure Assign(const Source: TffSqlNode); override;
@@ -1917,12 +1912,12 @@ type
 
   TffSqlInsertItem = class(TffSqlNode)
   protected
-    FColumnName: string;
+    FColumnName: AnsiString;
     procedure AddColumnDef(Target: TffSqlColumnListOwner); override;
   public
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;
-    property ColumnName: string read FColumnName write FColumnName;
+    property ColumnName: AnsiString read FColumnName write FColumnName;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
   end;
@@ -1950,7 +1945,7 @@ type
 
   TffSqlINSERT = class(TffSqlColumnListOwner)
   protected
-    FTableName: string;
+    FTableName: AnsiString;
     FInsertColumnList: TFFSqlInsertColumnList;
     FDefaultValues: Boolean;
     Bound: Boolean;
@@ -1962,7 +1957,7 @@ type
     function Reduce: Boolean;                                          {!!.11}
   public
     destructor Destroy; override;
-    property TableName : string read FTableName write FTableName;
+    property TableName : AnsiString read FTableName write FTableName;
     property InsertColumnList: TFFSqlInsertColumnList
       read FInsertColumnList write FInsertColumnList;
     property TableExp: TffSqlTableExp read FTableExp write FTableExp;
@@ -1985,7 +1980,7 @@ type
     DeleteList: TList;
     procedure Bind;
     function BindField(const TableName,
-      FieldName: string): TFFSqlFieldProxy; override;
+      FieldName: AnsiString): TFFSqlFieldProxy; override;
     procedure DeleteRecord;
     function Reduce: Boolean;                                          {!!.11}
   public
@@ -2004,7 +1999,7 @@ type
   TffSqlUpdateItem = class(TffSqlNode)
   protected
     FSimplex: TffSqlSimpleExpression;
-    FColumnName: string;
+    FColumnName: AnsiString;
     FDefault: Boolean;
     F: TffSqlFieldProxy;
     procedure AddColumnDef(Target: TffSqlColumnListOwner); override;
@@ -2015,7 +2010,7 @@ type
     destructor Destroy; override;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
-    property ColumnName: string read FColumnName write FColumnName;
+    property ColumnName: AnsiString read FColumnName write FColumnName;
     property Default: Boolean read FDefault write FDefault;
     property Simplex: TffSqlSimpleExpression read FSimplex write FSimplex;
     procedure Update;
@@ -2055,7 +2050,7 @@ type
     procedure AddColumns(Node: TffSqlNode);
     procedure Bind;
     function BindField(const TableName,
-      FieldName: string): TFFSqlFieldProxy; override;
+      FieldName: AnsiString): TFFSqlFieldProxy; override;
     procedure ClearBindings(Node: TffSqlNode);
     function Reduce: Boolean;                                          {!!.11}
     procedure UpdateRecord;
@@ -2151,20 +2146,20 @@ var
   TimeDelta : double;
 
 const
-  RelOpStr : array[TffSqlRelOp] of string =
+  RelOpStr : array[TffSqlRelOp] of AnsiString =
     ('', '=', '<=', '<', '>', '>=', '<>');
-  DefStr : array[TffSqlIntervalDef] of string = (
+  DefStr : array[TffSqlIntervalDef] of AnsiString = (
   'Unspec', 'YEAR', 'MONTH', 'DAY', 'HOUR', 'MINUTE', 'SECOND');
   CanOptimizeOnOperator: array[TffSqlRelOp] of Boolean = (
     {roNone, roEQ, roLE, roL, roG, roGE, roNE}
      FALSE,  TRUE, TRUE, TRUE, TRUE, TRUE, FALSE);
-  AgString : array[TffSqlAggFunction] of string =
+  AgString : array[TffSqlAggFunction] of AnsiString =
     ('COUNT','MIN','MAX','SUM','AVG');
   ffSqlInConvThreshold = 8; {maximum length of expression list in
     an IN clause to convert to simple expressions}
 
-function PosCh(const SearchCh: Char; const SearchString: string): Integer;
-{-same as POS but searches for a single Char}
+function PosCh(const SearchCh: AnsiChar; const SearchString: AnsiString): Integer;
+{-same as POS but searches for a single AnsiChar}
 var
   Len: Integer;
 begin
@@ -2180,11 +2175,11 @@ begin
   Result := 0;
 end;
 
-function PosChI(const SearchCh: Char; const SearchString: string): Integer;
+function PosChI(const SearchCh: AnsiChar; const SearchString: AnsiString): Integer;
 {-same as PosCh above, but ignores case}
 var
   Len: Integer;
-  SearchChU: Char;
+  SearchChU: AnsiChar;
 begin
   Len := length(SearchString);
   if Len <> 0 then begin
@@ -2201,11 +2196,11 @@ begin
   Result := 0;
 end;
 
-function PosI(const SearchFor, SearchIn: string): Integer;
+function PosI(const SearchFor, SearchIn: AnsiString): Integer;
 {-same as POS but ignores case on both strings}
 var
   LenFor, LenIn, j: Integer;
-  FirstCh: Char;
+  FirstCh: AnsiChar;
 begin
   LenFor := length(SearchFor);
   if LenFor = 0 then begin
@@ -2235,7 +2230,7 @@ begin
 end;
 
 {$IFNDEF DCC5OrLater}
-function CompareText(const S1, S2: string): Integer; assembler;
+function CompareText(const S1, S2: AnsiString): Integer; assembler;
 asm
         PUSH    ESI
         PUSH    EDI
@@ -2277,7 +2272,7 @@ asm
         POP     ESI
 end;
 
-function SameText(const S1, S2: string): Boolean; assembler;
+function SameText(const S1, S2: AnsiString): Boolean; assembler;
 asm
         CMP     EAX,EDX
         JZ      @1
@@ -2303,7 +2298,7 @@ type
   TEvaluateFieldEvent = procedure(Sender: TObject;
     ColumnIndex : Integer; var Res : variant) of object;
 
-function CreateLiteralStringExp(Parent: TffSqlNode; const S: string): TffSqlSimpleExpression;
+function CreateLiteralStringExp(Parent: TffSqlNode; const S: AnsiString): TffSqlSimpleExpression;
 var
   T : TffSqlTerm;
   F : TffSqlFactor;
@@ -2982,7 +2977,7 @@ var
 
   {$IFDEF LogIndexAnalysis}
 
-  procedure DumpOrderedList(OrderedSources : TFFSqlTableProxySubsetList; const Title: string);
+  procedure DumpOrderedList(OrderedSources : TFFSqlTableProxySubsetList; const Title: AnsiString);
   var
     j, y: integer;
   begin
@@ -3836,12 +3831,12 @@ end;
 {--------}
 procedure TffSqlNode.WriteEOF(Stream: TStream);
 const
-  NullChar : Char = #0;
+  NullChar : AnsiChar = #0;
 begin
   Stream.Write(NullChar, 1);
 end;
 {--------}
-procedure TffSqlNode.WriteStr(Stream: TStream; const S: string);
+procedure TffSqlNode.WriteStr(Stream: TStream; const S: AnsiString);
 begin
   if S <> '' then
     Stream.Write(S[1], length(S));
@@ -3861,7 +3856,7 @@ begin
 end;
 {--------}
 function TffSqlNode.BindField(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 begin
   if Parent <> nil then
     Result := Parent.BindField(TableName, FieldName)
@@ -3889,7 +3884,7 @@ procedure TffSqlNode.ResetConstant;
 begin
 end;
 {--------}
-function TffSqlNode.SQLText: string;
+function TffSqlNode.SQLText: AnsiString;
 var
   M : TMemoryStream;
 begin
@@ -3904,7 +3899,7 @@ begin
   end;
 end;
 {--------}
-procedure TffSqlNode.SQLError(const ErrorMsg: string);
+procedure TffSqlNode.SQLError(const ErrorMsg: AnsiString);
 begin
   raise Exception.CreateFmt('Error in statement: %s', [ErrorMsg]);
 end;
@@ -4017,7 +4012,7 @@ function TffSqlSelectionList.FindSelection(GroupCol :
 var
   i : Integer;
   F : TffSqlFieldProxy;
-  Name : string;
+  Name : AnsiString;
 begin
   Name := GroupCol.QualColumnName;
 
@@ -4148,7 +4143,7 @@ end;
 function TffSqlSimpleExpression.ConcatBLOBValues(const Value1, Value2 : Variant) : Variant;
 var
   VPtr1, VPtr2 : PAnsiChar;
-  VStr1, VStr2 : string;
+  VStr1, VStr2 : AnsiString;
   VLen1, VLen2 : Integer;
   VPtrResult : PAnsiChar;
 begin
@@ -4217,7 +4212,7 @@ end;
 {--------}
 procedure TffSqlSimpleExpression.EmitSQL(Stream: TStream);
 const
-  AddOpStr : array[TffSqlAddOp] of string = (' + ', ' - ', ' || ');
+  AddOpStr : array[TffSqlAddOp] of AnsiString = (' + ', ' - ', ' || ');
 var
   i : Integer;
 begin
@@ -4366,7 +4361,7 @@ begin
   Result := TermList.Count;
 end;
 {--------}
-function TffSqlSimpleExpression.GetTitle(const Qualified : Boolean): string; {!!.11}
+function TffSqlSimpleExpression.GetTitle(const Qualified : Boolean): AnsiString; {!!.11}
 begin
   if TermCount = 1 then
     Result := Term[0].GetTitle(Qualified)                            {!!.11}
@@ -4858,7 +4853,7 @@ end;
 {--------}
 procedure TffSqlTerm.EmitSQL(Stream: TStream);
 const
-  MulOpStr : array[TffSqlMulOp] of string = (' * ', ' / ');
+  MulOpStr : array[TffSqlMulOp] of AnsiString = (' * ', ' / ');
 var
   i : Integer;
 begin
@@ -4921,7 +4916,7 @@ begin
   Result := Factor[0].GetSize;
 end;
 {--------}
-function TffSqlTerm.GetTitle(const Qualified : Boolean): string;       {!!.11}
+function TffSqlTerm.GetTitle(const Qualified : Boolean): AnsiString;       {!!.11}
 begin
   if FactorCount = 1 then
     Result := Factor[0].GetTitle(Qualified)                            {!!.11}
@@ -5235,7 +5230,7 @@ begin
     Result := CondTerm[0].GetSize;
 end;
 {--------}
-function TffSqlCondExp.GetTitle(const Qualified : Boolean): string;    {!!.11}
+function TffSqlCondExp.GetTitle(const Qualified : Boolean): AnsiString;    {!!.11}
 begin
   if CondTermCount > 1 then
     Result := 'COND'
@@ -5698,7 +5693,7 @@ begin
     Result := CondFactor[0].GetSize;
 end;
 {--------}
-function TffSqlCondTerm.GetTitle(const Qualified : Boolean): string;   {!!.11}
+function TffSqlCondTerm.GetTitle(const Qualified : Boolean): AnsiString;   {!!.11}
 begin
   if CondFactorCount > 1 then
     Result := 'COND'
@@ -5918,13 +5913,13 @@ begin
     AssignError(Source);
 end;
 {--------}
-function TffSqlGroupColumnList.Contains(const aColName : string;
+function TffSqlGroupColumnList.Contains(const aColName : AnsiString;
                                         Se: TffSqlSelection): Boolean;
 {Rewritten !!.06}
 var
   i : Integer;
   aGrpColText,
-  aSelText : string;
+  aSelText : AnsiString;
 begin
   if Assigned(Se.SimpleExpression.Term[0].Factor[0].FieldRef) then
     aSelText := Trim(Se.SimpleExpression.Term[0].Factor[0].FieldRef.QualName)
@@ -6049,7 +6044,7 @@ begin
 end;
 {--------}
 function TffSqlTableRefList.BindFieldDown(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 var
   i : Integer;
 begin
@@ -6062,7 +6057,7 @@ begin
 end;
 
 function TffSqlTableRefList.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 var
   i : Integer;
 begin
@@ -6130,7 +6125,7 @@ begin
 end;
 {--------}
 {!!.11 new}
-function TffSqlTableRefList.GetFieldsFromTable(const TableName: string;
+function TffSqlTableRefList.GetFieldsFromTable(const TableName: AnsiString;
   List: TList): TffSqlTableProxy;
 {-returns fields from table that are ultimately coming from the table
   specified in the TableName argument. NIL if not found.}
@@ -6156,7 +6151,7 @@ begin
 //  Result := nil;                                                     {Deleted !!.11}
 end;
 {--------}
-function TffSqlTableRefList.GetNameForAlias(const Alias : string) : string;
+function TffSqlTableRefList.GetNameForAlias(const Alias : AnsiString) : AnsiString;
 var
   Inx : Integer;
 begin
@@ -6694,7 +6689,7 @@ procedure TffSqlSELECT.Bind;
 var
   i, j : Integer;
   T : TffSqlTableProxy;
-  Alias: string;                                                       {!!.11}
+  Alias: AnsiString;                                                       {!!.11}
 begin
   if CondExpWhere <> nil then
     CondExpWhere.EnumNodes(ClearBindings, False);
@@ -6756,7 +6751,7 @@ begin
 end;
 {--------}
 function TffSqlSELECT.BindField(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 var
   T: TFFSqlTableProxy;
   j : Integer;
@@ -6837,13 +6832,13 @@ begin
 end;
 
 function TffSqlSELECT.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 begin
   Result := TableRefList.BindTable(AOwner, TableName);
 end;
 
 {--------}
-function TffSqlSELECT.FindField(const FieldName: string): TFFSqlFieldProxy;
+function TffSqlSELECT.FindField(const FieldName: AnsiString): TFFSqlFieldProxy;
 var
   P : Integer;
 begin
@@ -7184,9 +7179,9 @@ procedure TffSqlSELECT.BuildSortList(Table: TffSqlTableProxy; var SortList: TffS
 var
   i, z, k: Integer;
   IX : Integer;
-  s: string;
+  s: AnsiString;
   FR : TffSqlFieldRef;
-  AliasName: string;
+  AliasName: AnsiString;
 begin
   for i := 0 to pred(OrderList.OrderCount) do begin
     if OrderList.OrderItem[i].Column <> nil then begin
@@ -7406,9 +7401,9 @@ procedure TffSqlSELECT.DoAggOrderBy;
 {-utility method for AggregateQueryResult}
 var
   i, j, z, k, IX: Integer;
-  S: string;
+  S: AnsiString;
   FR : TffSQLFieldRef;
-  AliasName : string;
+  AliasName : AnsiString;
   SortList: TffSqlSortArray;
   Status : TffResult;
 begin
@@ -7823,7 +7818,7 @@ begin
 end;
 
 {!!.11 new}
-function TffSqlSELECT.TableWithCount(const ColumnName: string): TffSqlTableProxy; {!!.12}
+function TffSqlSELECT.TableWithCount(const ColumnName: AnsiString): TffSqlTableProxy; {!!.12}
 var
   FieldDefList: TffSqlFieldDefList;
 begin
@@ -7858,7 +7853,7 @@ var
   FSF : TList;
   j : Integer;
   Status : TffResult;
-  ColumnName: string;                                                  {!!.12}
+  ColumnName: AnsiString;                                                  {!!.12}
 begin
   {!!.11 begin}
   if (GroupColumnList = nil)
@@ -8305,7 +8300,7 @@ begin
   Result := Field.GetSize;
 end;
 {--------}
-function TffSqlFieldRef.GetTitle(const Qualified : Boolean): string;   {!!.11}
+function TffSqlFieldRef.GetTitle(const Qualified : Boolean): AnsiString;   {!!.11}
 begin
   if Qualified and (TableName <> '') then                              {!!.11}
     if FieldName <> '' then
@@ -8400,9 +8395,9 @@ begin
     end;  { case }
 end;
 {--------}
-function TffSQLFieldRef.QualName : string;
+function TffSQLFieldRef.QualName : AnsiString;
 var
-  Name : string;
+  Name : AnsiString;
 begin
   Result := FFieldName;
   { If no tablename specified then obtain table name of source table. }
@@ -8570,7 +8565,7 @@ begin
     Result := 0;
 end;
 {--------}
-function TffSqlAggregate.GetTitle(const Qualified : Boolean): string;  {!!.11}
+function TffSqlAggregate.GetTitle(const Qualified : Boolean): AnsiString;  {!!.11}
 begin
   Result := AgString[AgFunction] + '(';
   if Distinct then
@@ -8698,7 +8693,7 @@ end;
 
 procedure TffSqlIsTest.EmitSQL(Stream: TStream);
 const
-  IsOpStr : array[TffSqlIsOp] of string =
+  IsOpStr : array[TffSqlIsOp] of AnsiString =
     ('NULL', 'TRUE', 'FALSE', 'UNKNOWN');
 begin
   WriteStr(Stream,' IS');
@@ -8840,11 +8835,11 @@ end;
 
 { TffSqlLikePattern }
 
-constructor TffsqlLikePattern.Create(SearchPattern: string; const Escape: string);
+constructor TffsqlLikePattern.Create(SearchPattern: AnsiString; const Escape: AnsiString);
 var
   i: Integer;
-  Mask : string;
-  Esc: Char;
+  Mask : AnsiString;
+  Esc: AnsiChar;
 begin
   FloatPatterns := TStringList.Create;
   FloatMasks := TStringList.Create;
@@ -8963,7 +8958,7 @@ begin
 end;
 
 {!!.13 new}
-function CharsDiffer(IgnoreCase: Boolean; C1, C2: Char): Boolean;
+function CharsDiffer(IgnoreCase: Boolean; C1, C2: AnsiChar): Boolean;
 begin
   if IgnoreCase then
     Result := CharUpper(Pointer(C1)) <> CharUpper(Pointer(C2))
@@ -8971,7 +8966,7 @@ begin
     Result := C1 <> C2;
 end;
 
-function Match(const Pattern, Mask : string;
+function Match(const Pattern, Mask : AnsiString;
                      PatternLength : Integer;
                const PTextToSearch : PAnsiChar;
                const TextLen       : Integer;
@@ -8998,7 +8993,7 @@ begin
     end;  { if }
 end;
 
-function Scan(const Pattern, Mask : string;
+function Scan(const Pattern, Mask : AnsiString;
                     PatternLength : Integer;
               const PTextToSearch : PAnsiChar;
               const TextLen       : Integer;
@@ -9049,7 +9044,7 @@ var
   l,
   StartPos,
   EndPos: Integer;
-  VStr, P : string;
+  VStr, P : AnsiString;
   VPtr : PAnsiChar;
 begin
   Result := False;
@@ -9165,7 +9160,7 @@ end;
 
 function TffSqlLikeClause.CanLimit: Boolean;
 var
-  S: string;
+  S: AnsiString;
 begin
   Result := False;
   if not Limited
@@ -9180,7 +9175,7 @@ end;
 
 function TffSqlLikeClause.CanReplaceWithCompare: Boolean;
 var
-  S: string;
+  S: AnsiString;
 begin
   Result := False;
   if not Limited
@@ -9250,7 +9245,7 @@ end;
 {!!.11 new}
 function TffSqlLikeClause.GetBmTable: PBTable;
 var
-  S: string;
+  S: AnsiString;
 begin
   if FBmTable = nil then begin
     Assert(IsBMCompatible);
@@ -9265,7 +9260,7 @@ begin
   Result := FBmTable;
 end;
 
-function TffSqlLikeClause.GetHighLimit: string;
+function TffSqlLikeClause.GetHighLimit: AnsiString;
 var
   i: Integer;
 begin
@@ -9277,7 +9272,7 @@ begin
     Result := '';
 end;
 
-function TffSqlLikeClause.GetLowLimit: string;
+function TffSqlLikeClause.GetLowLimit: AnsiString;
 var
   P : Integer;
 begin
@@ -9294,7 +9289,7 @@ end;
 {!!.11 new}
 procedure TffSqlLikeClause.CheckBMCompat;
 var
-  S: string;
+  S: AnsiString;
   Len,
   Inx : Integer;
 begin
@@ -9488,7 +9483,7 @@ const
        4)  { true,  true  }
     );
 var
-  VStr : string;
+  VStr : AnsiString;
   VPtr1, VPtr2 : PAnsiChar;
   Inx, VPtr1Len, VPtr2Len : Integer;
   VPtr1Locked, VPtr2Locked : Boolean;
@@ -10071,7 +10066,7 @@ begin
   end;
 end;
 {--------}
-function TffSqlCondPrimary.GetTitle(const Qualified : Boolean): string; {!!.11}
+function TffSqlCondPrimary.GetTitle(const Qualified : Boolean): AnsiString; {!!.11}
 begin
   case GetType of
   fftBoolean:
@@ -10317,7 +10312,7 @@ begin
     Result := CondPrimary.GetSize;
 end;
 {--------}
-function TffSqlCondFactor.GetTitle(const Qualified : Boolean): string; {!!.11}
+function TffSqlCondFactor.GetTitle(const Qualified : Boolean): AnsiString; {!!.11}
 begin
   Result := CondPrimary.GetTitle(Qualified);                           {!!.11}
 end;
@@ -10676,7 +10671,7 @@ end;
 
 procedure TffSqlStringLiteral.ConvertToNative;
 var
-  S : string;
+  S : AnsiString;
   P : Integer;
 begin
   S := copy(Value, 2, length(Value) - 2); //strip quotes
@@ -10698,9 +10693,9 @@ begin
   fftShortAnsiStr :
     ShortAnsiStringValue := S;
   fftNullString :
-    NullStringValue := PChar(S);
+    NullStringValue := PAnsiChar(S);
   fftNullAnsiStr :
-    NullAnsiStrValue := PChar(S);
+    NullAnsiStrValue := PAnsiChar(S);
   fftWideString :
     WideStringValue := S;
   end;
@@ -11269,7 +11264,7 @@ begin
   end;
 end;
 {--------}
-function TffSqlParam.GetTitle(const Qualified : Boolean): string;      {!!.11}
+function TffSqlParam.GetTitle(const Qualified : Boolean): AnsiString;      {!!.11}
 begin
   Result := '?';
 end;
@@ -11653,7 +11648,7 @@ begin
   end;
 end;
 {--------}
-function TffSqlFactor.GetTitle(const Qualified : Boolean): string;     {!!.11}
+function TffSqlFactor.GetTitle(const Qualified : Boolean): AnsiString;     {!!.11}
 begin
   if SubQuery <> nil then
     Result := 'SUB'
@@ -11917,7 +11912,7 @@ end;
 procedure TffSqlSelection.AddColumnDef(Target: TffSqlColumnListOwner);
 {Rewritten !!.11}
 var
-  S, SQual : string;
+  S, SQual : AnsiString;
   F : TffSqlNode;
   i : Integer;
 begin
@@ -12082,7 +12077,7 @@ begin
 end;
 
 function TffSqlTableRef.BindFieldDown(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 {- not used for binding directly from SELECT - only for
    binding to contained sub-expressions}
 begin
@@ -12098,7 +12093,7 @@ begin
 end;
 
 function TffSqlTableRef.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 begin
   if SameText(TableName, Alias) or SameText(TableName, Self.TableName) then
     Result := GetTable(AOwner, False)
@@ -12206,7 +12201,7 @@ begin
   Result := GetTable(Self, False);
 end;
 
-function TffSqlTableRef.GetSQLName: string;
+function TffSqlTableRef.GetSQLName: AnsiString;
 begin
   if Alias <> '' then
     Result := Alias
@@ -12462,7 +12457,7 @@ begin
    and (AnsiCompareText(FieldName, TffSqlOrderColumn(Other).FieldName) = 0);
 end;
 {--------}
-function TffSqlOrderColumn.QualColumnName : string;
+function TffSqlOrderColumn.QualColumnName : AnsiString;
 begin
   if TableName <> '' then
     Result := TableName + '.' + FieldName
@@ -12503,10 +12498,10 @@ begin
    and (AnsiCompareText(FieldName, TffSqlGroupColumn(Other).FieldName) = 0);
 end;
 {--------}
-function TffSqlGroupColumn.QualColumnName: string;
+function TffSqlGroupColumn.QualColumnName: AnsiString;
 var
   F : TffSqlFieldProxy;
-  Name : string;
+  Name : AnsiString;
 begin
   if OwnerSelect = nil then
     SQLError('Field references may not occur in this context');
@@ -13011,7 +13006,7 @@ end;
 {--------}
 procedure TffSqlIntervalLiteral.ConvertToNative;
 var
-  S : string;
+  S : AnsiString;
   P : Integer;
 begin
   S := Value;
@@ -13465,12 +13460,12 @@ end;
 {====================================================================}
 
 const
-  FuncStr : array[TffSqlScalarFunction] of string = (
+  FuncStr : array[TffSqlScalarFunction] of AnsiString = (
   'CASE', 'CHARACTER_LENGTH','COALESCE', 'CURRENT_DATE','CURRENT_TIME','CURRENT_TIMESTAMP',
   'CURRENT_USER','LOWER','UPPER','POSITION','SESSION_USER','SUBSTRING',
   'SYSTEM_USER','TRIM','EXTRACT', 'NULLIF',
   'ABS', 'CEIL', 'FLOOR', 'EXP', 'LOG', 'POWER', 'RAND', 'ROUND');     {!!.11}
-  LeadStr : array[TffSqlLTB] of string = ('BOTH', 'LEADING', 'TRAILING');
+  LeadStr : array[TffSqlLTB] of AnsiString = ('BOTH', 'LEADING', 'TRAILING');
 {===TffSqlScalarFunc=================================================}
 procedure TffSqlScalarFunc.CheckIsConstant;
 begin
@@ -13815,7 +13810,7 @@ end;
 {--------}
 function TffSqlScalarFunc.GetSize: Integer;
 var
-  S : string;
+  S : AnsiString;
 begin
   {should only be called on text functions}
   case SQLFunction of
@@ -13846,7 +13841,7 @@ begin
   end;
 end;
 {--------}
-function TffSqlScalarFunc.GetTitle(const Qualified : Boolean): string; {!!.11}
+function TffSqlScalarFunc.GetTitle(const Qualified : Boolean): AnsiString; {!!.11}
 begin
   Result := FuncStr[SQLFunction];
 end;
@@ -13939,7 +13934,7 @@ begin
 end;
 {Begin !!.13}
 {--------}
-function ConvertBLOBToString(const Value : Variant) : string;
+function ConvertBLOBToString(const Value : Variant) : AnsiString;
   { Converts a BLOB value to a string value.
     Assumption: Value is always a var array of byte }
 var
@@ -13961,12 +13956,12 @@ function TffSqlScalarFunc.GetValue: Variant;
 {Revised !!.13 - Scalar functions updated to recognize BLOB fields as
   arrays of bytes instead of as strings. }
 var
-  S : string;
+  S : AnsiString;
   WS, WS2 : widestring;                                                {!!.11}
   I1, I2 : Integer;
   Y, M, D : Word;
   Hour, Min, Sec, MSec : Word;
-  Ch : Char;
+  Ch : AnsiChar;
   DT : TDateTime;
   V, V2 : Variant;                                                     {!!.11}
 begin
@@ -15897,7 +15892,7 @@ function TffSqlValueList.GetResultTable: TFFSqlTableProxy;
 var
   FieldDefList : TffSqlFieldDefList;
   i: Integer;
-  FldName : string;                                                    {!!.11}
+  FldName : AnsiString;                                                    {!!.11}
   Field : TffSqlFieldProxy;                                            {!!.11}
 begin
 {Begin !!.13}
@@ -16011,7 +16006,7 @@ begin
 end;
 
 function TffSqlDELETE.BindField(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 begin
   Result := nil;
   Assert(T <> nil);
@@ -16234,7 +16229,7 @@ begin
 end;
 
 function TffSqlUPDATE.BindField(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 begin
   Result := nil;
   Assert(T <> nil);
@@ -16643,7 +16638,7 @@ begin
 end;
 
 function TffSqlNonJoinTablePrimary.BindFieldDown(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 begin
   if SelectSt <> nil then
     Result := SelectSt.BindField(TableName, FieldName)
@@ -16658,7 +16653,7 @@ begin
 end;
 
 function TffSqlNonJoinTablePrimary.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 begin
   if SelectSt <> nil then
     Result := SelectSt.BindTable(AOwner, TableName)
@@ -16885,7 +16880,7 @@ begin
 end;
 
 function TffSqlTableExp.BindFieldDown(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 begin
   if assigned(NestedTableExp) then
     Result := NestedTableExp.BindFieldDown(TableName, FieldName)
@@ -16900,7 +16895,7 @@ begin
 end;
 
 function TffSqlTableExp.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 begin
   if assigned(NestedTableExp) then
     Result := NestedTableExp.BindTable(AOwner, TableName)
@@ -16984,8 +16979,7 @@ begin
 end;
 
 {!!.11 new}
-function TffSqlTableExp.GetFieldsFromTable(const TableName: string; List: TList):
-  TffSqlTableProxy;
+function TffSqlTableExp.GetFieldsFromTable(const TableName: AnsiString; List: TList): TffSqlTableProxy;
 {-returns fields from table that are ultimately coming from the table
   specified in the TableName argument. NIL if not found.}
 begin
@@ -17049,7 +17043,7 @@ end;
 { TffSqlJoinTableExp }
 
 function TffSqlJoinTableExp.BuildSimpleFieldExpr(AOwner: TffSqlNode;
-  const ATableName, AFieldName: string; AField: TffSqlFieldProxy
+  const ATableName, AFieldName: AnsiString; AField: TffSqlFieldProxy
     ): TffSqlSimpleExpression;
 var
   Term: TffSqlTerm;
@@ -17091,12 +17085,12 @@ var
   cFact: TffSqlFactor;
   cScalar : TffSqlScalarFunc;
   cCoalesce : TffSqlCoalesceExpression;
-  S: string;                                                           {!!.11}
+  S: AnsiString;                                                           {!!.11}
   OS: TffSqlSELECT;
   CF, NewCF: TffSqlCondFactor;
   CP: TffSqlCondPrimary;
 const
-  UorN: array[Boolean] of string = ('UNION', 'NATURAL');
+  UorN: array[Boolean] of AnsiString = ('UNION', 'NATURAL');
 begin
   if JoinType = jtUnion then
     SQLError('UNION JOIN is not currently supported by FlashFiler SQL');
@@ -17396,7 +17390,7 @@ begin
 end;
 
 function TffSqlJoinTableExp.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 begin
   Result := TableRef1.BindTable(AOwner, TableName);
   if Result = nil then
@@ -17404,7 +17398,7 @@ begin
 end;
 
 function TffSqlJoinTableExp.BindField(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 var
   T: TFFSqlTableProxy;
 begin
@@ -17445,7 +17439,7 @@ begin
 end;
 
 function TffSqlJoinTableExp.BindFieldDown(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 var
   i: Integer;
 begin
@@ -17780,7 +17774,7 @@ begin
   end;
 end;
 
-function TffSqlJoinTableExp.GetFieldsFromTable(const TableName: string; List: TList): TffSqlTableProxy;
+function TffSqlJoinTableExp.GetFieldsFromTable(const TableName: AnsiString; List: TList): TffSqlTableProxy;
 var
   i: Integer;
 begin
@@ -17870,13 +17864,13 @@ begin
 end;
 
 function TffSqlNonJoinTableTerm.BindFieldDown(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 begin
   Result := NonJoinTablePrimary.BindFieldDown(TableName, FieldName);
 end;
 
 function TffSqlNonJoinTableTerm.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 begin
   Result := NonJoinTablePrimary.BindTable(AOwner, TableName);
 end;
@@ -17970,13 +17964,13 @@ begin
 end;
 
 function TffSqlNonJoinTableExp.BindFieldDown(const TableName,
-  FieldName: string): TFFSqlFieldProxy;
+  FieldName: AnsiString): TFFSqlFieldProxy;
 begin
   Result := NonJoinTableTerm.BindFieldDown(TableName, FieldName);
 end;
 
 function TffSqlNonJoinTableExp.BindTable(AOwner: TObject;
-  const TableName: string): TFFSqlTableProxy;
+  const TableName: AnsiString): TFFSqlTableProxy;
 begin
   Result := NonJoinTableTerm.BindTable(AOwner, TableName);
 end;
@@ -18037,7 +18031,7 @@ begin
 end;
 
 {!!.11 new}
-function TffSqlNonJoinTableExp.GetFieldsFromTable(const TableName: string; List: TList): TffSqlTableProxy;                     {!!.11}
+function TffSqlNonJoinTableExp.GetFieldsFromTable(const TableName: AnsiString; List: TList): TffSqlTableProxy;                     {!!.11}
 begin
   Result := nil;
 end;

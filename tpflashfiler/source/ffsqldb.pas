@@ -37,6 +37,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   DB,
   Classes,
   ffllbase,
@@ -67,7 +68,7 @@ type
    - see CreateTemporaryTable below.}
   PFFSqlFieldDefProxyRec = ^TFFSqlFieldDefProxyRec;
   TFFSqlFieldDefProxyRec = record
-    FieldName : string;
+    FieldName : AnsiString;
     FieldType : TffFieldType;
     FieldUnits : Integer;
     Decimals : Integer;
@@ -78,15 +79,15 @@ type
     FieldList: TffPointerList;
     function GetCount: Integer;
     function GetFieldDecimals(Index: Integer): Integer;
-    function GetFieldName(Index: Integer): string;
+    function GetFieldName(Index: Integer): AnsiString;
     function GetFieldType(Index: Integer): TffFieldType;
     function GetFieldUnits(Index: Integer): Integer;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddField(const aName: string; aType: TffFieldType; aUnit: Integer; aDec: Integer);
+    procedure AddField(const aName: AnsiString; aType: TffFieldType; aUnit: Integer; aDec: Integer);
     property Count: Integer read GetCount;
-    property FieldName[Index: Integer]: string read GetFieldName;
+    property FieldName[Index: Integer]: AnsiString read GetFieldName;
     property FieldType[Index: Integer]: TffFieldType read GetFieldType;
     property FieldUnits[Index: Integer]: Integer read GetFieldUnits;
     property FieldDecimals[Index: Integer]: Integer read GetFieldDecimals;
@@ -114,7 +115,7 @@ type
     procedure WriteFieldDirect(Buffer: PffByteArray);
     function GetBlobValue: Variant;                                    {!!.11}{!!.13}
     function BLOBBmSearch(const Table: TBTable;
-      const SearchPhrase: string;
+      const SearchPhrase: AnsiString;
       IgnoreCase: Boolean                                                     {!!.13}
       ): Boolean; {!!.11}
   public
@@ -123,7 +124,7 @@ type
     constructor Create(AnOwnerTable: TFFSqlTableProxy; AnIndex: Integer; ACursorID: TFFCursorID);
     destructor Destroy; override;
     property Index: Integer read FIndex;
-    function Name: string;
+    function Name: AnsiString;
     function IsNull: Boolean;
     function GetSize: Integer;
     function GetDecimals: Integer;
@@ -134,7 +135,7 @@ type
       { If this is a field in the result set table (i.e., a target field) then
         this property returns True. }
     property OwnerTable:TFFSqlTableProxy read FOwnerTable;
-    function QualName: string;
+    function QualName: AnsiString;
     property SrcField : TffSQLFieldProxy read FSrcField write FSrcField;
       { If this is a target field that refers to a source field then this
         property references the source field. }
@@ -145,7 +146,7 @@ type
     function CanUpdate: Boolean;
     procedure SetDefault;                                              {!!.11}
     procedure SetFieldToNull;
-    function BMMatch(const Table: TBTable; const SearchPhrase: string;
+    function BMMatch(const Table: TBTable; const SearchPhrase: AnsiString;
              IgnoreCase: Boolean                                       {!!.13}
              ): Boolean; {!!.11}
   end;
@@ -161,8 +162,8 @@ type
   protected
     FCursorID : TFFCursorID;
     FieldList : TList;
-    FName : string;
-    FAlias: string;
+    FName : AnsiString;
+    FAlias: AnsiString;
     KeyBuffer1,
     KeyBuffer2,
     RecordBuffer : PffByteArray;
@@ -178,15 +179,15 @@ type
     procedure Iterate(Iterator: TFFSqlTableIterator; Cookie: TffWord32);
     constructor Create(AOwner: TObject;
       ADataBase: TFFSqlDatabaseProxy; ACursorID : TFFCursorID; const AName,
-        AAlias: string);                                               {!!.11}
+        AAlias: AnsiString);                                               {!!.11}
     destructor Destroy; override;
-    property Name: string read FName;
-    property Alias: string read FAlias;                                {!!.11}
+    property Name: AnsiString read FName;
+    property Alias: AnsiString read FAlias;                                {!!.11}
     property CursorID : TFFCursorID read FCursorID;
     property LeaveCursorOpen: Boolean read FLeaveOpen write FLeaveOpen;
     function FieldCount: Integer;
     function Field(Index: Integer): TFFSqlFieldProxy;
-    function FieldByName(const Name: string): TFFSqlFieldProxy;
+    function FieldByName(const Name: AnsiString): TFFSqlFieldProxy;
     procedure Close;
     function Delete : TffResult;                                       {!!.11}
     function First: Boolean;
@@ -251,9 +252,9 @@ type
     constructor Create(Engine : TFFServerEngine; DatabaseID : TFFDatabaseID);
     destructor Destroy; override;
     function TableByName(AOwner: TObject;
-                   const S: string;
+                   const S: AnsiString;
                    const ExclContentLock : Boolean;
-                   const AAlias: string): TFFSqlTableProxy;            {!!.11}
+                   const AAlias: AnsiString): TFFSqlTableProxy;            {!!.11}
     {- find a table by name. if the table does not exist, NIL
        is returned}
 
@@ -277,7 +278,7 @@ type
     function StartTransaction(const Tables : array of TffSqlTableProxy) : TffResult;
     procedure Commit;
     procedure AbortTransaction;
-    function Alias: string;
+    function Alias: AnsiString;
   end;
 
 type
@@ -480,9 +481,9 @@ begin
 end;
 
 function TFFSqlDatabaseProxy.TableByName(AOwner: TObject;
-                                   const S: string;
+                                   const S: AnsiString;
                                    const ExclContentLock : Boolean;
-                                   const AAlias: string): TFFSqlTableProxy; {!!.11}
+                                   const AAlias: AnsiString): TFFSqlTableProxy; {!!.11}
 var
   Cursor : TffSrBaseCursor;
 begin
@@ -510,7 +511,7 @@ begin
   end;
 end;
 
-function TFFSqlDatabaseProxy.Alias: string;
+function TFFSqlDatabaseProxy.Alias: AnsiString;
 begin
   Assert(FDatabaseID <> 0);
   Assert(TObject(FDatabaseID) is TFFSrDatabase);
@@ -860,7 +861,7 @@ begin
 end;
 
 constructor TFFSqlTableProxy.Create(AOwner: TObject;
-  ADataBase: TFFSqlDatabaseProxy; ACursorID: TFFCursorID; const AName, AAlias: string);
+  ADataBase: TFFSqlDatabaseProxy; ACursorID: TFFCursorID; const AName, AAlias: AnsiString);
 var
   i : Integer;
   Field : TFFSqlFieldProxy;
@@ -946,7 +947,7 @@ begin
 end;
 {--------}
 function TFFSqlTableProxy.FieldByName(
-  const Name: string): TFFSqlFieldProxy;
+  const Name: AnsiString): TFFSqlFieldProxy;
 var
   i : Integer;
 begin
@@ -1260,7 +1261,7 @@ var
   ValueLen : TffWord32;
   ValueLocked : Boolean;
   VPtr     : PAnsiChar;
-  VStr     : string;
+  VStr     : AnsiString;
 begin
   ValueLocked := False;
   try
@@ -1327,7 +1328,7 @@ begin
     fftBoolean :
       Result := Boolean(FieldBuffer^[0]);
     fftChar :
-      Result := Char(FieldBuffer^[0]);
+      Result := AnsiChar(FieldBuffer^[0]);
     fftWideChar :
       begin
         WC := PWideChar(FieldBuffer)^;
@@ -1378,9 +1379,9 @@ begin
     fftShortAnsiStr :
       Result := PShortString(FieldBuffer)^;
     fftNullString :
-      Result := StrPas(PChar(FieldBuffer));
+      Result := AnsiStrings.StrPas(PAnsiChar(FieldBuffer));
     fftNullAnsiStr :
-      Result := String(PChar(FieldBuffer));
+      Result := AnsiString(PAnsiChar(FieldBuffer));
     fftWideString :
       Result := WideString(PWideChar(FieldBuffer));
     fftBLOB..fftBLOBFile :                                             {!!.11}
@@ -1403,7 +1404,7 @@ begin
   {$ENDIF}
 end;
 
-function TFFSqlFieldProxy.Name: string;
+function TFFSqlFieldProxy.Name: AnsiString;
 begin
   Assert(FCursorID <> 0);
   Assert(TObject(FCursorID) is TffSrBaseCursor);
@@ -1438,7 +1439,7 @@ end;
 
 procedure TFFSqlFieldProxy.SetValue(const Value: Variant);
 var
-  S : string;
+  S : AnsiString;
   W : WideString;
   FT : TffFieldType;
   ValueIsNull: Boolean;
@@ -1456,7 +1457,7 @@ begin
     fftChar :
       begin
         S := Value;
-        char(FieldBuffer^[0]) := S[1];
+        AnsiChar(FieldBuffer^[0]) := S[1];
       end;
     fftWideChar :
       begin
@@ -1534,7 +1535,7 @@ begin
   end;
 end;
 
-function TFFSqlFieldProxy.QualName: string;
+function TFFSqlFieldProxy.QualName: AnsiString;
 begin
   Result := FOwnerTable.Name + '.' + Name;
 end;
@@ -1744,7 +1745,7 @@ asm
   push  ecx
   push  edx
   mov   al, [edi]           { Move character from buffer into AL for comparison }
-  push  eax                 { Push Char onto stack for CharUpper }
+  push  eax                 { Push AnsiChar onto stack for CharUpper }
   cld
   call  CharUpper
   std
@@ -1763,13 +1764,13 @@ asm
 
 @@StringComp:
   xor   eax, eax
-  mov   al, [edi]           { Get char from buffer }
+  mov   al, [edi]           { Get AnsiChar from buffer }
   dec   edi                 { Dec buffer index }
 
   push  ebx                 { Save registers }
   push  ecx
   push  edx
-  push  eax                 { Push Char onto stack for CharUpper }
+  push  eax                 { Push AnsiChar onto stack for CharUpper }
   cld
   call  CharUpper
   std
@@ -1777,8 +1778,8 @@ asm
   pop   ecx
   pop   ebx
 
-  mov   ah, al              { Move buffer char to AH }
-  mov   al, [esi]           { Get MatchString char }
+  mov   ah, al              { Move buffer AnsiChar to AH }
+  mov   al, [esi]           { Get MatchString AnsiChar }
   dec   esi
   cmp   ah, al              { Compare }
   loope @@StringComp        { OK?  Get next character }
@@ -1817,7 +1818,7 @@ asm
 end;
 
 {!!.11 new}
-function TFFSqlFieldProxy.BLOBBmSearch(const Table: TBTable; const SearchPhrase: string;
+function TFFSqlFieldProxy.BLOBBmSearch(const Table: TBTable; const SearchPhrase: AnsiString;
          IgnoreCase: Boolean): Boolean;
 const
   BufferSize = 4096;
@@ -1829,7 +1830,7 @@ var
   Pos           : Cardinal;
   ChunkSize,
   ChunkOffset   : Integer;
-  Buffer        : array[0..BufferSize-1] of char;
+  Buffer        : array[0..BufferSize-1] of AnsiChar;
 begin
   Result := False;
   Offset := TffSrBaseCursor(FCursorID).Dictionary.FieldOffset[Index];
@@ -1860,10 +1861,10 @@ begin
 end;
 
 {!!.11 new}
-function TFFSqlFieldProxy.BMMatch(const Table: TBTable; const SearchPhrase: string;
+function TFFSqlFieldProxy.BMMatch(const Table: TBTable; const SearchPhrase: AnsiString;
                                         IgnoreCase: Boolean): Boolean; {!!.13}
 var
-  S: string;
+  S: AnsiString;
   Pos: Cardinal;
 begin
   if IsNull then
@@ -2120,7 +2121,7 @@ end;
 
 { TffSqlFieldDefList }
 
-procedure TffSqlFieldDefList.AddField(const aName: string;
+procedure TffSqlFieldDefList.AddField(const aName: AnsiString;
   aType: TffFieldType; aUnit, aDec: Integer);
 var
   NewEntry : PFFSqlFieldDefProxyRec;
@@ -2177,7 +2178,7 @@ begin
   end;
 end;
 
-function TffSqlFieldDefList.GetFieldName(Index: Integer): string;
+function TffSqlFieldDefList.GetFieldName(Index: Integer): AnsiString;
 begin
   Result := PFFSqlFieldDefProxyRec(FieldList[Index])^.FieldName;
 end;

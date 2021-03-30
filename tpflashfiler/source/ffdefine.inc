@@ -113,6 +113,21 @@
     {$DEFINE ExprParserType3}
   {$ENDIF}
 {$ENDIF}
+{$IF CompilerVersion >= 30}
+  {$DEFINE DCC4OrLater}
+  {$DEFINE DCC5OrLater}
+  {$DEFINE DCC6OrLater}
+  {$DEFINE DCC7OrLater}
+  {$DEFINE ProvidesDatasource}
+  {$IFNDEF BCB}
+    {$DEFINE Delphi7}
+    {$DEFINE Delphi10}
+    {$DEFINE IsDelphi}
+    {$DEFINE HasStrictCardinal}
+    {$DEFINE ResizePersistFields}
+    {$DEFINE ExprParserType3}
+  {$ENDIF}
+{$IFEND}
 
 {$IFDEF DCC5OrLater}
   {$UNDEF UsesBDE}
@@ -182,6 +197,23 @@
   {$WARN UNSAFE_CAST OFF}
   {$WARN UNIT_DEPRECATED OFF}
   {$ENDIF}
+{---Delphi 10---}
+  {$IFDEF Delphi10}
+  {$B- Incomplete boolean evaluation}
+  {$H+ Long string support}
+  {$J+ Writeable typed constants}
+  {$P- No open string parameters}
+  {$T- No type-checked pointers}
+  {$V- No var string checking}
+  {$X+ Extended syntax}
+  {$Z1 Enumerations are word sized}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CAST OFF}
+  {$WARN UNIT_DEPRECATED OFF}
+  {$ENDIF}
+
 {---C++Builder 3---}
   {$IFDEF CBuilder3}
   {$B- Incomplete boolean evaluation}

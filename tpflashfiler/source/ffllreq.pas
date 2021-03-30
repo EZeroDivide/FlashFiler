@@ -131,7 +131,7 @@ type
 
   protected
 
-    procedure rqWriteString(const aMsg : string);
+    procedure rqWriteString(const aMsg : AnsiString);
       {-Use this method to write a string to the event log. }
 
   public
@@ -305,7 +305,7 @@ begin
   FPadlock.Lock;
 end;
 {--------}
-procedure TffRequest.rqWriteString(const aMsg : string);
+procedure TffRequest.rqWriteString(const aMsg : AnsiString);
 begin
   if assigned(FEventLog) then
     FEventLog.WriteString(aMsg);

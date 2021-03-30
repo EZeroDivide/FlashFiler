@@ -47,6 +47,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  AnsiStrings,
   ffconst,
   ffllwsct,
   ffllbase,
@@ -825,7 +826,7 @@ function FFWSInstalled : boolean;
 const
   ffcMaxProtoInfoRecords = 15;
 var
-  aBuffer : PChar;
+  aBuffer : PAnsiChar;
   pBuffer : PffwsProtocolInfo absolute aBuffer;
   aCode : HFile;
   aCount : integer;
@@ -863,7 +864,7 @@ begin
       if aCode = HFILE_ERROR then Continue;
 
       { If we get this far, we should have a good module -- load it }
-      WSLibHandle := LoadLibrary(ffWinsockVerArray[anIndex].ModuleName);
+      WSLibHandle := LoadLibraryA(ffWinsockVerArray[anIndex].ModuleName);
       if WSLibHandle <> 0 then begin
         aVersion := anIndex;
         break;
@@ -1172,7 +1173,7 @@ function FFWSCvtStrToIPXAddr(const aStr    : TffNetName;
 var
   i, j    : integer;
   Nibble  : integer;
-  Ch      : char;
+  Ch      : AnsiChar;
   DoUpper : boolean;
   DoNetNum: boolean;
 begin

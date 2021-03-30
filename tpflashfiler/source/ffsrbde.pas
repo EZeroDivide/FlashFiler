@@ -1392,7 +1392,7 @@ const
 { fldZSTRING subtype }
 
   fldstPASSWORD      = 1;               { Password }
-  fldstFIXED         = 31;              { CHAR type }
+  fldstFIXED         = 31;              { AnsiChar type }
   fldstUNICODE       = 32;              { Unicode }
 
 { fldINT32 subtype }

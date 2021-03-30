@@ -60,6 +60,7 @@ uses
   INIFiles,
   {$ENDIF}
   SysUtils,
+  AnsiStrings,
   Classes,
   ffconst,
   ffclbase,

@@ -230,6 +230,7 @@ implementation
 
 uses
   sysutils,
+  AnsiStrings,
   ffllexcp,
   ffsrbase,
   ffsrbde,
@@ -515,7 +516,7 @@ procedure TffSrMergeSortEngine.msMergeCursors;
 var
   aRecord : PffByteArray;
   aStatus : TffResult;
-  aStr : string;
+  aStr : AnsiString;
 begin
   FFGetMem(aRecord, bsRecLen);
   try

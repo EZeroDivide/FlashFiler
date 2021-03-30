@@ -36,6 +36,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   Classes,
   Graphics,
   Forms,

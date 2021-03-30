@@ -48,6 +48,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   Classes,
   ffsrbde,
   ffconst,
@@ -82,13 +83,13 @@ type
 
 
 { typedefs for buffers of various common sizes: }
-  DBINAME            = packed array [0..DBIMAXNAMELEN] of Char; { holds a name }
-  DBITBLNAME         = packed array [0..DBIMAXTBLNAMELEN] of Char; { holds a table name }
+  DBINAME            = packed array [0..DBIMAXNAMELEN] of AnsiChar; { holds a name }
+  DBITBLNAME         = packed array [0..DBIMAXTBLNAMELEN] of AnsiChar; { holds a table name }
   DBIKEY             = packed array [0..DBIMAXFLDSINKEY-1] of Word; { holds list of fields in a key }
-  DBIKEYEXP          = packed array [0..DBIMAXKEYEXPLEN] of Char; { holds a key expression }
+  DBIKEYEXP          = packed array [0..DBIMAXKEYEXPLEN] of AnsiChar; { holds a key expression }
   DBIVCHK            = packed array [0..DBIMAXVCHKLEN] of Byte; { holds a validity check }
-  DBIPICT            = packed array [0..DBIMAXPICTLEN] of Char; { holds a picture (Pdox) }
-  DBIPATH            = packed array [0..DBIMAXPATHLEN] of Char; { holds a DOS path }
+  DBIPICT            = packed array [0..DBIMAXPICTLEN] of AnsiChar; { holds a picture (Pdox) }
+  DBIPATH            = packed array [0..DBIMAXPATHLEN] of AnsiChar; { holds a DOS path }
 
 {============================================================================}
 {                    Cursor properties                                       }

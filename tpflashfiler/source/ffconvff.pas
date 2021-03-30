@@ -38,7 +38,8 @@ uses
   fflldict,
   ffsrbde,
   ffstdate,
-  SysUtils;
+  SysUtils,
+  AnsiStrings;
 
 function FFConvertSingleField(aSourceValue,
                               aTargetValue: Pointer;
@@ -113,8 +114,8 @@ uses
 function FFRemoveThousandSeparator(const str : string): string;
 begin
   Result := str;
-  while pos(ThousandSeparator, Result)>0 do
-    Delete(Result, pos(ThousandSeparator, Result), 1);
+  while pos(FormatSettings.ThousandSeparator, Result)>0 do
+    Delete(Result, pos(FormatSettings.ThousandSeparator, Result), 1);
 end;
 
 function FFConvertSingleField(aSourceValue,
@@ -150,8 +151,8 @@ begin
             Boolean(aTargetValue^) := srcBoolean^;
         fftChar:
           if Assigned(aTargetValue) then
-            if srcBoolean^ then Char(aTargetValue^) := 'Y'
-            else Char(aTargetValue^) := 'N';
+            if srcBoolean^ then AnsiChar(aTargetValue^) := 'Y'
+            else AnsiChar(aTargetValue^) := 'N';
         fftByte, fftInt8:
           if Assigned(aTargetValue) then
             Byte(aTargetValue^) := Ord(srcBoolean^);
@@ -185,19 +186,19 @@ begin
       case aTargetType of
         fftChar:
           if Assigned(aTargetValue) then
-            Char(aTargetValue^) := Char(aSourceValue^);
+            AnsiChar(aTargetValue^) := AnsiChar(aSourceValue^);
         fftShortString, fftShortAnsiStr:
           if Assigned(aTargetValue) then
-            TffShStr(aTargetValue^) := Char(aSourceValue^);
+            TffShStr(aTargetValue^) := AnsiChar(aSourceValue^);
         fftNullString, fftNullAnsiStr:
           if Assigned(aTargetValue) then
-            FFStrPCopy(aTargetValue, Char(aSourceValue^));
+            FFStrPCopy(aTargetValue, AnsiChar(aSourceValue^));
         fftWideChar:
           if Assigned(aTargetValue) then
-            WideChar(aTargetValue^) := FFCharToWideChar(Char(aSourceValue^));
+            WideChar(aTargetValue^) := FFCharToWideChar(AnsiChar(aSourceValue^));
         fftWideString:
           if Assigned(aTargetValue) then
-            FFShStrLToWideStr(Char(aSourceValue^), aTargetValue, 1);
+            FFShStrLToWideStr(AnsiChar(aSourceValue^), aTargetValue, 1);
         fftBLOB..ffcLastBLOBType: ;
         { Validate only; do not actually move BLOB data around. }
         else Result := DBIERR_INVALIDFLDXFORM;
@@ -208,7 +209,7 @@ begin
       case aTargetType of
         fftChar:
           if Assigned(aTargetValue) then
-            Char(aTargetValue^) := FFWideCharToChar(WideChar(aSourceValue^));
+            AnsiChar(aTargetValue^) := FFWideCharToChar(WideChar(aSourceValue^));
         fftShortString, fftShortAnsiStr:
           if Assigned(aTargetValue) then
             TffShStr(aTargetValue^) := FFWideCharToChar(WideChar(aSourceValue^));
@@ -748,7 +749,7 @@ begin
       case aTargetType of
         fftChar:
           if Assigned(aTargetValue) then
-            Char(aTargetValue^) := TffShStr(aSourceValue^)[1];
+            AnsiChar(aTargetValue^) := TffShStr(aSourceValue^)[1];
         fftShortString, fftShortAnsiStr:
           if Assigned(aTargetValue) then
             TffShStr(aTargetValue^) := Copy(TffShStr(aSourceValue^), 1, MinLength - 1);
@@ -836,16 +837,16 @@ begin
       case aTargetType of
         fftChar:
           if Assigned(aTargetValue) then
-            Char(aTargetValue^) := FFStrPas(aSourceValue)[1];
+            AnsiChar(aTargetValue^) := FFStrPas(aSourceValue)[1];
         fftShortString, fftShortAnsiStr:
           if Assigned(aTargetValue) then
             TffShStr(aTargetValue^) := Copy(FFStrPas(aSourceValue), 1, MinLength - 1);
         fftNullString, fftNullAnsiStr:
           if Assigned(aTargetValue) then
-            StrLCopy(aTargetValue, aSourceValue, MinLength - 1);
+            AnsiStrings.StrLCopy(aTargetValue, aSourceValue, MinLength - 1);
         fftWideChar:
           if Assigned(aTargetValue) then
-            WideChar(aTargetValue^) := FFCharToWideChar(Char(aSourceValue^));
+            WideChar(aTargetValue^) := FFCharToWideChar(AnsiChar(aSourceValue^));
         fftWideString:
           if Assigned(aTargetValue) then begin
             { Note: the length of a "wide" field is the number of bytes
@@ -859,7 +860,7 @@ begin
         {Begin !!.13}
         fftByte:
           if Assigned(aTargetValue) then begin
-            Val(FFRemoveThousandSeparator(PChar(aSourceValue)), intRes, aCode);
+            Val(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)), intRes, aCode);
             if (aCode=0) and (intRes>=Low(Byte)) and (intRes<=High(Byte)) then
               Byte(aTargetValue^) := intRes
             else
@@ -867,7 +868,7 @@ begin
           end;
         fftWord16:
           if Assigned(aTargetValue) then begin
-            Val(FFRemoveThousandSeparator(PChar(aSourceValue)), wordRes, aCode);
+            Val(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)), wordRes, aCode);
             if (aCode=0) then
               TffWord16(aTargetValue^) := wordRes
             else
@@ -875,7 +876,7 @@ begin
           end;
         fftInt16:
           if Assigned(aTargetValue) then begin
-            Val(FFRemoveThousandSeparator(PChar(aSourceValue)), intRes, aCode);
+            Val(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)), intRes, aCode);
             if (aCode=0) and (intRes>=Low(SmallInt)) and (intRes<=High(SmallInt)) then
               Smallint(aTargetValue^) := intRes
             else
@@ -883,7 +884,7 @@ begin
           end;
         fftWord32, fftAutoInc:
           if Assigned(aTargetValue) then begin
-            Val(FFRemoveThousandSeparator(PChar(aSourceValue)), wordRes, aCode);
+            Val(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)), wordRes, aCode);
             if (aCode=0) then
               TffWord32(aTargetValue^) := wordRes
             else
@@ -891,7 +892,7 @@ begin
           end;
         fftInt32:
           if Assigned(aTargetValue) then begin
-            Val(FFRemoveThousandSeparator(PChar(aSourceValue)), intRes, aCode);
+            Val(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)), intRes, aCode);
             if (aCode=0) then
               Integer(aTargetValue^) := intRes
             else
@@ -899,19 +900,19 @@ begin
           end;
         fftSingle:
           if Assigned(aTargetValue) then
-            Single(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PChar(aSourceValue)));
+            Single(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)));
         fftDouble:
           if Assigned(aTargetValue) then
-            Double(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PChar(aSourceValue)));
+            Double(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)));
         fftExtended:
           if Assigned(aTargetValue) then
-            Extended(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PChar(aSourceValue)));
+            Extended(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)));
         fftComp:
           if Assigned(aTargetValue) then
-            Comp(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PChar(aSourceValue)));
+            Comp(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)));
         fftCurrency:
           if Assigned(aTargetValue) then begin
-            Comp(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PChar(aSourceValue)));
+            Comp(aTargetValue^) := StrToFloat(FFRemoveThousandSeparator(PAnsiChar(aSourceValue)));
             Comp(aTargetValue^) := Comp(aTargetValue^) * 10000.0;
           end;
         {End !!.13}
@@ -924,7 +925,7 @@ begin
       case aTargetType of
         fftChar:
           if Assigned(aTargetValue) then
-            Char(aTargetValue^) := FFWideCharToChar(WideChar(aSourceValue^));
+            AnsiChar(aTargetValue^) := FFWideCharToChar(WideChar(aSourceValue^));
         fftShortString, fftShortAnsiStr:
           if Assigned(aTargetValue) then begin
             { Note: the length of a "wide" field is the number of bytes

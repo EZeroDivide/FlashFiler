@@ -35,7 +35,7 @@ procedure FFCopyFile(const FromFileName, ToFileName : TffFullFileName);
     FromZ    : TffMaxPathZ;
     ToZ      : TffMaxPathZ;
   begin
-    if not Windows.CopyFile(FFStrPCopy(FromZ, FromFileName),
+    if not Windows.CopyFileA(FFStrPCopy(FromZ, FromFileName),
                             FFStrPCopy(ToZ, ToFileName), True) then
       begin
         WinError := GetLastError;
@@ -49,7 +49,7 @@ procedure FFDeleteFile(const FileName : TffFullFileName);
     WinError : TffWord32;
     FZ       : TffMaxPathZ;
   begin
-    if not Windows.DeleteFile(FFStrPCopy(FZ, FileName)) then
+    if not Windows.DeleteFileA(FFStrPCopy(FZ, FileName)) then
       begin
         WinError := GetLastError;
         FFRaiseException(EffServerException, ffStrResGeneral, fferrDeleteFile,     {!!.10}
@@ -63,7 +63,7 @@ procedure FFRenameFile(const OldFileName, NewFileName : TffFullFileName);
     OldZ     : TffMaxPathZ;
     NewZ     : TffMaxPathZ;
   begin
-    if not Windows.MoveFile(FFStrPCopy(OldZ, OldFileName), FFStrPCopy(NewZ, NewFileName)) then
+    if not Windows.MoveFileA(FFStrPCopy(OldZ, OldFileName), FFStrPCopy(NewZ, NewFileName)) then
       begin
         WinError := GetLastError;
         FFRaiseException(EffServerException, ffStrResServer, fferrRenameFile,

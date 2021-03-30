@@ -117,7 +117,7 @@ procedure FFTblSetAutoIncValue(aFI : PffFileInfo; aTI : PffTransInfo;
 implementation
 
 {$IFDEF DebugLog}
-procedure Log(aMsg : string; args : array of const);
+procedure Log(aMsg : AnsiString; args : array of const);
 begin
   if aLog <> nil then
     aLog.WriteStringFmt(aMsg, args);

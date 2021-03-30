@@ -108,7 +108,7 @@ type
     function ExecDirect(anEngine    : TffBaseServerEngine;
                         aClientID   : TffClientID;
                         aDatabaseID : TffDatabaseID;
-                        aQueryText  : PChar;
+                        aQueryText  : PAnsiChar;
                         aOpenMode   : TffOpenMode;
                         aTimeout    : Longint;
                     var aCursorID   : TffCursorID;
@@ -131,7 +131,7 @@ type
       be called after a statement has been allocated and executed. }
 
     function Prepare(aStmtID: TffSqlStmtID;
-                     aQueryText: PChar;
+                     aQueryText: PAnsiChar;
                      aStream : TStream): TffResult; virtual; abstract;
     { Use this method to prepare a query for execution.  The client must
       first allocate a statement using Alloc.  Parameters:

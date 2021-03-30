@@ -36,6 +36,7 @@ interface
 uses
   Classes,
   SysUtils,
+  AnsiStrings,
   ffllbase,
   fflllog,
   ffsrmgr;
@@ -85,11 +86,11 @@ type
 
     function lcGetLogEnabled : boolean; virtual;
 
-    procedure lcLog(const aString : string); virtual;
+    procedure lcLog(const aString : AnsiString); virtual;
       { Use this to write a string to the event log. }
 
 {Begin !!.06}
-    procedure lcLogFmt(const aMsg : string; const args : array of const); virtual;
+    procedure lcLogFmt(const aMsg : AnsiString; const args : array of const); virtual;
       { Use this method to write a formatted error string to the event log. }
 {End !!.06}
 
@@ -200,25 +201,25 @@ type
   EffServerComponentError = class(Exception)
   protected
     sceErrorCode : longInt;
-    function sceGetErrorString : string;
+    function sceGetErrorString : AnsiString;
   public
-    constructor Create(const aMsg : string);
+    constructor Create(const aMsg : AnsiString);
     constructor CreateViaCode(const aErrorCode : Longint; aDummy : Boolean);
     constructor CreateViaCodeFmt(const aErrorCode : Longint; args : array of const; aDummy : Boolean);
-    constructor CreateWithObj(aObj : TComponent; const aMsg : string);
+    constructor CreateWithObj(aObj : TComponent; const aMsg : AnsiString);
 
     property ErrorCode : longInt read sceErrorCode;
   end;
 
 
 {---Helper routines---}
-function FFMapStateToString(const aState : TffState) : string;
+function FFMapStateToString(const aState : TffState) : AnsiString;
   { Maps a state value to a string. }
 procedure RaiseSCErrorCode(const aErrorCode : longInt);
 procedure RaiseSCErrorCodeFmt(const aErrorCode : longInt;
                                  args : array of const);
-procedure RaiseSCErrorMsg(const aMsg : string);
-procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : string);
+procedure RaiseSCErrorMsg(const aMsg : AnsiString);
+procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : AnsiString);
 
 
 var
@@ -306,14 +307,14 @@ begin
   Result := FLogEnabled;
 end;
 {--------}
-procedure TffLoggableComponent.lcLog(const aString : string);
+procedure TffLoggableComponent.lcLog(const aString : AnsiString);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteString(aString);
 end;
 {Begin !!.06}
 {--------}
-procedure TffLoggableComponent.lcLogFmt(const aMsg : string; const args : array of const);
+procedure TffLoggableComponent.lcLogFmt(const aMsg : AnsiString; const args : array of const);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteStringFmt(aMsg, args);
@@ -450,7 +451,7 @@ end;
 {====================================================================}
 
 {===Interfaced helper routines=======================================}
-function FFMapStateToString(const aState : TffState) : string;
+function FFMapStateToString(const aState : TffState) : AnsiString;
 begin
   case aState of
     ffesInactive :      Result := ffcStateInactive;
@@ -478,19 +479,19 @@ begin
   raise EffServerComponentError.CreateViaCode(aErrorCode, False);
 end;
 {--------}
-procedure RaiseSCErrorMsg(const aMsg : string);
+procedure RaiseSCErrorMsg(const aMsg : AnsiString);
 begin
   raise EffServerComponentError.Create(aMsg);
 end;
 {--------}
-procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : string);
+procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : AnsiString);
 begin
   raise EffServerComponentError.CreateWithObj(aObj, aMsg);
 end;
 {====================================================================}
 
 {===EffServerComponentError==========================================}
-constructor EffServerComponentError.Create(const aMsg : string);
+constructor EffServerComponentError.Create(const aMsg : AnsiString);
 begin
   sceErrorCode := 0;
   inherited CreateFmt(ffStrResServerCmp[ffsce_NoErrorCode], [aMsg]);
@@ -498,7 +499,7 @@ end;
 {--------}
 constructor EffServerComponentError.CreateViaCode(const aErrorCode : Longint; aDummy : Boolean);
 var
-  Msg : string;
+  Msg : AnsiString;
 begin
   sceErrorCode := aErrorCode;
   Msg := sceGetErrorString;
@@ -509,7 +510,7 @@ constructor EffServerComponentError.CreateViaCodeFmt(const aErrorCode : longInt;
                                                            args : array of const;
                                                            aDummy : Boolean);
 var
-  Msg : string;
+  Msg : AnsiString;
 begin
   sceErrorCode := aErrorCode;
   Msg := sceGetErrorString;
@@ -518,9 +519,9 @@ begin
 end;
 {--------}
 constructor EffServerComponentError.CreateWithObj(aObj : TComponent;
-                                     const aMsg : string);
+                                     const aMsg : AnsiString);
 var
-  ObjName : string;
+  ObjName : AnsiString;
 begin
   sceErrorCode := 0;
   if (aObj = nil) then
@@ -533,7 +534,7 @@ begin
   inherited CreateFmt(ffStrResServerCmp[ffsce_InstNoCode], [ObjName, aMsg]);
 end;
 {--------}
-function EffServerComponentError.sceGetErrorString : string;
+function EffServerComponentError.sceGetErrorString : AnsiString;
 begin
   Result := ffStrResServerCmp[sceErrorCode];
 end;

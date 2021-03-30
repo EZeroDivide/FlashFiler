@@ -37,6 +37,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   Classes,
   ffconst,
   ffllbase,

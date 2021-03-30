@@ -50,7 +50,7 @@ procedure FileProcsInitialize;
 type
   TffTraceString = string[59];
 procedure FFStartTracing(BufferSize : longint);
-procedure FFDumpTrace(FileName : string);
+procedure FFDumpTrace(FileName : AnsiString);
 procedure FFAddUserTrace(const ParamRec; PRSize : word);
 procedure FFAddUserTraceStr(const S : TffTraceString);
 {$ENDIF}
@@ -108,7 +108,7 @@ procedure FFStartTracing(BufferSize : longint);
     TracePadLock := TffPadlock.Create;
   end;
 {--------}
-procedure FFDumpTrace(FileName : string);
+procedure FFDumpTrace(FileName : AnsiString);
   type
     PHandyBuffer = ^THandyBuffer;
     THandyBuffer = record

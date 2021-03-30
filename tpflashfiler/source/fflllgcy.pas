@@ -122,12 +122,12 @@ type
         properly if RespondToBroadcasts is changed while the transport is
         active. }
 
-    procedure btSetServername(const aServername : string); override;   {!!.10}
+    procedure btSetServername(const aServername : AnsiString); override;   {!!.10}
       {-This method sets the server name.  The implementation for this class
         does not perform any validation.  Transport subclasses should perform
         their own validation. }
 
-    procedure lcLog(const aMsg : string); override;
+    procedure lcLog(const aMsg : AnsiString); override;
       { Use this method to write an error string to the event log. }
 
     procedure ltFreeMsg(msg : PffDataMessage); virtual;                {!!.01}
@@ -314,7 +314,7 @@ type
         supplied by the server.  This clientID must be used in all subsequent
         requests to the server. }
 
-    function GetName : string; override;
+    function GetName : AnsiString; override;
       { Returns the transport's name. }
 
     procedure GetServerNames(aList : TStrings; const timeout : Longint); override;
@@ -696,7 +696,7 @@ begin
     FFClientConfigReadProtocol(Result, protName);
 end;
 {--------}
-function TffLegacyTransport.GetName : string;
+function TffLegacyTransport.GetName : AnsiString;
 begin
   Result := ltMapProtocolToClass.GetProtocolName;
 end;
@@ -755,7 +755,7 @@ begin
   Result := (scState = ffesStarted) and (FProtocol.ConnectionCount > 0);
 end;
 {--------}
-procedure TffLegacyTransport.lcLog(const aMsg : string);
+procedure TffLegacyTransport.lcLog(const aMsg : AnsiString);
 begin
   if FLogEnabled and assigned(FEventLog) and (fftpLogErrors in FLogOptions) then
     FEventLog.WriteString(aMsg);
@@ -846,7 +846,7 @@ begin
       FProtocol.StopReceiveDatagram;
 end;
 {--------}
-procedure TffLegacyTransport.btSetServerName(const aServerName : string); {!!.10}
+procedure TffLegacyTransport.btSetServerName(const aServerName : AnsiString); {!!.10}
 begin
   inherited btSetServerName(aServerName);
   FFSplitNetAddress(aServerName, FServerLocalName, FServerAddress);
@@ -1532,7 +1532,7 @@ var
   LastMsg : boolean;
   CallRpy : PffnmCallServerRpy;
 const
-  logPrefixArray : array[TffReplyModeType] of string = (ffc_Request,
+  logPrefixArray : array[TffReplyModeType] of AnsiString = (ffc_Request,
                                                         ffc_Post,
                                                         ffc_PostWait);
 begin

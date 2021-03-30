@@ -134,7 +134,7 @@ type
   TffSrSimpleCursor = class(TffSrBaseCursor)
     protected
       procedure bcTableOpenPreconditions(aTable     : TffSrBaseTable;
-                                  const aIndexName : string;
+                                  const aIndexName : AnsiString;
                                     var aIndexID   : Longint;
                                   const aOpenMode  : TffOpenMode); override;
         { Used by Create method to verify a thread may open a table. }
@@ -146,15 +146,15 @@ type
 
       destructor Destroy; override;
       function AddIndexToTable(const aIndexDesc : TffIndexDescriptor) : TffResult; override;
-      function CheckBookmark(aBookmark : PffByteArray) : TffResult; override;
+      function CheckBookmark(const aBookmark : TffBookmark) : TffResult; override;
       procedure ClearIndex; override;
       function CloneCursor(aOpenMode : TffOpenMode) : TffSrBaseCursor; override;
-      function CompareBookmarks(aBookmark1, aBookmark2 : PffByteArray;
+      function CompareBookmarks(const aBookmark1, aBookmark2 : TffBookmark;
                              var CmpResult : Longint) : TffResult; override;
       function DropIndexFromTable(const aIndexName : TffDictItemName;
                                          aIndexID   : Longint) : TffResult; override;
       function ExtractKey(aData : PffByteArray; aKey : PffByteArray) : TffResult; override;
-      function GetBookmark(aBookmark : PffByteArray) : TffResult; override;
+      function GetBookmark(const aBookmark : TffBookmark) : TffResult; override;
       function GetBookmarkSize : integer; override;
       function GetNextRecord(aData : PffByteArray; aLockType : TffSrLockType) : TffResult; override;
       function GetPriorRecord(aData : PffByteArray; aLockType : TffSrLockType) : TffResult; override;
@@ -188,7 +188,7 @@ type
                          aKeyData2    : PffByteArray;
                          aKeyIncl2    : boolean) : TffResult; override;
       procedure SetToBegin;  override;
-      function SetToBookmark(aBookmark : PffByteArray) : TffResult; override;
+      function SetToBookmark(const aBookmark : TffBookmark) : TffResult; override;
       function SetToCursor(aCursor : TffSrBaseCursor) : TffResult; override;
       procedure SetToEnd; override;
       function SetToKey(aSearchAction : TffSearchKeyAction;
@@ -538,7 +538,7 @@ begin
 end;
 {--------}
 procedure TffSrSimpleCursor.bcTableOpenPreconditions(aTable     : TffSrBaseTable;
-                                               const aIndexName : string;
+                                               const aIndexName : AnsiString;
                                                  var aIndexID   : Longint;
                                                const aOpenMode  : TffOpenMode);
 begin
@@ -553,7 +553,7 @@ begin
                      [aTable.BaseName]);
 end;
 {--------}
-function TffSrSimpleCursor.CheckBookmark(aBookmark : PffByteArray) : TffResult;
+function TffSrSimpleCursor.CheckBookmark(const aBookmark : TffBookmark) : TffResult;
 var
   CheckHash : Longint;
 begin
@@ -600,7 +600,7 @@ begin
   end;
 end;
 {--------}
-function TffSrSimpleCursor.CompareBookmarks(aBookmark1, aBookmark2 : PffByteArray;
+function TffSrSimpleCursor.CompareBookmarks(const aBookmark1, aBookmark2 : TffBookmark;
                                         var CmpResult : Longint) : TffResult;
 var
   BM1 : PffSrBookmark absolute aBookmark1;
@@ -650,7 +650,7 @@ begin
                    [bcTable.BaseName, Self.ClassName]);
 end;
 {--------}
-function TffSrSimpleCursor.GetBookmark(aBookmark : PffByteArray) : TffResult;
+function TffSrSimpleCursor.GetBookmark(const aBookmark : TffBookmark) : TffResult;
 begin
   Result := DBIERR_NONE;
   AcqContentLock(ffclmRead);
@@ -973,7 +973,7 @@ begin
   end;
 end;
 {--------}
-function TffSrSimpleCursor.SetToBookmark(aBookmark : PffByteArray) : TffResult;
+function TffSrSimpleCursor.SetToBookmark(const aBookmark : TffBookmark) : TffResult;
 begin
   Result := CheckBookmark(aBookmark);
   if (Result = DBIERR_NONE) then begin

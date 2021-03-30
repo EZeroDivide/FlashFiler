@@ -39,6 +39,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   Classes,
   FFConst,
   ffllbase,
@@ -82,7 +83,7 @@ type
 
       ddReadOnly   : Boolean; {true if the dictionary cannot be updated}
 
-      procedure AnsiStringWriter(const aString : string;               {!!.05}
+      procedure AnsiStringWriter(const aString : AnsiString;               {!!.05}
                                        aWriter : TWriter);             {!!.05}
       { This method is used to bypass D6's TWriter.WriteString's logic
         for writing strings with extended charcters as UTF8 strings.
@@ -727,7 +728,7 @@ begin
   end;{try..except}
 end;
 {--------}
-procedure TffDataDictionary.AnsiStringWriter(const aString : string;   {!!.05 - Added}
+procedure TffDataDictionary.AnsiStringWriter(const aString : AnsiString;   {!!.05 - Added}
                                                    aWriter : TWriter);
 var
   TempInt : Integer;

@@ -84,16 +84,16 @@ type
 
     FServerEngine : TffIntermediateServerEngine;
 
-    procedure ichLog(const aMsg : string); virtual;
+    procedure ichLog(const aMsg : AnsiString); virtual;
       {-Use this method to log a string to the event log. }
 
-    procedure ichLogFmt(const aMsg : string; args : array of const); virtual;
+    procedure ichLogFmt(const aMsg : AnsiString; args : array of const); virtual;
       {-Use this method to log a formatted string to the event log. }
 
-    procedure ichLogAll(const Msgs : array of string); virtual;
+    procedure ichLogAll(const Msgs : array of AnsiString); virtual;
       {-Use this method to log multiple strings to the event log. }
 
-    procedure ichLogBlock(const S : string; Buf : pointer;
+    procedure ichLogBlock(const S : AnsiString; Buf : pointer;
                           BufLen : TffMemSize); virtual;
 
     procedure ichSetServerEngine(anEngine : TffIntermediateServerEngine); virtual;
@@ -224,26 +224,26 @@ begin
   inherited Destroy;
 end;
 {--------}
-procedure TffIntermediateCommandHandler.ichLog(const aMsg : string);
+procedure TffIntermediateCommandHandler.ichLog(const aMsg : AnsiString);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteString(aMsg);
 end;
 {--------}
-procedure TffIntermediateCommandHandler.ichLogAll(const Msgs : array of string);
+procedure TffIntermediateCommandHandler.ichLogAll(const Msgs : array of AnsiString);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteStrings(Msgs);
 end;
 {--------}
-procedure TffIntermediateCommandHandler.ichLogBlock(const S : string; Buf : pointer;
+procedure TffIntermediateCommandHandler.ichLogBlock(const S : AnsiString; Buf : pointer;
                                                     BufLen : TffMemSize);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteBlock(S, Buf, BufLen);
 end;
 {--------}
-procedure TffIntermediateCommandHandler.ichLogFmt(const aMsg : string; args : array of const);
+procedure TffIntermediateCommandHandler.ichLogFmt(const aMsg : AnsiString; args : array of const);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteString(format(aMsg, args));

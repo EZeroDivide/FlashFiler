@@ -100,7 +100,7 @@ type
         {Time of last LSN rollover.}
       FNextLSN     : TffWord32;
         {-The next LSN to be assigned to a transaction. }
-      FPath        : string;
+      FPath        : AnsiString;
         {-The directory for which this object manages transactions. }
       FPortal      : TffReadWritePortal;
         {-Used to control access to CommitLSN. }
@@ -148,7 +148,7 @@ type
     public
       constructor Create(aBufferMgr : TffBufferManager;
                          aLockMgr   : TffLockManager;
-                   const aPath      : string;
+                   const aPath      : AnsiString;
                    const aReadOnly : boolean);
       destructor Destroy; override;
 
@@ -185,7 +185,7 @@ type
       property NextLSN : TffWord32 read FNextLSN;
         { The next LSN to be assigned to a transaction. }
 
-      property Path : string read FPath;
+      property Path : AnsiString read FPath;
         { The directory for which this object manages transactions. }
 
   end;
@@ -200,7 +200,7 @@ uses
 const
   { Config file }
   ffc_ConfigFile = 'FFSTRAN.CFG';
-  ffc_ConfigExt : string[ffcl_Extension] = 'CFG';
+  ffc_ConfigExt : String[ffcl_Extension] = 'CFG';
 
 {$I FFCONST.INC}
 
@@ -208,7 +208,7 @@ const
 {===TffSrTransactionMgr===============================================}
 constructor TffSrTransactionMgr.Create(aBufferMgr : TffBufferManager;
                                        aLockMgr   : TffLockManager;
-                                 const aPath      : string;
+                                 const aPath      : AnsiString;
                                  const aReadOnly  : boolean);
 begin
   inherited Create;

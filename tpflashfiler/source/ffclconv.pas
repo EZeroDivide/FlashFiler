@@ -36,6 +36,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   DB,
   ffclbde,
   ffsrbde,
@@ -203,10 +204,10 @@ begin
   FillChar(BDEIdxDesc, sizeof(IDXDesc), 0);
   {fill the relevant parts of the result structure}
   with FFIndexDesc, BDEidxDesc do begin
-    StrPLCopy(szName, idName, sizeof(szName) - 1);
+    AnsiStrings.StrPLCopy(szName, idName, sizeof(szName) - 1);
     iIndexId := idNumber;
     {StrCopy(szTagName, '');}
-    StrCopy(szFormat, 'BTREE');
+    AnsiStrings.StrCopy(szFormat, 'BTREE');
     {bPrimary := false;}
     bUnique := not idDups;
     bDescending := not idAscend;
@@ -244,7 +245,7 @@ begin
   {fill the relevant parts of the result structure}
   with BDEFieldDesc do begin
     iFldNum := FFFieldDesc.iFldNum;
-    StrCopy(szName, FFFieldDesc.szName);
+    AnsiStrings.StrCopy(szName, FFFieldDesc.szName);
     MapFFTypeToBDE(TFFFieldType(FFFieldDesc.iFldType),
                    FFFieldDesc.iLen,
                    iFldType,
@@ -283,7 +284,7 @@ begin
       Move(vdMaxVal, aMaxVal, 254);
     if vdHasDefVal then
       Move(vdDefVal, aDefVal, 254);
-    StrPCopy(szPict, vdPicture);
+    AnsiStrings.StrPCopy(szPict, vdPicture);
     {elkupType := lkupNONE;}
     {szLkupTblName[0] := #0;}
   end;
@@ -319,13 +320,13 @@ begin
       end;
     fftChar:
       begin
-        Char(aDest^) := Char(aSource^); {copy one character}
+        AnsiChar(aDest^) := AnsiChar(aSource^); {copy one character}
       end;
     fftWideChar:
       begin
         if not IGNORE_ANSIOEM then
           AnsiToOEM(aSource, aSource);
-        StringToWideChar(StrPas(aSource), WorkWideChar, PhySize);
+        StringToWideChar(AnsiStrings.StrPas(aSource), WorkWideChar, PhySize);
         Move(WorkWideChar[0], aDest^, sizeof(WideChar));
       end;
     fftByte:
@@ -421,21 +422,21 @@ begin
       begin
         if not IGNORE_ANSIOEM then
           AnsiToOEM(aSource, aSource);
-        TffShStr(aDest^) := StrPas(aSource);
+        TffShStr(aDest^) := AnsiStrings.StrPas(aSource);
       end;
     fftNullString,
     fftNullAnsiStr:
       begin
         if not IGNORE_ANSIOEM then
           AnsiToOEM(aSource, aSource);
-        StrLCopy(aDest, aSource, pred(PhySize));
+        AnsiStrings.StrLCopy(aDest, aSource, pred(PhySize));
       end;
     fftWideString:
       begin
         {convert this to a Pascal String}
         if not IGNORE_ANSIOEM then
           AnsiToOEM(aSource, aSource);
-        StringToWideChar(StrPas(aSource), PWideChar(aDest), pred(PhySize));
+        StringToWideChar(AnsiStrings.StrPas(aSource), PWideChar(aDest), pred(PhySize));
        end;
   else
     Result := false;
@@ -559,7 +560,7 @@ function MapFFDataToBDE(FFType  : TffFieldType;
                         aDest   : Pointer)
                                 : Boolean;
 var
-  WorkString : string;
+  WorkString : AnsiString;
 begin
   {WARNING: the case statement below is in ascending order of switch
             value}
@@ -572,13 +573,13 @@ begin
     fftChar:
       begin
         word(aDest^) := 0;
-        char(aDest^) := char(aSource^);
+        AnsiChar(aDest^) := AnsiChar(aSource^);
       end;
     fftWideChar:
       begin
         {convert this to a Pascal String}
         WorkString := WideCharLenToString(PWideChar(aSource), 1);
-        StrPLCopy(aDest, WorkString, pred(PhySize));
+        AnsiStrings.StrPLCopy(aDest, WorkString, pred(PhySize));
         if not IGNORE_OEMANSI then
           OEMToAnsi(aDest, aDest);
       end;
@@ -678,14 +679,14 @@ begin
     fftShortString,
     fftShortAnsiStr:
       begin
-        StrPLCopy(aDest, TffShStr(aSource^), pred(PhySize));
+        AnsiStrings.StrPLCopy(aDest, TffShStr(aSource^), pred(PhySize));
         if not IGNORE_OEMANSI then
           OEMToAnsi(aDest, aDest);
       end;
     fftNullString,
     fftNullAnsiStr:
       begin
-        StrLCopy(aDest, aSource, pred(PhySize));
+        AnsiStrings.StrLCopy(aDest, aSource, pred(PhySize));
         if not IGNORE_ANSIOEM then
           AnsiToOEM(aDest, aDest);
       end;
@@ -694,7 +695,7 @@ begin
         {convert this to a Pascal String}
         WorkString := WideCharLenToString(PWideChar(aSource),
                                           lstrlenw(PWideChar(aSource)));
-        StrPLCopy(aDest, WorkString, pred(PhySize));
+        AnsiStrings.StrPLCopy(aDest, WorkString, pred(PhySize));
         if not IGNORE_OEMANSI then
           OEMToAnsi(aDest, aDest);
        end;

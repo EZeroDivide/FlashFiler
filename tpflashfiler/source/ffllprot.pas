@@ -40,6 +40,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  AnsiStrings,
   Classes,
   ExtCtrls,
   Forms,
@@ -144,7 +145,7 @@ type
       FLastMsgTimer : TffTimer;
       FSendConfirm  : boolean;
     protected
-      function GetRemoteName : string;                                 {!!.10}
+      function GetRemoteName : AnsiString;                                 {!!.10}
       procedure AddToList(List : TFFList); virtual;
       procedure RemoveFromList(List : TFFList); virtual;
     public
@@ -179,7 +180,7 @@ type
           OnConnectionLost event in the parent protocol. }
       property HangupDone : boolean                                    {!!.01}
          read FHangupDone write FHangupDone;                           {!!.01}
-      property RemoteName : string                                     {!!.10}
+      property RemoteName : AnsiString                                     {!!.10}
          read GetRemoteName;
   end;
 
@@ -216,8 +217,8 @@ type
       cpIndexByClient      : TffList;  { This is an index by clientID. }
     protected
 
-      function GetLocalName : string;                                  {!!.10}
-      function GetNetName : string;                                    {!!.10}
+      function GetLocalName : AnsiString;                                  {!!.10}
+      function GetNetName : AnsiString;                                    {!!.10}
 
       procedure cpAddConnection(aConnection : TffConnection);
       function cpExistsConnection(aConnHandle : longint) : boolean;
@@ -240,7 +241,7 @@ type
       procedure cpPerformShutdown; virtual;
       procedure cpPerformStartUp; virtual; abstract;
 
-      procedure cpSetNetName(aName : string);
+      procedure cpSetNetName(aName : AnsiString);
 
       procedure cpCodeMessage(aConn : TffConnection; aData : PffByteArray;
                               aDataLen : longint); virtual;
@@ -273,7 +274,7 @@ type
       function GetCodeStart(const aClientID : TffClientID) : integer;
         { Get the starting encryption code for the specified client. }
 
-      class function GetProtocolName : string; virtual;
+      class function GetProtocolName : AnsiString; virtual;
         { Returns the name of the protocol (e.g., 'TCP/IP'). }
 
       procedure HangUp(aConn : TffConnection); virtual; abstract;
@@ -313,11 +314,11 @@ type
           transport uses this method to replace the client's temporary ID
           with the ID returned from the server. }
 
-      procedure LogStr(const aMsg : string);
+      procedure LogStr(const aMsg : AnsiString);
         { Use this method to write an event string to the protocol's event
           log. }
 
-      procedure LogStrFmt(const aMsg : string; args : array of const);
+      procedure LogStrFmt(const aMsg : AnsiString; args : array of const);
         { Use this method to write a formatted event string to the protocol's
           event log. }
 
@@ -341,14 +342,14 @@ type
       property LastMsgInterval : longInt
          read FLastMsgInterval
          write FLastMsgInterval;
-      property LocalName : string                                      {!!.10}
+      property LocalName : AnsiString                                      {!!.10}
          read GetLocalName;
       property LogEnabled : boolean
          read FLogEnabled
          write FLogEnabled;
       property MaxNetMsgSize : longint
          read FMaxNetMsgSize;
-      property NetName : string                                        {!!.10}
+      property NetName : AnsiString                                        {!!.10}
          read GetNetName;
       property NotifyWindow : HWND
          read FNotifyWindow;
@@ -504,7 +505,7 @@ type
     public
       constructor Create(const aName : TffNetAddress;
                                aCSType : TffClientServerType); override;
-      class function GetProtocolName : string; override;
+      class function GetProtocolName : AnsiString; override;
         { Returns the name of the protocol (e.g., 'TCP/IP'). }
 
       class function Supported : boolean; override;
@@ -516,7 +517,7 @@ type
     public
       constructor Create(const aName : TffNetAddress;
                                aCSType : TffClientServerType); override;
-      class function GetProtocolName : string; override;
+      class function GetProtocolName : AnsiString; override;
         { Returns the name of the protocol (e.g., 'TCP/IP'). }
 
       class function Supported : boolean; override;
@@ -566,7 +567,7 @@ type
       function Call(const aServerName : TffNetName;
                       var aClientID : TffClientID;
                     const timeout : longInt) : TffResult; override;
-      class function GetProtocolName : string; override;
+      class function GetProtocolName : AnsiString; override;
         { Returns the name of the protocol (e.g., 'TCP/IP'). }
 
       procedure GetServerNames(aList : TStrings; const timeout : longInt); override;
@@ -708,7 +709,7 @@ procedure FFSplitNetAddress(const aAddress   : TffNetAddress;
 var
   PosAt : integer;
 begin
-  PosAt := Pos('@', aAddress);
+  PosAt := AnsiPos('@', aAddress);
   if (PosAt > 0) then begin
     aLocalName := Copy(aAddress, 1, FFMinI(Pred(PosAt), ffcl_NetNameSize)); {!!.06}
     aNetName := Copy(aAddress, succ(PosAt), FFMinI(Length(aAddress) - PosAt, ffcl_NetNameSize)); {!!.06}
@@ -856,7 +857,7 @@ Procedure TffConnection.AddToList(List : TFFList);
 begin {do nothing, descendant must do the work}
 end;
 {--------}
-function TffConnection.GetRemoteName : string;                         {!!.10}
+function TffConnection.GetRemoteName : AnsiString;                         {!!.10}
 begin
   Result := FRemoteName^;
 end;
@@ -1111,7 +1112,7 @@ begin
   cpDestroyNotifyWindow;
 end;
 {--------}
-procedure TffBaseCommsProtocol.cpSetNetName(aName : string);
+procedure TffBaseCommsProtocol.cpSetNetName(aName : AnsiString);
 begin
   if assigned(FNetName) then
     FFShStrFree(FNetName);
@@ -1293,7 +1294,7 @@ begin
 {End !!.05}
 end;
 {--------}
-function TffBaseCommsProtocol.GetLocalName : string;                   {!!.10}
+function TffBaseCommsProtocol.GetLocalName : AnsiString;                   {!!.10}
 begin
   if Assigned(FLocalName) then
     Result := FLocalName^
@@ -1301,7 +1302,7 @@ begin
     Result := '';
 end;
 {--------}
-function TffBaseCommsProtocol.GetNetName : string;                     {!!.10}
+function TffBaseCommsProtocol.GetNetName : AnsiString;                     {!!.10}
 begin
   if Assigned(FNetName) then
     Result := FNetName^
@@ -1324,7 +1325,7 @@ begin
   end;
 end;
 {--------}
-class function TffBaseCommsProtocol.GetProtocolName : string;
+class function TffBaseCommsProtocol.GetProtocolName : AnsiString;
 begin
   { return nothing at this level }
   Result := '';
@@ -1456,14 +1457,14 @@ begin
 {End !!.05}
 end;
 {--------}
-procedure TffBaseCommsProtocol.LogStr(const aMsg : string);
+procedure TffBaseCommsProtocol.LogStr(const aMsg : AnsiString);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteSTring(format('%s: %s',
                                  [Self.GetProtocolName, aMsg]));
 end;
 {--------}
-procedure TffBaseCommsProtocol.LogStrFmt(const aMsg : string;
+procedure TffBaseCommsProtocol.LogStrFmt(const aMsg : AnsiString;
                                          args : array of const);
 begin
   if FLogEnabled and assigned(FEventLog) then
@@ -2445,7 +2446,7 @@ begin
   Family := wfTCP;
 end;
 {--------}
-class function TffTCPIPProtocol.GetProtocolName : string;
+class function TffTCPIPProtocol.GetProtocolName : AnsiString;
 begin
   Result := 'TCP/IP (FF)';
 end;
@@ -2468,7 +2469,7 @@ begin
   Family := wfIPX;
 end;
 {--------}
-class function TffIPXSPXProtocol.GetProtocolName : string;
+class function TffIPXSPXProtocol.GetProtocolName : AnsiString;
 begin
   Result := 'IPX/SPX (FF)';
 end;
@@ -2580,7 +2581,7 @@ begin {add a list entry to allow partner hwnd lookups}
   List.Insert(T);
 end;
 {--------}
-class function TffSingleUserProtocol.GetProtocolName : string;
+class function TffSingleUserProtocol.GetProtocolName : AnsiString;
 begin
   Result := 'Single User (FF)';
 end;

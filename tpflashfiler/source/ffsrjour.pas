@@ -56,7 +56,7 @@ type
 {Begin !!.13}
     function reReportJournalState( JournalState : TJournalState;
                                     Alias, Path, FileName,
-                                    ExceptionString : string): Boolean; virtual;
+                                    ExceptionString : AnsiString): Boolean; virtual;
 {End !!.13}
   public
     procedure Check(anEngine : TffBaseServerEngine); override;
@@ -239,7 +239,7 @@ end;
 {--------}
 function TffRecoveryEngine.reReportJournalState(
   JournalState: TJournalState; Alias, Path, Filename,
-  ExceptionString: String): Boolean;
+  ExceptionString: AnsiString): Boolean;
 begin
   Result := ShowJournalForm(JournalState,
                             Alias,
@@ -256,7 +256,7 @@ var
   Block : Pointer;
   After : Boolean;
   TargetFile : PffFileInfo;
-  tfName : String;
+  tfName : AnsiString;
   FileSize : TffInt64;
   FFHeader : array [0..4] of longint;
   TempI64  : TffInt64;

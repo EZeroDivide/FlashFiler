@@ -269,7 +269,7 @@ var
 var
   btLog : TffEventLog;
 
-procedure Logbt(aMsg : string; args : array of const);
+procedure Logbt(aMsg : AnsiString; args : array of const);
 begin
   if btLog <> nil then
     btLog.WriteStringFmt(aMsg, args);
@@ -615,7 +615,7 @@ begin
       bbh1stLookupSeg.iLow := ffc_W32NoValue;
     end;
     { Write aTableName & the table's BLOB number after BLOBHeader.  Note that
-      length of string is automatically stored as the first byte of the string. }
+      length of String is automatically stored as the first byte of the string. }
     Move(aTableName, BLOBBlock^[(OffsetInBlock + sizeof(TffBLOBHeader))],
          NameLen);
     Move(aTableBLOBNr, BLOBBlock^[(OffsetInBlock + SizeOf(TffBLOBHeader) +
@@ -948,7 +948,7 @@ begin
                        [aFI^.fiName^, aBLOBNr.iLow, aBLOBNr.iHigh,
                         format(ffcBLOBSegExpected,
                                [ffcBLOBSegHeader,
-                                char(BLOBHeader^.bbhSignature)])]);
+                                AnsiChar(BLOBHeader^.bbhSignature)])]);
     { What kind of BLOB are we dealing with? }
     case BLOBHeader^.bbhSegCount of
       ffc_FileBLOB : { File BLOB }
@@ -1143,7 +1143,7 @@ begin
           ('Invalid signature for content segment, offset: %d,%d, signature: %s',
            [LookupEntry^.bleSegmentOffset.iHigh,
             LookupEntry^.bleSegmentOffset.iLow,
-            char(ContentEntry^.bshSignature)])
+            AnsiChar(ContentEntry^.bshSignature)])
       else begin
 
         WriteToStream(Format('Segment %d, %d:%d, Len %d' + #13#10,
@@ -1809,7 +1809,7 @@ begin
                         aBLOBNr.iHigh,
                         Format(ffcBLOBSegExpected,
                                [ffcBLOBSegHeader,
-                                Char(BLOBHeader^.bbhSignature)])]);
+                                AnsiChar(BLOBHeader^.bbhSignature)])]);
 
     { We can't write to a file BLOB. }
     if (BLOBHeader^.bbhSegCount = -1) then
@@ -2708,7 +2708,7 @@ begin
                        [aFI^.fiName^, aBLOBNr.iLow, aBLOBNr.iHigh,
                         format(ffcBLOBSegExpected,
                                [ffcBLOBSegHeader,
-                                char(BLOBHeader^.bbhSignature)])]);
+                                AnsiChar(BLOBHeader^.bbhSignature)])]);
 
     { We can't write to a file BLOB. }
     if (BLOBHeader^.bbhSegCount = -1) then

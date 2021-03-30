@@ -35,6 +35,7 @@ interface
 
 uses
   SysUtils,
+  AnsiStrings,
   ffllbase;
 
 type
@@ -198,7 +199,7 @@ type
 
 
       {$IFDEF CompileDebugCode}
-      procedure DebugPrint(const AFileName : string);
+      procedure DebugPrint(const AFileName : AnsiString);
         {-Use this method to dump the contents of the hash table during
           testing stage. }
       {$ENDIF}
@@ -244,7 +245,7 @@ type
           data associated with the entry. }
 
       {$IFDEF CompileDebugCode}
-      procedure DebugPrint(const AFileName : string);
+      procedure DebugPrint(const AFileName : AnsiString);
         {-Use this method to dump the contents of the hash table during
           testing stage. }
       {$ENDIF}
@@ -591,7 +592,7 @@ end;
 {--------}
 {$IFDEF CompileDebugCode}
 
-procedure TffHash.DebugPrint(const AFileName: string);
+procedure TffHash.DebugPrint(const AFileName: AnsiString);
 var
   F    : text;
   i    : integer;
@@ -730,7 +731,7 @@ begin
 end;
 {--------}
 {$IFDEF CompileDebugCode}
-procedure TffHash64.DebugPrint(const AFileName: string);
+procedure TffHash64.DebugPrint(const AFileName: AnsiString);
 var
   F    : text;
   i    : integer;

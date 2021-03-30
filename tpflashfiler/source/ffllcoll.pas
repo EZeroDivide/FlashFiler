@@ -98,6 +98,7 @@ implementation
 
 uses
   SysUtils,
+  AnsiStrings,
   ffconst,
   ffclbase;
 

@@ -91,16 +91,16 @@ type
       FCheckDisk : Boolean;                                            {!!.11}
       FPath      : PffShStr;
     protected
-      function GetAlias : string;                                      {!!.10}
-      function GetPath : string;                                       {!!.10}
+      function GetAlias : AnsiString;                                      {!!.10}
+      function GetPath : AnsiString;                                       {!!.10}
     public
       constructor Create(const aAlias     : TffName;
                          const aPath      : TffPath;
                                aCheckDisk : Boolean);                  {!!.11}
       destructor Destroy; override;
 
-      property Alias : string read GetAlias;                           {!!.10}
-      property Path : string read GetPath;                             {!!.10}
+      property Alias : AnsiString read GetAlias;                           {!!.10}
+      property Path : AnsiString read GetPath;                             {!!.10}
       property CheckSpace : Boolean                                    {!!.11}
         read FCheckDisk;                                               {!!.11}
   end;
@@ -129,9 +129,9 @@ type
       FPwdHash : TffWord32;
       FRights  : TffUserRights;
     protected
-      function GetFirstName : string;                                  {!!.10}
-      function GetLastName : string;                                   {!!.10}
-      function GetUserID : string;                                     {!!.10}
+      function GetFirstName : AnsiString;                                  {!!.10}
+      function GetLastName : AnsiString;                                   {!!.10}
+      function GetUserID : AnsiString;                                     {!!.10}
     public
       constructor Create(const aUserID    : TffName;
                          const aLastName  : TffName;
@@ -140,11 +140,11 @@ type
                                aRights    : TffUserRights);
       destructor Destroy; override;
 
-      property FirstName : string read GetFirstName;                   {!!.10}
-      property LastName : string read GetLastName;                     {!!.10}
+      property FirstName : AnsiString read GetFirstName;                   {!!.10}
+      property LastName : AnsiString read GetLastName;                     {!!.10}
       property PasswordHash : TffWord32 read FPwdHash;
       property Rights : TffUserRights read FRights;
-      property UserID : string read GetUserID;                         {!!.10}
+      property UserID : AnsiString read GetUserID;                         {!!.10}
   end;
 
   TffUserList = class(TffObject)
@@ -183,12 +183,12 @@ type
 
       kpiLibHandle    : THandle;
     protected
-      function GetBuildKeyName : string;                               {!!.10}
-      function GetCompareKeyName : string;                             {!!.10}
-      function GetDLLName : string;                                    {!!.10}
-      function GetPath : string;                                       {!!.10}
-      function GetTable : string;                                      {!!.10}
-      function GetTableDataFileName : string;                          {!!.10}
+      function GetBuildKeyName : AnsiString;                               {!!.10}
+      function GetCompareKeyName : AnsiString;                             {!!.10}
+      function GetDLLName : AnsiString;                                    {!!.10}
+      function GetPath : AnsiString;                                       {!!.10}
+      function GetTable : AnsiString;                                      {!!.10}
+      function GetTableDataFileName : AnsiString;                          {!!.10}
     public
       constructor Create(const aPath        : TffPath;
                          const aTable       : TffTableName;
@@ -200,23 +200,23 @@ type
       function Link : boolean;
       procedure Unlink;
 
-      property DLLName : string
+      property DLLName : AnsiString
         read GetDLLName;                                               {!!.10}
       property IndexID : Integer
         read FIndexID;
       property BuildKey : TffKeyBuildFunc
         read FBuildKey;
-      property BuildKeyName : string
+      property BuildKeyName : AnsiString
         read GetBuildKeyName;                                          {!!.10}
       property CompareKey : TffKeyCompareFunc
         read FCompareKey;
-      property CompareKeyName : string
+      property CompareKeyName : AnsiString
         read GetCompareKeyName;                                        {!!.10}
-      property Path : string
+      property Path : AnsiString
         read GetPath;                                                  {!!.10}
-      property Table : string
+      property Table : AnsiString
         read GetTable;                                                 {!!.10}
-      property TableDataFileName : string
+      property TableDataFileName : AnsiString
         read GetTableDataFileName;                                     {!!.10}
   end;
 
@@ -257,7 +257,7 @@ type
       scPadLock    : TffPadLock;
     protected
       function GetGeneralInfo : PffGeneralInfo;
-      function GetServerName : string;                                 {!!.10}
+      function GetServerName : AnsiString;                                 {!!.10}
     public
       constructor Create;
       destructor Destroy; override;
@@ -286,7 +286,7 @@ type
         read GetGeneralInfo;
       property KeyProcList : TffKeyProcList
         read FKeyProcList;
-      property ServerName : string
+      property ServerName : AnsiString
         read GetServerName;                                            {!!.10}
       property UserList : TffUserList
         read FUserList;
@@ -372,12 +372,12 @@ begin
   inherited Destroy;
 end;
 {--------}
-function TffAliasItem.GetAlias : string;                               {!!.10}
+function TffAliasItem.GetAlias : AnsiString;                               {!!.10}
 begin
   Result := KeyAsStr;
 end;
 {--------}
-function TffAliasItem.GetPath : string;                                {!!.10}
+function TffAliasItem.GetPath : AnsiString;                                {!!.10}
 begin
   Result := FPath^;
 end;
@@ -456,17 +456,17 @@ begin
   inherited Destroy;
 end;
 {--------}
-function TffUserItem.GetFirstName : string;                            {!!.10}
+function TffUserItem.GetFirstName : AnsiString;                            {!!.10}
 begin
   Result := FFirst^;
 end;
 {--------}
-function TffUserItem.GetLastName : string;                             {!!.10}
+function TffUserItem.GetLastName : AnsiString;                             {!!.10}
 begin
   Result := FLast^;
 end;
 {--------}
-function TffUserItem.GetUserID : string;                               {!!.10}
+function TffUserItem.GetUserID : AnsiString;                               {!!.10}
 begin
   Result := KeyAsStr;
 end;
@@ -583,32 +583,32 @@ begin
   inherited Destroy;
 end;
 {--------}
-function TffKeyProcItem.GetDLLName : string;                           {!!.10}
+function TffKeyProcItem.GetDLLName : AnsiString;                           {!!.10}
 begin
   Result := FDLLName^;
 end;
 {--------}
-function TffKeyProcItem.GetBuildKeyName : string;                      {!!.10}         
+function TffKeyProcItem.GetBuildKeyName : AnsiString;                      {!!.10}
 begin
   Result := FBuildName^;
 end;
 {--------}
-function TffKeyProcItem.GetCompareKeyName : string;                    {!!.10}
+function TffKeyProcItem.GetCompareKeyName : AnsiString;                    {!!.10}
 begin
   Result := FCompareName^;
 end;
 {--------}
-function TffKeyProcItem.GetPath : string;                              {!!.10}
+function TffKeyProcItem.GetPath : AnsiString;                              {!!.10}
 begin
   Result := FPath^;
 end;
 {--------}
-function TffKeyProcItem.GetTable : string;                             {!!.10}       
+function TffKeyProcItem.GetTable : AnsiString;                             {!!.10}
 begin
   Result := FTable^;
 end;
 {--------}
-function TffKeyProcItem.GetTableDataFileName : string;                 {!!.10}
+function TffKeyProcItem.GetTableDataFileName : AnsiString;                 {!!.10}
 begin
   Result := FFMakeFullFileName(Path, FFMakeFileNameExt(Table, ffc_ExtForData));
 end;
@@ -620,7 +620,7 @@ var
 begin
   Result := false;
   Unlink;
-  kpiLibHandle := LoadLibrary(FFStrPCopy(DLLPathZ, DLLName));
+  kpiLibHandle := LoadLibraryA(FFStrPCopy(DLLPathZ, DLLName));
   if (kpiLibHandle <> 0) then begin
     @FBuildKey := GetProcAddress(kpiLibHandle, FFStrPCopy(ProcNameZ, BuildKeyName));
     if Assigned(FBuildKey) then begin
@@ -838,7 +838,7 @@ begin
   Result := @FGeneralInfo;
 end;
 {--------}
-function TffServerConfiguration.GetServerName : string;                {!!.10}   
+function TffServerConfiguration.GetServerName : AnsiString;                {!!.10}
 begin
   Result := FGeneralInfo.giServerName;
 end;

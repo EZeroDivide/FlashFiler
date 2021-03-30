@@ -184,7 +184,8 @@ function FFDbiSetTableAutoIncValue(aTable : TffDataSet;
 
 implementation
 uses
-  SysUtils;
+  SysUtils,
+  AnsiStrings;
 
 function FFDbiAddAlias(aSession : TffSession;
                  const aAlias   : TffName;

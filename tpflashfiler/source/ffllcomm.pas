@@ -517,8 +517,8 @@ type
       {-Whether or not a transport in server mode (i.e., Listen = True) is
         to respond to broadcast messages. }
 
-    function btGetServerName : string; virtual;                        {!!.10}
-    procedure btSetServername(const aServername : string); virtual;    {!!.10}
+    function btGetServerName : AnsiString; virtual;                        {!!.10}
+    procedure btSetServername(const aServername : AnsiString); virtual;    {!!.10}
       {-For a transport in Listen mode (i.e., Server), the server's name.  For
         a transport in Send mode (i.e., Client), the name of the server to
         which the client is to send information.  The implementation for this
@@ -607,7 +607,7 @@ type
         supplied by the server.  This clientID must be used in all subsequent
         requests to the server. }
 
-    function GetName : string; virtual; abstract;
+    function GetName : AnsiString; virtual; abstract;
       { Retrieves the transport's name.  Must be specified for each subclass.
         Note that this is not a class function because we want the legacy
         transport to be able to return a name based upon the selected protocol.
@@ -800,7 +800,7 @@ type
       { Use this property to indicate wheher or not a listener should respond
         to a broadcast for active listeners. }
 
-    property ServerName : string                                       {!!.10}
+    property ServerName : AnsiString                                       {!!.10}
        read btGetServerName
        write btSetServerName;
       { The name and address of the server to be accessed by this transport. }
@@ -836,10 +836,10 @@ type
         fit. }
 
     procedure tpLogReq(aRequest : TffRequest;
-                 const prefix : string); virtual;
+                 const prefix : AnsiString); virtual;
       { Write a request to the event log. }
 
-    procedure tpLogReq2(const aPrefix : string;
+    procedure tpLogReq2(const aPrefix : AnsiString;
                         const aRequestID : Longint;
                         const aClientID : TffClientID;
                         const aMsgID : Longint;
@@ -848,7 +848,7 @@ type
                         const aTimeout : Longint);
       { Write a reply to the event log.  Used by a transport in Listen mode. }
 
-   procedure tpLogReqMisc(const aMsg : string); virtual;
+   procedure tpLogReqMisc(const aMsg : AnsiString); virtual;
       { Write a request-related string to the event log. }
 
     procedure tpLogReply(aRequest : TffRequest); virtual;
@@ -1534,7 +1534,7 @@ begin
   Result := FRespondToBroadcasts;
 end;
 {--------}
-function TffBaseTransport.btGetServerName : string;                    {!!.10}
+function TffBaseTransport.btGetServerName : AnsiString;                    {!!.10}
 begin
   Result := FServerName;
 end;
@@ -1610,7 +1610,7 @@ begin
     FRespondToBroadcasts := aRespond;
 end;
 {--------}
-procedure TffBaseTransport.btSetServername(const aServername : string); {!!.10}
+procedure TffBaseTransport.btSetServername(const aServername : AnsiString); {!!.10}
 begin
   if (FUpdateCount > 0) then
     _FServerName := aServerName
@@ -1881,7 +1881,7 @@ begin
 end;
 {--------}
 procedure TffThreadedTransport.tpLogReq(aRequest : TffRequest;
-                                  const prefix : string);
+                                  const prefix : AnsiString);
 begin
   if FLogEnabled and (fftpLogRequests in FLogOptions) and
      assigned(FEventLog) and assigned(aRequest) then
@@ -1894,7 +1894,7 @@ begin
     end;
 end;
 {--------}
-procedure TffThreadedTransport.tpLogReq2(const aPrefix : string;
+procedure TffThreadedTransport.tpLogReq2(const aPrefix : AnsiString;
                                          const aRequestID : Longint;
                                          const aClientID : TffClientID;
                                          const aMsgID : Longint;
@@ -1908,7 +1908,7 @@ begin
   FEventLog.WriteBlock(ffc_Data, aData, aDataLen);
 end;
 {--------}
-procedure TffThreadedTransport.tpLogReqMisc(const aMsg : string);
+procedure TffThreadedTransport.tpLogReqMisc(const aMsg : AnsiString);
 begin
   if FLogEnabled and (fftpLogRequests in FLogOptions) and
      assigned(FEventLog) then

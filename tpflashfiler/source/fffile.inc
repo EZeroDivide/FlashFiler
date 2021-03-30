@@ -128,7 +128,7 @@ begin
   else
     AttrFlags := FILE_ATTRIBUTE_NORMAL;
   {open the file}
-  Result := CreateFile(aName,
+  Result := CreateFileA(aName,
                        OpenMode,
                        ShareMode,
                        nil,            {!! Security attrs}

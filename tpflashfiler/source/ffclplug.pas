@@ -84,6 +84,7 @@ implementation
 
 uses
   SysUtils,
+  AnsiStrings,
   Windows,
   FFLLReq,
   FFSrBDE;

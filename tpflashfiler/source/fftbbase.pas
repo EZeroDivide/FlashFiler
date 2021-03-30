@@ -542,7 +542,7 @@ procedure FFAcqRecordLock(aFI       : PffFileInfo;
                     const aConditional : Boolean);                     {!!.02}
 var
   LockStatus : TffLockRequestStatus;
-  RecStr     : string;
+  RecStr     : AnsiString;
   RetryUntil : DWORD;
   TickCount  : DWORD;
 begin

@@ -39,6 +39,7 @@ uses
   Messages,
   Classes,
   SysUtils,
+  AnsiStrings,
   ffllprot,
   fflldict,
   ffllbase,
@@ -56,19 +57,19 @@ function FFGetMaxAutoInc(aTable : TffTable) : Longint;
       not get the last one used, instead it queries each record and
       returns the highest key currently in the table. }
 
-function FFGetProtocolString (Protocol : TffProtocolType) : string;
-  { - Converts a TffProtocolType value to a string value }
+function FFGetProtocolString (Protocol : TffProtocolType) : AnsiString;
+  { - Converts a TffProtocolType value to a AnsiString value }
 
-function FFGetProtocolType (ProtocolStr : string) : TffProtocolType;
-  { - Converts the specified string to a valid TffProtocolType }
+function FFGetProtocolType (ProtocolStr : AnsiString) : TffProtocolType;
+  { - Converts the specified AnsiString to a valid TffProtocolType }
 
 procedure FFRetrieveLiveServers(const Protocol: TffProtocolType; ServerNames : TStringList);
   { - Fills ServerName with a list of servers for the specified protocol.
       Care is taken to remove the local server if it cannot be found. }
 
-procedure FFSeparateAddress(const Original : string;
-                              var Name : string;
-                              var Address : string);
+procedure FFSeparateAddress(const Original : AnsiString;
+                              var Name : AnsiString;
+                              var Address : AnsiString);
   { - Breaks the specifid address into Name & address parts }
 
 function FFTransferRecord(Source, Dest : TDataSet) : Boolean;
@@ -86,15 +87,15 @@ procedure FFCopyTableDataEx(SourceTable, DestTable : TDataset; ProgressEvent: Tf
       be disturbed by this routine. This routine has the ability to
       call a progress event }
 
-procedure FFStringToVCheckVal(const aStr  : string;
+procedure FFStringToVCheckVal(const aStr  : AnsiString;
                               const aType : TffFieldType;
                                 var aVal  : TffVCheckValue);
-{ Converts a string to a TffVCheckValue. Used to set the default
+{ Converts a AnsiString to a TffVCheckValue. Used to set the default
   for a field in the data dictionary }
 
 function FFVCheckValToString(const aVal  : TffVCheckValue;
-                             const aType : TffFieldType) : String;
-{ Converts a TffVCheckValue to a string. Used to retrieve a string
+                             const aType : TffFieldType) : AnsiString;
+{ Converts a TffVCheckValue to a AnsiString. Used to retrieve a AnsiString
   representation of the default value for a field in a data
   dictionary }
 
@@ -142,7 +143,7 @@ begin
   Result := MaxSeed;
 end;
 {--------}
-function FFGetProtocolString (Protocol : TffProtocolType) : string;
+function FFGetProtocolString (Protocol : TffProtocolType) : AnsiString;
 begin
   case Protocol of
     ptIPXSPX     : Result := ffc_IPXSPX;
@@ -152,7 +153,7 @@ begin
   end;
 end;
 {--------}
-function FFGetProtocolType (ProtocolStr : string) : TffProtocolType;
+function FFGetProtocolType (ProtocolStr : AnsiString) : TffProtocolType;
 begin
   if ProtocolStr = ffc_IPXSPX then
     Result := ptIPXSPX
@@ -194,11 +195,11 @@ begin
   end;
 end;
 {--------}
-procedure FFSeparateAddress(const Original: string; var Name,
-  Address: string);
+procedure FFSeparateAddress(const Original: AnsiString; var Name,
+  Address: AnsiString);
 var
   SepPlace : Integer;
-  ServerName : string;
+  ServerName : AnsiString;
 begin
   ServerName := Original;
   SepPlace := Pos('@', ServerName);
@@ -263,7 +264,7 @@ begin
   end;
 end;
 
-procedure FFStringToVCheckVal(const aStr  : string;
+procedure FFStringToVCheckVal(const aStr  : AnsiString;
                               const aType : TffFieldType;
                                 var aVal  : TffVCheckValue);
 var
@@ -322,7 +323,7 @@ begin
       fftChar :
         begin
           TempStr := aStr;
-          MapBDEDataToFF(fftChar, sizeof(Char), @TempStr[1], @aVal);
+          MapBDEDataToFF(fftChar, sizeof(AnsiChar), @TempStr[1], @aVal);
         end;
       fftWideChar :
         begin
@@ -410,10 +411,10 @@ end;
 
 function FFVCheckValToString(const aVal  : TffVCheckValue;
                              const aType : TffFieldType)
-                                         : string;
+                                         : AnsiString;
 
 var
-  TempStr     : string[255];
+  TempStr     : String[255];
 //  TempInt8    : ShortInt;                                            {!!.07}
   TempInt16   : SmallInt;
   TempInt64   : TffInt64;                                              {!!.13}
@@ -473,7 +474,7 @@ begin
       begin
         TempInt := 1;
         Move(TempInt, TempStr[0], 1);
-        MapFFDataToBDE(fftChar, sizeof(Char), @aVal, @TempStr[1]);
+        MapFFDataToBDE(fftChar, sizeof(AnsiChar), @aVal, @TempStr[1]);
       end;
     fftWideChar :
       begin
@@ -566,8 +567,8 @@ begin
     fftWideString :
       begin
         i := 0;
-        while ((char(aVal[i])) +
-               (char(aVal[succ(i)]))) <> #0#0 do
+        while ((AnsiChar(aVal[i])) +
+               (AnsiChar(aVal[succ(i)]))) <> #0#0 do
           inc(i);
         Move(aVal, TempWideStr, succ(i));
         TempStr := WideCharToString(@TempWideStr);

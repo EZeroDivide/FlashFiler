@@ -52,9 +52,9 @@ var
 begin
   FFStrPCopy(EFNZ, EFN);
   BufSize := sizeof(Buffer);
-  if WNetGetUniversalName(EFNZ, UNIVERSAL_NAME_INFO_LEVEL,
+  if WNetGetUniversalNameA(EFNZ, UNIVERSAL_NAME_INFO_LEVEL,
                           @Buffer, BufSize) = NO_ERROR then
-    Result := FFStrPasLimit(PUniversalNameInfo(@Buffer).lpUniversalName,
+    Result := FFStrPasLimit(PUniversalNameInfoA(@Buffer).lpUniversalName,
                             pred(sizeof(TffFullFileName)))
   else
     Result := EFN;
@@ -64,7 +64,7 @@ function GetUniversalName95(const EFN : TffFullFileName;
                               var UNC : TffFullFileName) : boolean;
 type
   PNetResArray = ^TNetResArray;
-  TNetResArray = array [0..127] of TNetResource;
+  TNetResArray = array [0..127] of TNetResourceA;
 var
   chLocal     : AnsiChar;
   hEnum       : THandle;

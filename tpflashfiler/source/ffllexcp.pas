@@ -35,6 +35,7 @@ interface
 
 uses
   SysUtils,
+  AnsiStrings,
   ffconst,
   ffllbase,
   ffsrmgr;

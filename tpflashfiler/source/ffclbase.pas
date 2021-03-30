@@ -48,11 +48,11 @@ uses
 var
   ffStrResClient : TffStringResource;
 
-function GetErrorStringPrim(aResult : TffResult; aStrZ : PChar) : TffResult;
+function GetErrorStringPrim(aResult : TffResult; aStrZ : PAnsiChar) : TffResult;
 
 implementation
 
-function GetErrorStringPrim(aResult : TffResult; aStrZ : PChar) : TffResult;
+function GetErrorStringPrim(aResult : TffResult; aStrZ : PAnsiChar) : TffResult;
 begin
   ffStrResBDE.GetASCIIZ(aResult, aStrZ, sizeof(DBIMSG));
   Result := DBIERR_NONE;

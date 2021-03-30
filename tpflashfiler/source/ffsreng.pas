@@ -527,7 +527,7 @@ type
           path. }
 
       procedure bcTableOpenPreconditions(aTable     : TffSrBaseTable;
-                                   const aIndexName : string;
+                                   const aIndexName : AnsiString;
                                      var aIndexID   : Longint;
                                    const aOpenMode  : TffOpenMode); virtual; abstract;
         { Used by Create method to verify a thread may open a table. }
@@ -635,10 +635,10 @@ type
                                aLen    : TffWord32;
                            var aBLOB) : TffResult; virtual;
 
-      function CheckBookmark(aBookmark : PffByteArray) : TffResult; virtual; abstract;
+      function CheckBookmark(const aBookmark : TffBookmark) : TffResult; virtual; abstract;
       procedure ClearIndex; virtual; abstract;
       function CloneCursor(aOpenMode : TffOpenMode) : TffSrBaseCursor; virtual; abstract;
-      function CompareBookmarks(aBookmark1, aBookmark2 : PffByteArray;
+      function CompareBookmarks(const aBookmark1, aBookmark2 : TffBookmark;
                             var CmpResult : Longint) : TffResult; virtual; abstract;
       function CopyRecords(aSrcCursor : TffSrBaseCursor; aBLOBCopyMode : TffBLOBCopyMode;
                            aCallback : TffSrCopyRecordsProc;
@@ -694,7 +694,7 @@ type
          record. If aConditionalLock is also True then the method succeeds only
          if it is able to immediately obtain the Exclusive lock. }
       function ExtractKey(aData : PffByteArray; aKey : PffByteArray) : TffResult; virtual; abstract;
-      function GetBookmark(aBookmark : PffByteArray) : TffResult; virtual; abstract;
+      function GetBookmark(const aBookmark : TffBookmark) : TffResult; virtual; abstract;
       function GetBookmarkSize : integer; virtual; abstract;
       function GetRecord(aData : PffByteArray; aLockType : TffSrLockType) : TffResult; virtual;
       function GetRecordCount(var aRecCount : Longint) : TffResult; virtual; abstract;
@@ -761,7 +761,7 @@ type
                         aKeyData2    : PffByteArray;
                         aKeyIncl2    : Boolean) : TffResult; virtual; abstract;
       procedure SetToBegin; virtual; abstract;
-      function SetToBookmark(aBookmark : PffByteArray) : TffResult; virtual; abstract;
+      function SetToBookmark(const aBookmark : TffBookmark) : TffResult; virtual; abstract;
       function SetToCursor(aCursor : TffSrBaseCursor) : TffResult; virtual; abstract;
       procedure SetToEnd; virtual; abstract;
       function SetToKey(aSearchAction : TffSearchKeyAction;
@@ -830,7 +830,7 @@ type
                        const aShareMode : TffShareMode;
                        const aExclContLock : Boolean); override;       {!!.10}
       procedure bcTableOpenPreconditions(aTable     : TffSrBaseTable;
-                                  const aIndexName : string;
+                                  const aIndexName : AnsiString;
                                     var aIndexID   : Longint;
                                   const aOpenMode  : TffOpenMode); override;
         { Used by Create method to verify a thread may open a table. }
@@ -852,15 +852,15 @@ type
 
       destructor Destroy; override;
       function AddIndexToTable(const aIndexDesc : TffIndexDescriptor) : TffResult; override;
-      function CheckBookmark(aBookmark : PffByteArray) : TffResult; override;
+      function CheckBookmark(const aBookmark : TffBookmark) : TffResult; override;
       procedure ClearIndex; override;
       function CloneCursor(aOpenMode : TffOpenMode) : TffSrBaseCursor; override;
-      function CompareBookmarks(aBookmark1, aBookmark2 : PffByteArray;
+      function CompareBookmarks(const aBookmark1, aBookmark2 : TffBookmark;
                              var CmpResult : Longint) : TffResult; override;
       function DropIndexFromTable(const aIndexName : TffDictItemName;
                                          aIndexID   : Longint) : TffResult; override;
       function ExtractKey(aData : PffByteArray; aKey : PffByteArray) : TffResult; override;
-      function GetBookmark(aBookmark : PffByteArray) : TffResult; override;
+      function GetBookmark(const aBookmark : TffBookmark) : TffResult; override;
       function GetBookmarkSize : integer; override;
       function GetNextRecord(aData : PffByteArray; aLockType : TffSrLockType) : TffResult; override;
       function GetPriorRecord(aData : PffByteArray; aLockType : TffSrLockType) : TffResult; override;
@@ -886,7 +886,7 @@ type
                          aKeyData2    : PffByteArray;
                          aKeyIncl2    : boolean) : TffResult; override;
       procedure SetToBegin;  override;
-      function SetToBookmark(aBookmark : PffByteArray) : TffResult; override;
+      function SetToBookmark(const aBookmark : TffBookmark) : TffResult; override;
       function SetToCursor(aCursor : TffSrBaseCursor) : TffResult; override;
       procedure SetToEnd; override;
       function SetToKey(aSearchAction : TffSearchKeyAction;
@@ -1591,7 +1591,7 @@ type
                      var aRowsAffected: Integer;
                      var aRecordsRead: Integer): TffResult; virtual; abstract;
 
-    function Parse(aQuery: PChar): Boolean; virtual; abstract;
+    function Parse(aQuery: PAnsiChar): Boolean; virtual; abstract;
 
     property ClientID : TffClientID
       read bpsClientID;
@@ -1777,14 +1777,14 @@ type
       function seIsServerTable(const aTableName : TffTableName) : Boolean;
       function seGetCollectFrequency : Longint;
       function seGetCollectGarbage : Boolean;
-      function seGetConfigDir : string;                                {!!.10}
+      function seGetConfigDir : AnsiString;                                {!!.10}
       function seGetMaxRAM : Longint;                                  {!!.01}
-      function seGetScriptFile : string;                               {!!.11}
+      function seGetScriptFile : AnsiString;                               {!!.11}
       procedure seSetCollectFrequency(aFreq : Longint);
       procedure seSetCollectGarbage(aValue : Boolean);
-      procedure seSetConfigDir(const aPath : string);                  {!!.10}
+      procedure seSetConfigDir(const aPath : AnsiString);                  {!!.10}
       procedure seSetMaxRAM(const aValue: Longint);                    {!!.01}
-      procedure seSetScriptFile(const aFile : string);                 {!!.11}
+      procedure seSetScriptFile(const aFile : AnsiString);                 {!!.11}
       function seTableBuildPrim(aDB        : TffSrDatabase;
                                  aOverwrite : Boolean;
                            const aTableName : TffTableName;
@@ -1906,7 +1906,7 @@ type
         {-Reads in the server configuration tables and processes the
           server script file (if present). }
 
-      procedure seForce(const aMsg     : string;                       {!!.06 - Start}
+      procedure seForce(const aMsg     : AnsiString;                       {!!.06 - Start}
                               args     : array of const;
                               ReadOnly : Boolean); virtual;            {!!.06 - End}
         {-Use this method to log a formatted string to the event log. Writes to
@@ -1947,13 +1947,13 @@ type
           sets seSQLEngine to nil to avoid using the freed TffBaseSQLEngine. }
 
       { Event logging }
-      procedure Log(const aMsg : string); override;
+      procedure Log(const aMsg : AnsiString); override;
         {-Use this method to log a string to the event log. }
 
-      procedure LogAll(const Msgs : array of string); override;
+      procedure LogAll(const Msgs : array of AnsiString); override;
         {-Use this method to log multiple strings to the event log. }
 
-      procedure LogFmt(const aMsg : string; args : array of const); override;
+      procedure LogFmt(const aMsg : AnsiString; args : array of const); override;
         {-Use this method to log a formatted string to the event log. }
 
       { Object validation }
@@ -2179,8 +2179,8 @@ type
                        var aNewCursorID : TffCursorID) : TffResult; override;
       function CursorClose(aCursorID : TffCursorID) : TffResult; override;
       function CursorCompareBookmarks(aCursorID   : TffCursorID;
-                                      aBookmark1,
-                                      aBookmark2  : PffByteArray;
+                                      const aBookmark1,
+                                      aBookmark2  : TffBookmark;
                                   var aCompResult : Longint) : TffResult; override;
 {Begin !!.02}
       function CursorCopyRecords(aSrcCursorID,
@@ -2188,7 +2188,7 @@ type
                                 aCopyBLOBs : Boolean) : TffResult; override;
 {End !!.02}
       function CursorDeleteRecords(aCursorID : TffCursorID) : TffResult; override;  {!!.06}
-      function CursorGetBookmark(aCursorID : TffCursorID; aBookmark : PffByteArray) : TffResult; override;
+      function CursorGetBookmark(aCursorID : TffCursorID; const aBookmark : TffBookmark) : TffResult; override;
 
       function CursorGetBookmarkSize(aCursorID : TffCursorID;
                                  var aSize     : Integer) : TffResult; override;
@@ -2210,7 +2210,7 @@ type
       function CursorSetTimeout(const aCursorID : TffCursorID;
                                 const aTimeout : Longint) : TffResult; override;
       function CursorSetToBegin(aCursorID : TffCursorID) : TffResult; override;
-      function CursorSetToBookmark(aCursorID : TffCursorID; aBookmark : PffByteArray) : TffResult; override;
+      function CursorSetToBookmark(aCursorID : TffCursorID; const aBookmark : TffBookmark) : TffResult; override;
       function CursorSetToCursor(aDestCursorID : TffCursorID; aSrcCursorID : TffCursorID) : TffResult; override;
       function CursorSetToEnd(aCursorID : TffCursorID) : TffResult; override;
       function CursorSetToKey(aCursorID     : TffCursorID;
@@ -2309,14 +2309,14 @@ type
                        aStream : TStream) : TffResult; override;
       function SQLExecDirect(aClientID : TffClientID;
                              aDatabaseID : TffDatabaseID;
-                             aQueryText : PChar;
+                             aQueryText : PAnsiChar;
                              aTimeout  : Longint;
                              aOpenMode : TffOpenMode;
                          var aCursorID : TffCursorID;
                              aStream : TStream) : TffResult; override;
       function SQLFree(aStmtID : TffSqlStmtID) : TffResult; override;
       function SQLPrepare(aStmtID    : TffSqlStmtID;
-                          aQueryText : PChar;
+                          aQueryText : PAnsiChar;
                           aStream    : TStream) : TffResult; override;
       function SQLSetParams(aStmtID     : TffSqlStmtID;
                             aNumParams  : word;
@@ -2385,7 +2385,7 @@ type
         { The number of milliseconds between each garbage collection run by the
           server engine. }
 
-      property ConfigDir : string                                      {!!.10}
+      property ConfigDir : AnsiString                                      {!!.10}
         read seGetConfigDir
         write seSetConfigDir;
 
@@ -2400,7 +2400,7 @@ type
         { Called when the server engine is initializing and it is time to
           check for recovery of fail-safe transactions. }
 
-      property ScriptFile : string                                     {!!.11}
+      property ScriptFile : AnsiString                                     {!!.11}
         read seGetScriptFile
         write seSetScriptFile;
 
@@ -4687,7 +4687,7 @@ begin
 end;
 {--------}
 procedure TffSrCursor.bcTableOpenPreconditions(aTable     : TffSrBaseTable;
-                                         const aIndexName : string;
+                                         const aIndexName : AnsiString;
                                            var aIndexID   : Longint;
                                          const aOpenMode  : TffOpenMode);
 begin
@@ -4715,7 +4715,7 @@ begin
 
 end;
 {--------}
-function TffSrCursor.CheckBookmark(aBookmark : PffByteArray) : TffResult;
+function TffSrCursor.CheckBookmark(const aBookmark : TffBookmark) : TffResult;
 var
   CheckHash : Longint;
 begin
@@ -4794,7 +4794,7 @@ begin
   end;
 end;
 {--------}
-function TffSrCursor.CompareBookmarks(aBookmark1, aBookmark2 : PffByteArray;
+function TffSrCursor.CompareBookmarks(const aBookmark1, aBookmark2 : TffBookmark;
                                   var CmpResult : Longint) : TffResult;
 var
   BM1 : PffSrBookmark absolute aBookmark1;
@@ -4906,7 +4906,7 @@ begin
   end;
 end;
 {--------}
-function TffSrCursor.GetBookmark(aBookmark : PffByteArray) : TffResult;
+function TffSrCursor.GetBookmark(const aBookmark : TffBookmark) : TffResult;
 begin
   Result := DBIERR_NONE;
   AcqContentLock(ffclmRead);
@@ -5719,7 +5719,7 @@ begin
   end;
 end;
 {--------}
-function TffSrCursor.SetToBookmark(aBookmark : PffByteArray) : TffResult;
+function TffSrCursor.SetToBookmark(const aBookmark : TffBookmark) : TffResult;
 begin
   Result := CheckBookmark(aBookmark);
   if (Result = DBIERR_NONE) then begin
@@ -6115,7 +6115,7 @@ procedure TffSrBaseTable.AcqClientLock(aCursorID    : Longint;
 var
   LockStatus : TffLockRequestStatus;
   RetryUntil : DWORD;
-  TblStr     : string;
+  TblStr     : AnsiString;
   TickCount  : DWORD;
 begin
 
@@ -6165,7 +6165,7 @@ procedure TffSrBaseTable.AcqContentLock(aTrans       : TffSrTransaction;
 var
   LockStatus : TffLockRequestStatus;
   RetryUntil : DWORD;
-  TblStr     : string;
+  TblStr     : AnsiString;
   TickCount  : DWORD;
   TranLockType : TffSrLockType;                                        {!!.03}
 begin
@@ -6269,7 +6269,7 @@ procedure TffSrBaseTable.AcqLock(const aCursorID : TffCursorID;
 var
   LockStatus : TffLockRequestStatus;
   RetryUntil : DWORD;
-  TblStr     : string;
+  TblStr     : AnsiString;
   TickCount  : DWORD;
 begin
 
@@ -6781,7 +6781,7 @@ procedure TffSrBaseTable.ListBLOBFreeSpace(aTI       : PffTransInfo;
                                            aStream   : TStream);
 var
   anInx : LongInt;
-  aStr  : string;
+  aStr  : AnsiString;
 begin
   for anInx := 0 to pred(FileCount) do
     if Files[anInx].fiBLOBrscMgr <> nil then begin
@@ -9172,7 +9172,7 @@ begin
 end;
 {End !!.01}
 {--------}
-function TffServerEngine.seGetScriptFile : string;                     {!!.11}
+function TffServerEngine.seGetScriptFile : AnsiString;                     {!!.11}
 begin
   Result := seScriptFile;
 end;
@@ -9313,7 +9313,7 @@ begin
     WriteGeneralInfo(False);
 end;
 {--------}
-procedure TffServerEngine.seSetConfigDir(const aPath : string);        {!!.10}
+procedure TffServerEngine.seSetConfigDir(const aPath : AnsiString);        {!!.10}
 begin
 //  scCheckInactive;                                                   {Deleted !!.01}
   seConfigDir := aPath;
@@ -9329,12 +9329,12 @@ begin
     WriteGeneralInfo(False);
 end;
 {--------}
-procedure TffServerEngine.seSetScriptFile(const aFile: string);        {!!.11}
+procedure TffServerEngine.seSetScriptFile(const aFile: AnsiString);        {!!.11}
 begin
   seScriptFile := aFile;
 end;
 {--------}
-function TffServerEngine.seGetConfigDir : string;                      {!!.10}
+function TffServerEngine.seGetConfigDir : AnsiString;                      {!!.10}
 begin
   if (csDesigning in ComponentState) then
     Result := seConfigDir
@@ -9363,25 +9363,25 @@ begin
 
 end;
 {--------}
-procedure TffServerEngine.Log(const aMsg : string);
+procedure TffServerEngine.Log(const aMsg : AnsiString);
 begin
   if seCanLog then
     FEventLog.WriteString(aMsg);
 end;
 {--------}
-procedure TffServerEngine.LogAll(const Msgs : array of string);
+procedure TffServerEngine.LogAll(const Msgs : array of AnsiString);
 begin
   if seCanLog then
     FEventLog.WriteStrings(Msgs);
 end;
 {--------}
-procedure TffServerEngine.LogFmt(const aMsg : string; args : array of const);
+procedure TffServerEngine.LogFmt(const aMsg : AnsiString; args : array of const);
 begin
   if seCanLog then
     FEventLog.WriteString(format(aMsg, args));
 end;
 {--------}
-procedure TffServerEngine.seForce(const aMsg     : string;             {!!.06 - Start}
+procedure TffServerEngine.seForce(const aMsg     : AnsiString;             {!!.06 - Start}
                                         args     : array of const;
                                         ReadOnly : Boolean);
 begin
@@ -10425,8 +10425,8 @@ begin
 end;
 {--------}
 function TffServerEngine.CursorCompareBookmarks(aCursorID   : TffCursorID;
-                                                aBookmark1,
-                                                aBookmark2  : PffByteArray;
+                                                const aBookmark1,
+                                                aBookmark2  : TffBookmark;
                                             var aCompResult : Longint) : TffResult;
 var
   Cursor : TffSrBaseCursor;
@@ -10509,7 +10509,7 @@ end;
 {End !!.02}
 {--------}
 function TffServerEngine.CursorGetBookmark(aCursorID : TffCursorID;
-                                           aBookmark : PffByteArray) : TffResult;
+                                           const aBookmark : TffBookmark) : TffResult;
 var
   Cursor : TffSrBaseCursor;
 begin
@@ -10759,7 +10759,7 @@ begin
 end;
 {--------}
 function TffServerEngine.CursorSetToBookmark(aCursorID : TffCursorID;
-                                             aBookmark : PffByteArray) : TffResult;
+                                             const aBookmark : TffBookmark) : TffResult;
 var
   Cursor : TffSrBaseCursor;
 begin
@@ -11724,7 +11724,7 @@ begin
             Offset := 0;
             for RecInx := 0 to pred(aBMCount) do begin
               IRRes := CursorSetToBookmark(aCursorID,                  {!!.10}
-                                           PffByteArray(@aData^[Offset])); {!!.10}
+                                           TffBookmark(@aData^[Offset])); {!!.10}
               if IRRes = DBIERR_NONE then
                 IRRes := RecordDelete(aCursorID, nil);
               aErrors^[RecInx] := IRRes;
@@ -12290,7 +12290,7 @@ end;
 {--------}
 function TffServerEngine.SQLExecDirect(aClientID   : TffClientID;
                                        aDatabaseID : TffDatabaseID;
-                                       aQueryText  : PChar;
+                                       aQueryText  : PAnsiChar;
                                        aTimeout    : Longint;
                                        aOpenMode   : TffOpenMode;
                                    var aCursorID   : TffCursorID;
@@ -12345,7 +12345,7 @@ begin
 end;
 {--------}
 function TffServerEngine.SQLPrepare(aStmtID    : TffSqlStmtID;
-                                    aQueryText : PChar;
+                                    aQueryText : PAnsiChar;
                                     aStream    : TStream) : TffResult;
 begin
   Result := DBIERR_NONE;
@@ -12396,7 +12396,7 @@ var
   DB           : TffSrDatabase;
   StartedTrans : boolean;
   tmpCursorID  : TffCursorID;
-  tmpTablename : string;
+  tmpTablename : AnsiString;
   TransID      : TffTransID;
   FI           : PffFileInfo;
   FileHeader   : PffBlockHeaderFile;
@@ -14382,7 +14382,7 @@ begin
             if AppliesToSelf then begin
               { Yes. Find the equals sign. }
               PosEquals := Pos('=', Line);
-              { Only process lines with length before and after the = char. }
+              { Only process lines with length before and after the = AnsiChar. }
               if (PosEquals > 1) and (PosEquals < Len) then begin
                 { Get the before and after strings. }
                 AfterStr := Copy(Line, succ(PosEquals), Len - PosEquals);
@@ -15736,7 +15736,7 @@ begin
   Temp := 'ojneb';
   ffc_AdminUserID[0] := #5;
   for i := 1 to 5 do
-    ffc_AdminUserID[i] := char(ord(Temp[6-i]) - 1);
+    ffc_AdminUserID[i] := AnsiChar(ord(Temp[6-i]) - 1);
 end;
 {====================================================================}
 

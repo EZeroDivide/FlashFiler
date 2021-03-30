@@ -1,5 +1,10 @@
 
 *.exe
 bin\**
+**\__history
+**\__recovery
 *.dll
 *.HLP
+*.identcache
+*.local
+*.res

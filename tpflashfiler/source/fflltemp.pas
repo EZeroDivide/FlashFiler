@@ -202,7 +202,7 @@ type
       {-Number of blocks used. Bounds: 0..tsNumBlocks }
 
     { Protected methods }
-    function mmGetFileName : string;
+    function mmGetFileName : AnsiString;
       {-Returns the name of the memory mapped file. }
 
     procedure mmOpenFile;
@@ -251,7 +251,7 @@ type
     property BlockCount : TffWord32 read tsNumBlocks;
       { The number of blocks available in the file. }
 
-    property Name : string read mmGetFileName;
+    property Name : AnsiString read mmGetFileName;
       { The path and name of the file. }
 
     property Size : TffWord32 read tsSize;
@@ -267,6 +267,7 @@ implementation
 
 uses
   SysUtils,
+  AnsiStrings,
   FFLLExcp,
   FFSrBase,
   {$IFDEF SecureTempStorage}                                          {!!.06}
@@ -578,7 +579,7 @@ begin
   Result := ((tsNumBlocks - mmUseCount) >= numBlocks);
 end;
 {--------}
-function TffTempStorageMM.mmGetFileName : string;
+function TffTempStorageMM.mmGetFileName : AnsiString;
 begin
   Result := mmFileName^;
 end;

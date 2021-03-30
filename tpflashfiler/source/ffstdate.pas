@@ -36,7 +36,8 @@ interface
 
 uses
   Windows,
-  SysUtils;
+  SysUtils,
+  AnsiStrings;
 
 type
   TStDate = LongInt;
@@ -214,10 +215,10 @@ function Convert2ByteDate(TwoByteDate : Word) : TStDate;
 function Convert4ByteDate(FourByteDate : TStDate) : Word;
   {-Convert a SysTools date into an Object Professional two byte date}
 
-function FFStDateToString(const ADate : TStDate) : string;
-function FFStringToStDate(const ADateStr : string) : TStDate;
-function FFStTimeToString(const ATime : TStTime) : string;
-function FFStringToStTime(const ATimeStr : string) : TStTime;
+function FFStDateToString(const ADate : TStDate) : AnsiString;
+function FFStringToStDate(const ADateStr : AnsiString) : TStDate;
+function FFStTimeToString(const ATime : TStTime) : AnsiString;
+function FFStringToStTime(const ATimeStr : AnsiString) : TStTime;
 
 implementation
 
@@ -937,22 +938,22 @@ begin
   DefaultMonth := Month;
 end;
 
-function FFStDateToString(const ADate : TStDate) : string;
+function FFStDateToString(const ADate : TStDate) : AnsiString;
 begin
-  Result := FormatDateTime(ShortDateFormat, ADate - StDateConv);
+  Result := FormatDateTime(FormatSettings.ShortDateFormat, ADate - StDateConv);
 end;
  
-function FFStringToStDate(const ADateStr : string) : TStDate;
+function FFStringToStDate(const ADateStr : AnsiString) : TStDate;
 begin
   Result := Trunc(StrToDateTime(ADateStr)) + StDateConv;
 end;
 
-function FFStTimeToString(const ATime : TStTime) : string;
+function FFStTimeToString(const ATime : TStTime) : AnsiString;
 begin
-  Result := FormatDateTime(ShortTimeFormat, StTimeToDateTime(ATime));
+  Result := FormatDateTime(FormatSettings.ShortTimeFormat, StTimeToDateTime(ATime));
 end;
  
-function FFStringToStTime(const ATimeStr : string) : TStTime;
+function FFStringToStTime(const ATimeStr : AnsiString) : TStTime;
 begin
   Result := DateTimeToStTime(StrToDateTime(ATimeStr));
 end;

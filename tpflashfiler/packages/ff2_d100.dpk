@@ -1,0 +1,55 @@
+package ff2_d100;
+
+{$R *.res}
+{$R '..\source\ffclreg.dcr'}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS OFF}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'TurboPower FlashFiler Designtime Package - VCL100'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  designide,
+  dbrtl,
+  ff2_r100;
+
+contains
+  ffclreg in '..\source\ffclreg.pas',
+  ffclfldg in '..\source\ffclfldg.pas',
+  ffclver in '..\source\ffclver.pas',
+  ffabout in '..\source\ffabout.pas',
+  ffclexpt in '..\source\ffclexpt.pas',
+  ffclexps in '..\source\ffclexps.pas' {frmSelectProtocols},
+  ffllgrid in '..\source\ffllgrid.pas',
+  ffclcoln in '..\source\ffclcoln.pas' {ffParamEditor},
+  ffclsqle in '..\source\ffclsqle.pas' {ffSqlEditor};
+
+{$I '..\source\ffdefine.inc'}
+
+{$IFDEF SingleEXE}
+!! Error: This package should not be compiled with SingleEXE mode enabled
+{$ENDIF}
+
+end.

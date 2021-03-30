@@ -499,11 +499,11 @@ type
          read FTransaction write FTransaction;
   end;
 
-  function FFMapLockToName(aLockType : TffSrLockType) : string;
+  function FFMapLockToName(aLockType : TffSrLockType) : AnsiString;
     { Translates a lock type into a lock name. }
 
   {$IFDEF LockLogging}
-  function FFMapRequestStatusToName(aStatus : TffLockRequestStatus) : string;
+  function FFMapRequestStatusToName(aStatus : TffLockRequestStatus) : AnsiString;
     { Translates a request status type into a name. }
   {$ENDIF}
 const
@@ -883,7 +883,7 @@ var
   LockStatus        : TffLockStatus;
   WaitEvent         : TffEvent;
   {$IFDEF LockLogging}
-  IsCond            : string;
+  IsCond            : AnsiString;
   StartTime         : DWORD;
   {$ENDIF}
 begin
@@ -1072,7 +1072,7 @@ var
   LockStatus      : TffLockStatus;
   WaitEvent       : TffEvent;
   {$IFDEF LockLogging}
-  IsCond          : string;
+  IsCond          : AnsiString;
   StartTime       : DWORD;
   {$ENDIF}
 begin
@@ -1253,7 +1253,7 @@ var
   LockContainerList : TffThreadHash64;
   LockContainer : TffLockContainer;
   {$IFDEF LockLogging}
-  LockStatus      : string;
+  LockStatus      : AnsiString;
   StartTime       : DWORD;
   {$ENDIF}
 begin
@@ -1317,7 +1317,7 @@ var
   ItemIndex : Longint;
   LockContainer : TffLockContainer;
   {$IFDEF LockLogging}
-  LockStatus      : string;
+  LockStatus      : AnsiString;
   StartTime       : DWORD;
   {$ENDIF}
 begin
@@ -2827,7 +2827,7 @@ end;
 {$ENDIF}
 
 {===Utility routines=================================================}
-function FFMapLockToName(aLockType : TffSrLockType) : string;
+function FFMapLockToName(aLockType : TffSrLockType) : AnsiString;
 begin
   case aLockType of
     ffsltNone      : Result := ffcLockNone;
@@ -2841,7 +2841,7 @@ begin
 end;
 {$IFDEF LockLogging}
 {--------}
-function FFMapRequestStatusToName(aStatus : TffLockRequestStatus) : string;
+function FFMapRequestStatusToName(aStatus : TffLockRequestStatus) : AnsiString;
 begin
   case aStatus of
     fflrsGranted  : Result := ffcRStatusGranted;

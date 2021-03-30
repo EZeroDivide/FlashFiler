@@ -40,7 +40,7 @@
   detection using CodeWatch. }
 {.$DEFINE MemCheck}
 
-{$DEFINE UseEventPool} 
+{$DEFINE UseEventPool}
 unit ffllbase;
 
 interface
@@ -50,6 +50,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  AnsiStrings,
   ShellApi,
   Classes,
   ffconst;
@@ -103,31 +104,31 @@ const
 {===FlashFiler Version Number===}
 const
   {$IFDEF Delphi3}
-  ffSpecialString : string = 'Release (D3)';
+  ffSpecialString : AnsiString = 'Release (D3)';
   {$ENDIF}
   {$IFDEF Delphi4}
-  ffSpecialString : string = 'Release (D4)';
+  ffSpecialString : AnsiString = 'Release (D4)';
   {$ENDIF}
   {$IFDEF Delphi5}
-  ffSpecialString : string = 'Release (D5)';
+  ffSpecialString : AnsiString = 'Release (D5)';
   {$ENDIF}
   {$IFDEF Delphi6}
-  ffSpecialString : string = 'Release (D6)';
+  ffSpecialString : AnsiString = 'Release (D6)';
   {$ENDIF}
   {$IFDEF Delphi7}
-  ffSpecialString : string = 'Release (D7)';
+  ffSpecialString : AnsiString = 'Release (D7)';
   {$ENDIF}
   {$IFDEF CBuilder3}
-  ffSpecialString : string = 'Release (C3)';
+  ffSpecialString : AnsiString = 'Release (C3)';
   {$ENDIF}
   {$IFDEF CBuilder4}
-  ffSpecialString : string = 'Release (C4)';
+  ffSpecialString : AnsiString = 'Release (C4)';
   {$ENDIF}
   {$IFDEF CBuilder5}
-  ffSpecialString : string = 'Release (C5)';
+  ffSpecialString : AnsiString = 'Release (C5)';
   {$ENDIF}
   {$IFDEF CBuilder6}
-  ffSpecialString : string = 'Release (C6)';
+  ffSpecialString : AnsiString = 'Release (C6)';
   {$ENDIF}
 
 
@@ -209,6 +210,7 @@ type
   TffWord16 = word;                         {16-bit unsigned integer}
   TffWord32 = type DWORD;                   {32-bit unsigned integer}
   PffWord32 = ^TffWord32;                   {pointer to a 32-bit unsigned integer}
+  TffBookmark = TArray<Byte>;
   PffByteArray = ^TffByteArray;             {General array of bytes}
   TffByteArray = array[0..65531] of byte;
   PffCharArray = ^TffCharArray;             {For debugging purposes. }
@@ -435,8 +437,8 @@ type
   TffNetName = string[ffcl_NetNameSize];       {a network name type}
   TffNetAddress = string[ffcl_NetAddressSize]; {a network address type}
 {$ELSE}
-  TffNetName = string;                            {a network name type}
-  TffNetAddress = string;                         {a network address type}
+  TffNetName = AnsiString;                            {a network name type}
+  TffNetAddress = AnsiString;                         {a network address type}
   TffNetNameShr = string[ffcl_NetNameSize];       {a network name type - for requests}
   TffNetAddressShr = string[ffcl_NetAddressSize]; {a network address type - for requests}
 {$ENDIF}
@@ -475,7 +477,7 @@ type
     srAttr     : TffDirItemAttrSet;{..attributes}
     srName     : TffFileNameExt;   {..name, including extension}
     srHandle   : THandle;          {..internal use only}
-    srData     : TWin32FindData;   {..internal use only}
+    srData     : TWin32FindDataA;   {..internal use only}
     srFindType : TffDirItemTypeSet;{..internal use only}
     srFindAttr : TffDirItemAttrSet;{..internal use only}
   end;
@@ -1638,8 +1640,8 @@ type
     fcDependentList : TffList;                                         {!!.11}
     fcLock : TffPadlock;                                               {!!.11}
     fcDestroying : Boolean;
-    function GetVersion : string;
-    procedure SetVersion(const Value : string);
+    function GetVersion : AnsiString;
+    procedure SetVersion(const Value : AnsiString);
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -1652,7 +1654,7 @@ type
     procedure FFNotifyDependents(const AOp : Byte); virtual;           {!!.05}
     procedure FFNotifyDependentsEx(const AOp : Byte; const AData : TffWord32);
   published
-    property Version : string
+    property Version : AnsiString
       read GetVersion
       write SetVersion
       stored False;
@@ -1731,7 +1733,7 @@ procedure ffI64AddInt(const aI64 : TffInt64; const aInt : TffWord32; var Result 
   {-add an integer to a TffInt64}
 function  ffI64ToInt(const aI64 : TffInt64) : TffWord32;
   {-convert a TffInt64 to an integer}
-function  ffI64ToStr(const aI64 : TffInt64) : string;
+function  ffI64ToStr(const aI64 : TffInt64) : AnsiString;
   {-convert a TffInt64 to a string}
 procedure  ffIntToI64(const aInt : TffWord32; var Result : TffInt64);
   {-convert an integer to a TffInt64}
@@ -1811,21 +1813,21 @@ function FFShStrTrimR(const S : TffShStr) : TffShStr;
 function FFShStrTrimWhite(const S : TffShStr) : TffShStr;
 function FFShStrTrimWhiteL(const S : TffShStr) : TffShStr;
 function FFShStrTrimWhiteR(const S : TffShStr) : TffShStr;
-function FFTrim(const S : string) : string;
-function FFTrimL(const S : string) : string;
-function FFTrimR(const S : string) : string;
-function FFTrimWhite(const S : string) : string;
-function FFTrimWhiteL(const S : string) : string;
-function FFTrimWhiteR(const S : string) : string;
-function FFOmitMisc(const S : string) : string;
+function FFTrim(const S : AnsiString) : AnsiString;
+function FFTrimL(const S : AnsiString) : AnsiString;
+function FFTrimR(const S : AnsiString) : AnsiString;
+function FFTrimWhite(const S : AnsiString) : AnsiString;
+function FFTrimWhiteL(const S : AnsiString) : AnsiString;
+function FFTrimWhiteR(const S : AnsiString) : AnsiString;
+function FFOmitMisc(const S : AnsiString) : AnsiString;
   {-Omit whitespace and punctuation characters from a string. }
-function FFAnsiCompareText(const S1, S2 : string) : Integer;           {!!.10}
+function FFAnsiCompareText(const S1, S2 : AnsiString) : Integer;           {!!.10}
   {-Includes an extra failsafe comparison option if SafeAnsiCompare
     is defined }
-function FFAnsiStrIComp(S1, S2: PChar): Integer;                       {!!.10}
+function FFAnsiStrIComp(S1, S2: PAnsiChar): Integer;                       {!!.10}
   {-Includes an extra failsafe comparison option if SafeAnsiCompare
     is defined }
-function FFAnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;    {!!.10}
+function FFAnsiStrLIComp(S1, S2: PAnsiChar; MaxLen: Cardinal): Integer;    {!!.10}
   {-Includes an extra failsafe comparison option if SafeAnsiCompare
     is defined }
 
@@ -1953,39 +1955,39 @@ function FFByteAsHex(Dest : PAnsiChar; B : byte) : PAnsiChar;
 function FFMapBlockSize(const aBlockSize : Longint) : TffBlockSize;
 function FFPointerAsHex(Dest : PAnsiChar; P : pointer) : PAnsiChar;
 procedure FFFlushMemPools;                                             {!!.01}
-procedure FFValCurr(const S : string; var V : Currency; var Code : Integer); {!!.06}
+procedure FFValCurr(const S : AnsiString; var V : Currency; var Code : Integer); {!!.06}
 
 {== File-related utility routines ====================================}{!!.11 - Start}
 {$IFDEF DCC4OrLater}
-function PreGetDiskFreeSpaceEx(Directory     : PChar;
+function PreGetDiskFreeSpaceEx(Directory     : PAnsiChar;
                            var FreeAvailable,
                                TotalSpace    : TLargeInteger;
                                TotalFree     : PLargeInteger)
                                              : Bool; stdcall;
 
-function FFGetDiskFreeSpace(const aDirectory : string) : Integer;
+function FFGetDiskFreeSpace(const aDirectory : AnsiString) : Integer;
   { Returns the amount of free space on the specified drive & directory,
     in kilobytes. }
 
 var
-  FFLLGetDiskFreeSpaceEx : function (Directory     : PChar;
+  FFLLGetDiskFreeSpaceEx : function (Directory     : PAnsiChar;
                                  var FreeAvailable,
                                      TotalSpace    : TLargeInteger;
                                      TotalFree     : PLargeInteger)
                                                    : Bool stdcall;
 {$ELSE}
-function PreGetDiskFreeSpaceEx(Directory     : PChar;
+function PreGetDiskFreeSpaceEx(Directory     : PAnsiChar;
                            var FreeAvailable,
                                TotalSpace    : Integer;
                                TotalFree     : PInteger)
                                              : Bool; stdcall;
 
-function FFGetDiskFreeSpace(const aDirectory : string) : Integer;
+function FFGetDiskFreeSpace(const aDirectory : AnsiString) : Integer;
   { Returns the amount of free space on the specified drive & directory,
     in kilobytes. }
 
 var
-  FFLLGetDiskFreeSpaceEx : function (Directory     : PChar;
+  FFLLGetDiskFreeSpaceEx : function (Directory     : PAnsiChar;
                                  var FreeAvailable,
                                      TotalSpace    : Integer;
                                      TotalFree     : PInteger)
@@ -2572,7 +2574,7 @@ begin
   Result := aI64.iLow;
 end;
 {--------}
-function  ffI64ToStr(const aI64 : TffInt64) : string;
+function  ffI64ToStr(const aI64 : TffInt64) : AnsiString;
 begin
   Result := IntToStr(aI64.iHigh) + IntToStr(aI64.iLow);
 end;
@@ -2826,7 +2828,7 @@ end;
 {End !!.01}
 {--------}
 {begin !!.06}
-procedure FFValCurr(const S : string; var V : Currency; var Code : Integer); {!!.06}
+procedure FFValCurr(const S : AnsiString; var V : Currency; var Code : Integer); {!!.06}
 {
 Evaluate string as a floating point number, emulates Borlandish Pascal's
 Val() intrinsic
@@ -2855,7 +2857,7 @@ const
 
 var
   i        : Integer;        { general purpose counter }
-  P        : PChar;          { current position in evaluated string }
+  P        : PAnsiChar;          { current position in evaluated string }
   NegVal   : Boolean;        { is entire value negative? }
   NegExp   : Boolean;        { is exponent negative? }
   Exponent : LongInt;        { accumulator for exponent }
@@ -2893,7 +2895,7 @@ or one past the end of the string if it terminates prematurely
   { keep going until run out of string or halt if unrecognized or out-of-place
     character detected }
 
-  P := PChar(S);
+  P := PAnsiChar(S);
   for i := 1 to Length(S) do begin
 (*****)
   case State of
@@ -3140,7 +3142,7 @@ const
 function FFCommaizeChL(L : Longint; Ch : AnsiChar) : AnsiString;
   {-Convert a long integer to a string with Ch in comma positions}
 var
-  Temp : string;
+  Temp : AnsiString;
   NumCommas, I, Len : Cardinal;
   Neg : Boolean;
 begin
@@ -3261,7 +3263,7 @@ var
   I : Integer;
   PT : PAnsiChar;
 begin
-  I := StrLen(P);
+  I := AnsiStrings.StrLen(P);
   if I = 0 then
     Exit;
 
@@ -3435,7 +3437,7 @@ var
   Len  : integer;
   Size : longint;
 begin
-  Len := StrLen(S);
+  Len := AnsiStrings.StrLen(S);
   if (Len = 0) then
     Result := nil
   else begin
@@ -3443,7 +3445,7 @@ begin
     FFGetMem(Result, Size);
     PLongInt(Result)^ := Size;
     inc(Result, sizeof(longint));
-    StrCopy(Result, S);
+    AnsiStrings.StrCopy(Result, S);
   end;
 end;
 {--------}
@@ -3480,7 +3482,7 @@ begin
   if (S = nil) then
     Result := ''
   else begin
-    Len := FFMinI(StrLen(S), 255);
+    Len := FFMinI(AnsiStrings.StrLen(S), 255);
     Move(S[0], Result[1], Len);
     Result[0] := AnsiChar(Len);
   end;
@@ -3490,7 +3492,7 @@ function FFStrPasLimit(S : PAnsiChar; MaxCharCount : integer) : TffShStr;
 var
   Len : integer;
 begin
-  Len := FFMinI(StrLen(S), MaxCharCount);
+  Len := FFMinI(AnsiStrings.StrLen(S), MaxCharCount);
   Move(S[0], Result[1], Len);
   Result[0] := AnsiChar(Len);
 end;
@@ -3517,7 +3519,7 @@ begin
   end;
 end;
 {--------}
-function FFTrim(const S : string) : string;
+function FFTrim(const S : AnsiString) : AnsiString;
 var
   StartCh : integer;
   EndCh   : integer;
@@ -3537,7 +3539,7 @@ begin
   end;
 end;
 {--------}
-function FFTrimL(const S : string) : string;
+function FFTrimL(const S : AnsiString) : AnsiString;
 var
   StartCh : integer;
   LenS    : integer;
@@ -3552,7 +3554,7 @@ begin
     Result := Copy(S, StartCh, succ(LenS - StartCh));
 end;
 {--------}
-function FFTrimR(const S : string) : string;
+function FFTrimR(const S : AnsiString) : AnsiString;
 var
   EndCh   : integer;
 begin
@@ -3565,7 +3567,7 @@ begin
     Result := '';
 end;
 {--------}
-function FFTrimWhite(const S : string) : string;
+function FFTrimWhite(const S : AnsiString) : AnsiString;
 var
   StartCh : integer;
   EndCh   : integer;
@@ -3585,7 +3587,7 @@ begin
   end;
 end;
 {--------}
-function FFTrimWhiteL(const S : string) : string;
+function FFTrimWhiteL(const S : AnsiString) : AnsiString;
 var
   StartCh : integer;
   LenS    : integer;
@@ -3600,7 +3602,7 @@ begin
     Result := Copy(S, StartCh, succ(LenS - StartCh));
 end;
 {--------}
-function FFTrimWhiteR(const S : string) : string;
+function FFTrimWhiteR(const S : AnsiString) : AnsiString;
 var
   EndCh   : integer;
 begin
@@ -3613,7 +3615,7 @@ begin
     Result := '';
 end;
 {--------}
-function FFOmitMisc(const S : string) : string;
+function FFOmitMisc(const S : AnsiString) : AnsiString;
 var
   CurCh : integer;
   LenS : integer;
@@ -3628,36 +3630,36 @@ begin
   end;
 end;
 {--------}
-function FFAnsiCompareText(const S1, S2 : string) : Integer;           {!!.10}
+function FFAnsiCompareText(const S1, S2 : AnsiString) : Integer;           {!!.10}
 begin
   {$IFDEF SafeAnsiCompare}
-  Result := AnsiCompareText(AnsiLowerCase(S1), AnsiLowerCase(S2));
+  Result := AnsiStrings.AnsiCompareText(AnsiLowerCase(S1), AnsiLowerCase(S2));
   {$ELSE}
-  Result := AnsiCompareText(S1, S2);
+  Result := AnsiStrings.AnsiCompareText(S1, S2);
   {$ENDIF}
 end;
 {--------}
-function FFAnsiStrIComp(S1, S2: PChar): Integer;                       {!!.10}
+function FFAnsiStrIComp(S1, S2: PAnsiChar): Integer;                       {!!.10}
 begin
   {$IFDEF SafeAnsiCompare}
   Result := AnsiStrIComp(AnsiStrLower(S1), AnsiStrLower(S2));
   {$ELSE}
-  Result := AnsiStrIComp(S1, S2);
+  Result := AnsiStrings.AnsiStrIComp(S1, S2);
   {$ENDIF}
 end;
 {--------}
-function FFAnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;    {!!.10}
+function FFAnsiStrLIComp(S1, S2: PAnsiChar; MaxLen: Cardinal): Integer;    {!!.10}
 begin
   {$IFDEF SafeAnsiCompare}
-  Result := AnsiStrLIComp(AnsiStrLower(S1), AnsiStrLower(S2), MaxLen);
+  Result := AnsiStrings.AnsiStrLIComp(AnsiStrLower(S1), AnsiStrLower(S2), MaxLen);
   {$ELSE}
-  Result := AnsiStrLIComp(S1, S2, MaxLen);
+  Result := AnsiStrings.AnsiStrLIComp(S1, S2, MaxLen);
   {$ENDIF}
 end;
 {====================================================================}
 
 
-{===Wide-String Routines=============================================}
+{===Wide-AnsiString Routines=============================================}
 function FFCharToWideChar(Ch: AnsiChar): WideChar;
 begin
   Result := WideChar(Ord(Ch));
@@ -3843,7 +3845,7 @@ begin
   {we don't support wildcards}
   if (Pos('*', Path) <> 0) or (Pos('?', Path) <> 0) then
     Exit;
-  Attr := GetFileAttributes(FFStrPCopy(PathZ, Path));
+  Attr := GetFileAttributesA(FFStrPCopy(PathZ, Path));
   if (Attr <> TffWord32(-1)) and ((Attr and FILE_ATTRIBUTE_DIRECTORY) <> 0) then
     Result := true;
 end;
@@ -3854,7 +3856,7 @@ var
   EFNZ        : TffMaxPathZ;
   FileNamePos : PAnsiChar;
 begin
-  GetFullPathName(FFStrPCopy(FNZ, FN), sizeof(EFNZ), EFNZ, FileNamePos);
+  GetFullPathNameA(FFStrPCopy(FNZ, FN), sizeof(EFNZ), EFNZ, FileNamePos);
   Result := FFStrPasLimit(EFNZ, pred(sizeof(TffFullFileName)));
 end;
 {--------}
@@ -3934,14 +3936,14 @@ begin
   FillChar(SR, sizeof(SR), 0);
   SR.srFindType := ItemType;
   SR.srFindAttr := Attr;
-  SR.srHandle := Windows.FindFirstFile(FFStrPCopy(PathZ, PFN), SR.srData);
+  SR.srHandle := Windows.FindFirstFileA(FFStrPCopy(PathZ, PFN), SR.srData);
   if (SR.srHandle = INVALID_HANDLE_VALUE) then
     Result := GetLastError
   else begin
     GotAnError := false;
     while (not GotAnError) and
           (not TypeAndAttrMatch(SR.srData.dwFileAttributes, SR.srFindType, SR.srFindAttr)) do
-      if not Windows.FindNextFile(SR.srHandle, SR.srData) then
+      if not Windows.FindNextFileA(SR.srHandle, SR.srData) then
         GotAnError := true;
     if GotAnError then begin
       Windows.FindClose(SR.srHandle);
@@ -3958,11 +3960,11 @@ function FFFindNext(var SR : TffSearchRec) : integer;
 var
   GotAnError : boolean;
 begin
-  if Windows.FindNextFile(SR.srHandle, SR.srData) then begin
+  if Windows.FindNextFileA(SR.srHandle, SR.srData) then begin
     GotAnError := false;
     while (not GotAnError) and
           (not TypeAndAttrMatch(SR.srData.dwFileAttributes, SR.srFindType, SR.srFindAttr)) do
-      if not Windows.FindNextFile(SR.srHandle, SR.srData) then
+      if not Windows.FindNextFileA(SR.srHandle, SR.srData) then
         GotAnError := true;
     if GotAnError then begin
       Result := GetLastError;
@@ -4000,7 +4002,7 @@ var
   CurDirZ : TffMaxPathZ;
   Len     : integer;
 begin
-  Len := GetCurrentDirectory(sizeof(CurDirZ), CurDirZ);
+  Len := GetCurrentDirectoryA(sizeof(CurDirZ), CurDirZ);
   if (Len = 0) then
     Result := ''
   else
@@ -4072,7 +4074,7 @@ function FFSetCurDir(Path : TffPath) : boolean;
 var
   DirZ : TffMaxPathZ;
 begin
-  Result := SetCurrentDirectory(FFStrPCopy(DirZ, Path));
+  Result := SetCurrentDirectoryA(FFStrPCopy(DirZ, Path));
 end;
 {====================================================================}
 
@@ -4501,12 +4503,12 @@ end;
 {$ENDIF}
 {End !!.03}
 {--------}
-function TffComponent.GetVersion : string;
+function TffComponent.GetVersion : AnsiString;
 begin
   Result := Format('%5.4f', [ffVersionNumber / 10000.0]);
 end;
 {--------}
-procedure TffComponent.SetVersion(const Value : string);
+procedure TffComponent.SetVersion(const Value : AnsiString);
 begin
   {do nothing}
 end;
@@ -7009,7 +7011,7 @@ begin
 {--------}
 {Begin !!.11}
 {$IFDEF DCC4OrLater}
-function PreGetDiskFreeSpaceEx(Directory     : PChar;
+function PreGetDiskFreeSpaceEx(Directory     : PAnsiChar;
                            var FreeAvailable,
                                TotalSpace    : TLargeInteger;
                                TotalFree     : PLargeInteger)
@@ -7020,7 +7022,7 @@ var
   FreeClusters,
   TotalClusters     : LongWord;
 {$ELSE}
-function PreGetDiskFreeSpaceEx(Directory     : PChar;
+function PreGetDiskFreeSpaceEx(Directory     : PAnsiChar;
                            var FreeAvailable,
                                TotalSpace    : Integer;
                                TotalFree     : PInteger)
@@ -7031,10 +7033,10 @@ var
   FreeClusters,
   TotalClusters     : DWord;
 {$ENDIF}
-  Root : string;                                                       {!!.12}
+  Root : AnsiString;                                                       {!!.12}
 begin
   Root := ExtractFileDrive(Directory) + '\';                           {!!.12}
-  Result := GetDiskFreeSpaceA(PChar(Root),                             {!!.12}
+  Result := GetDiskFreeSpaceA(PAnsiChar(Root),                             {!!.12}
                               SectorsPerCluster,
                               BytesPerSector,
                               FreeClusters,
@@ -7048,10 +7050,10 @@ begin
                            SysErrorMessage(GetLastError));
 end;
 
-function FFGetDiskFreeSpace(const aDirectory : string) : Integer;
+function FFGetDiskFreeSpace(const aDirectory : AnsiString) : Integer;
 var
   Kernel : THandle;
-  Path   : array[0..255] of char;
+  Path   : array[0..255] of AnsiChar;
 
   {needed for GetDiskFreeSpaceEx}
   {$IFDEF DCC4OrLater}
@@ -7075,7 +7077,7 @@ begin
   end;  { if }
 {End !!.12}
 
-  StrPCopy(Path, aDirectory);
+  AnsiStrings.StrPCopy(Path, aDirectory);
   if FFLLGetDiskFreeSpaceEx(Path, FreeAvailable, TotalSpace, nil) then
     Result := FreeAvailable div 1024
   else

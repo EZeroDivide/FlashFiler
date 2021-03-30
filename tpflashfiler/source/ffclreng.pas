@@ -37,6 +37,7 @@ uses
   dialogs,
   Classes,
   SysUtils,
+  AnsiStrings,
   ffllbase,
   fflldict,
   ffdtmsgq,
@@ -378,7 +379,7 @@ type
          object is resposible for keeping this value up to date.}
     public
       constructor Create(aClient    : TFFProxyClient;
-                         aLocation  : string;
+                         aLocation  : AnsiString;
                          aOpenMode  : TffOpenMode;
                          aShareMode : TffShareMode;
                          aTimeout   : Longint;
@@ -394,7 +395,7 @@ type
       function SetTimeout(const aTimeout : Longint) : TffResult;
       function SQLAlloc(const aTimeout : longInt;
                           var aStmtID : TffSqlStmtID) : TffResult;
-      function SQLExecDirect(aQueryText  : PChar;
+      function SQLExecDirect(aQueryText  : PAnsiChar;
                              aOpenMode   : TffOpenMode;
                              aTimeout    : longInt;
                          var aCursorID   : TffCursorID;
@@ -479,7 +480,7 @@ type
       {State Variables}
       prDictionary   : TffDataDictionary;
       prIndexID      : Longint;
-      prIndexName    : string;
+      prIndexName    : AnsiString;
       prIsSQLCursor  : boolean;
       prPhyRecSize   : Longint;
     protected
@@ -487,9 +488,9 @@ type
     public
       constructor Create(aDatabase  : TFFProxyDatabase;
                          aCursorID  : TffCursorID;  {used by CursorClone, otherwise set to 0}
-                         aTableName : string;
+                         aTableName : AnsiString;
                          aForServer : Boolean;
-                         aIndexName : string;
+                         aIndexName : AnsiString;
                          aIndexID   : Longint;
                          aOpenMode  : TffOpenMode;
                          aShareMode : TffShareMode;
@@ -530,13 +531,13 @@ type
                      var aBLOB) : TFFResult;
       function CursorClone(aOpenMode : TFFOpenMode;
                        var aNewCursorID : TFFCursorID) : TFFResult;
-      function CompareBookmarks(aBookmark1  : PffByteArray;
-                                aBookmark2  : PffByteArray;
+      function CompareBookmarks(const aBookmark1  : TffBookmark;
+                                const aBookmark2  : TffBookmark;
                             var aCompResult : Longint) : TffResult;
       function CopyRecords(aSrcCursor : TffProxyCursor;                {!!.02}
                            aCopyBLOBs : Boolean) : TffResult;          {!!.02}
       function DeleteRecords : TffResult;                              {!!.06}
-      function GetBookmark(aBookmark : PffByteArray) : TffResult;
+      function GetBookmark(const aBookmark : TffBookmark) : TffResult;
       function GetBookmarkSize(var aSize : Longint) : TffResult;
 {Begin !!.03}
       function ListBLOBFreeSpace(const aInMemory : Boolean;
@@ -559,7 +560,7 @@ type
                         aKeyIncl2    : Boolean) : TffResult;
       function SetTimeout(aTimeout : Longint) : TffResult;
       function SetToBegin : TffResult;
-      function SetToBookmark(aBookmark : PffByteArray) : TffResult;
+      function SetToBookmark(const aBookmark : TffBookmark) : TffResult;
       function SetToCursor(aSourceCursor : TFFProxyCursor) : TffResult;
       function SetToEnd : TffResult;
       function SetToKey(aSearchAction : TffSearchKeyAction;
@@ -661,7 +662,7 @@ type
               var aCursorID : TffCursorID;
                   aStream   : TStream) : TffResult;
 
-    function Prepare(aQueryText: PChar; aStream : TStream) : TffResult;
+    function Prepare(aQueryText: PAnsiChar; aStream : TStream) : TffResult;
 
     function SetParams(aNumParams : Word;
                       aParamDescs : Pointer;
@@ -739,13 +740,13 @@ type
     public
 {Begin !!.07}
       { Event logging }
-      procedure Log(const aMsg : string); override;
-        {-Use this method to log a string to the event log. }
+      procedure Log(const aMsg : AnsiString); override;
+        {-Use this method to log a tring to the event log. }
 
-      procedure LogAll(const Msgs : array of string); override;
+      procedure LogAll(const Msgs : array of AnsiString); override;
         {-Use this method to log multiple strings to the event log. }
 
-      procedure LogFmt(const aMsg : string; args : array of const); override;
+      procedure LogFmt(const aMsg : AnsiString; args : array of const); override;
         {-Use this method to log a formatted string to the event log. }
 {End !!.07}
 
@@ -996,8 +997,8 @@ type
                        var aNewCursorID : TffCursorID) : TffResult; override;
       function CursorClose(aCursorID : TffCursorID) : TffResult; override;
       function CursorCompareBookmarks(aCursorID : TffCursorID;
-                                      aBookmark1,
-                                      aBookmark2  : PffByteArray;
+                                      const aBookmark1,
+                                      aBookmark2  : TffBookmark;
                                   var aCompResult : longint) : TffResult; override;
 {Begin !!.02}
       function CursorCopyRecords(aSrcCursorID,
@@ -1006,7 +1007,7 @@ type
 {End !!.02}
       function CursorDeleteRecords(aCursorID : TffCursorID) : TffResult; override;  {!!.06}
       function CursorGetBookmark(aCursorID : TffCursorID;
-                                 aBookmark : PffByteArray) : TffResult; override;
+                                 const aBookmark : TffBookmark) : TffResult; override;
 
       function CursorGetBookmarkSize(aCursorID : TffCursorID;
                                  var aSize     : Longint) : TffResult; override;
@@ -1034,7 +1035,7 @@ type
                                const aTimeout  : Longint) : TffResult; override;
       function CursorSetToBegin(aCursorID : TffCursorID) : TffResult; override;
       function CursorSetToBookmark(aCursorID : TffCursorID;
-                                   aBookmark : PffByteArray
+                                   const aBookmark : TffBookmark
                                    ) : TffResult; override;
       function CursorSetToCursor(aDestCursorID : TffCursorID;
                                  aSrcCursorID : TffCursorID
@@ -1148,14 +1149,14 @@ type
                        aStream   : TStream) : TffResult; override;
       function SQLExecDirect(aClientID   : TffClientID;
                              aDatabaseID : TffDatabaseID;
-                             aQueryText  : PChar;
+                             aQueryText  : PAnsiChar;
                              aTimeout    : longInt;
                              aOpenMode   : TffOpenMode;
                          var aCursorID   : TffCursorID;
                              aStream     : TStream) : TffResult; override;
       function SQLFree(aStmtID : TffSqlStmtID) : TffResult; override;
       function SQLPrepare(aStmtID    : TffSqlStmtID;
-                          aQueryText : PChar;
+                          aQueryText : PAnsiChar;
                           aStream    : TStream) : TffResult; override;
       function SQLSetParams(aStmtID     : TffSqlStmtID;
                             aNumParams  : word;
@@ -2232,7 +2233,7 @@ end;
 
 {-TFFProxyDatabase-------------------------------------------------------------}
 constructor TFFProxyDatabase.Create(aClient    : TFFProxyClient;
-                                    aLocation  : string;
+                                    aLocation  : AnsiString;
                                     aOpenMode  : TffOpenMode;
                                     aShareMode : TffShareMode;
                                     aTimeout   : Longint;
@@ -2479,7 +2480,7 @@ begin
 
 end;
 {----------}
-function TffProxyDatabase.SQLExecDirect(aQueryText  : PChar;
+function TffProxyDatabase.SQLExecDirect(aQueryText  : PAnsiChar;
                                         aOpenMode   : TffOpenMode;
                                         aTimeout    : longInt;
                                     var aCursorID   : TffCursorID;
@@ -2492,7 +2493,7 @@ var
   SvrCursorID : TffCursorID;
 begin
   Assert(Assigned(aStream));
-  QueryLen := StrLen(aQueryText);
+  QueryLen := AnsiStrings.StrLen(aQueryText);
   ReqLen := SizeOf(TffnmSQLExecDirectReq) - sizeOf(TffVarMsgField) +   {!!.05}
             QueryLen + 1;                                              {!!.05}
   FFGetZeroMem(Request, ReqLen);
@@ -3339,8 +3340,8 @@ begin
   end;
 end;
 {----------}
-function TFFProxyCursor.CompareBookmarks(aBookmark1  : PffByteArray;
-                                         aBookmark2  : PffByteArray;
+function TFFProxyCursor.CompareBookmarks(const aBookmark1  : TffBookmark;
+                                         const aBookmark2  : TffBookmark;
                                      var aCompResult : Longint) : TffResult;
 var
   Request  : PffnmCursorCompareBMsReq;
@@ -3355,9 +3356,11 @@ begin
     { Initialize Request }
     Request^.CursorID     := SrCursorID;
     Request^.BookmarkSize := BookmarkSize;
-    Move(aBookMark1^, Request^.Bookmark1, BookmarkSize);
-    pBM2 := PffByteArray(PAnsiChar(@Request^.BookMark1) + BookmarkSize);
-    Move(aBookMark2^, pBM2^, BookmarkSize);
+    // Move(aBookMark1^, Request^.Bookmark1, BookmarkSize);
+    Move(aBookMark1, Request^.Bookmark1, BookmarkSize);
+    pBM2 := PffByteArray(PByte(@Request^.BookMark1) + BookmarkSize);
+    // Move(aBookMark2^, pBM2^, BookmarkSize);
+    Move(aBookMark2, pBM2^, BookmarkSize);
     
     Reply := nil;
     Result  := Client.ProcessRequest(ffnmCursorCompareBMs,
@@ -3381,9 +3384,9 @@ end;
 {----------}
 constructor TFFProxyCursor.Create(aDatabase  : TFFProxyDatabase;
                                   aCursorID  : TffCursorID;
-                                  aTableName : string;
+                                  aTableName : AnsiString;
                                   aForServer : Boolean;
-                                  aIndexName : string;
+                                  aIndexName : AnsiString;
                                   aIndexID   : Longint;
                                   aOpenMode  : TffOpenMode;
                                   aShareMode : TffShareMode;
@@ -3635,7 +3638,7 @@ begin
 end;
 {End !!.06}
 {----------}
-function TFFProxyCursor.GetBookmark(aBookmark : PffByteArray) : TffResult;
+function TFFProxyCursor.GetBookmark(const aBookmark : TffBookmark) : TffResult;
 var
   Request  : TffnmCursorGetBookMarkReq;
   Reply    : Pointer;
@@ -3656,7 +3659,8 @@ begin
                                   nmdByteArray);
 
   if ResultOK(Result) then
-    Move(Reply^, aBookmark^, BookmarkSize);                            {!!.05}
+    // Move(Reply^, aBookmark^, BookmarkSize);                            {!!.05}
+    Move(Reply^, PByte(aBookmark)^, BookmarkSize);                            {!!.05}
 
   if Assigned(Reply) then
     FFFreeMem(Reply, ReplyLen);
@@ -4463,7 +4467,7 @@ begin
     FFFreeMem(Reply, ReplyLen);
 end;
 {----------}
-function TFFProxyCursor.SetToBookmark(aBookmark : PffByteArray) : TffResult;
+function TFFProxyCursor.SetToBookmark(const aBookmark : TffBookmark) : TffResult;
 var
   Request  : PffnmCursorSetToBookmarkReq;
   ReqLen   : Longint;
@@ -4476,7 +4480,8 @@ begin
     { Initialize Request }
     Request^.CursorID     := SrCursorID;
     Request^.BookmarkSize := BookMarkSize;
-    Move(aBookmark^, Request^.Bookmark, BookMarkSize);
+    // Move(aBookmark^, Request^.Bookmark, BookMarkSize);
+    Move(PByte(aBookmark)^, Request^.Bookmark, BookMarkSize);
 
     Reply := nil;
     Result := Client.ProcessRequest(ffnmCursorSetToBookmark,
@@ -4875,7 +4880,7 @@ begin
 
 end;
 {----------}
-function TffProxySQLStmt.Prepare(aQueryText: PChar;
+function TffProxySQLStmt.Prepare(aQueryText: PAnsiChar;
                                  aStream : TStream) : TffResult;
 var
   QueryLen : Longint;
@@ -4885,7 +4890,7 @@ var
 begin
   Assert(Assigned(aStream));
   
-  QueryLen := StrLen(aQueryText);
+  QueryLen := AnsiStrings.StrLen(aQueryText);
   ReqLen := SizeOf(TffnmSQLPrepareReq) - SizeOf(TffVarMsgField) + QueryLen + 1;
   FFGetZeroMem(Request, ReqLen);
   try
@@ -5175,17 +5180,17 @@ begin
 end;
 {Begin !!.07}
 {--------}
-procedure TffRemoteServerEngine.Log(const aMsg : string);
+procedure TffRemoteServerEngine.Log(const aMsg : AnsiString);
 begin
   FEventLog.WriteString(aMsg);
 end;
 {--------}
-procedure TffRemoteServerEngine.LogAll(const Msgs : array of string);
+procedure TffRemoteServerEngine.LogAll(const Msgs : array of AnsiString);
 begin
   FEventLog.WriteStrings(Msgs);
 end;
 {--------}
-procedure TffRemoteServerEngine.LogFmt(const aMsg : string; args : array of const);
+procedure TffRemoteServerEngine.LogFmt(const aMsg : AnsiString; args : array of const);
 begin
   FEventLog.WriteString(format(aMsg, args));
 end;
@@ -5402,8 +5407,8 @@ end;
 {----------}
 function TFFRemoteServerEngine.CursorCompareBookmarks(
                                                     aCursorID   : TffCursorID;
-                                                    aBookmark1  : PffByteArray;
-                                                    aBookmark2  : PffByteArray;
+                                                    const aBookmark1  : TffBookmark;
+                                                    const aBookmark2  : TffBookmark;
                                                 var aCompResult : Longint
                                                      ) : TffResult;
 var
@@ -5444,7 +5449,7 @@ end;
 {End !!.06}
 {----------}
 function TFFRemoteServerEngine.CursorGetBookmark(aCursorID : TffCursorID;
-                                                 aBookmark : PffByteArray
+                                                 const aBookmark : TffBookmark
                                                 ) : TffResult;
 var
   Cursor : TFFProxyCursor;
@@ -5570,7 +5575,7 @@ begin
 end;
 {----------}
 function TFFRemoteServerEngine.CursorSetToBookmark(aCursorID : TffCursorID;
-                                                   aBookmark : PffByteArray
+                                                   const aBookmark : TffBookmark
                                                   ) : TffResult;
 var
   Cursor : TFFProxyCursor;
@@ -6337,7 +6342,7 @@ end;
 {----------}
 function TFFRemoteServerEngine.SQLExecDirect(aClientID   : TffClientID;
                                              aDatabaseID : TffDatabaseID;
-                                             aQueryText  : PChar;
+                                             aQueryText  : PAnsiChar;
                                              aTimeout    : longInt;
                                              aOpenMode   : TffOpenMode;
                                          var aCursorID   : TffCursorID;
@@ -6364,7 +6369,7 @@ begin
 end;
 {----------}
 function TFFRemoteServerEngine.SQLPrepare(aStmtID    : TffSqlStmtID;
-                                          aQueryText : PChar;
+                                          aQueryText : PAnsiChar;
                                           aStream    : TStream) : TffResult;
 var
   Statement : TffProxySQLStmt;

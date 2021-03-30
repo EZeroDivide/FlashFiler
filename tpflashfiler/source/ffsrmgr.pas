@@ -46,7 +46,7 @@ const
   DefReportError = False;
 
   {id at start of binary resource; must match SRMC}
-  ResID : array[0..3] of char = 'STR0';
+  ResID : array[0..3] of Ansichar = 'STR0';
 
 type
   EffStringResourceError = class(Exception);
@@ -63,7 +63,7 @@ type
 
   PResourceRec = ^TResourceRec;
   TResourceRec = record
-    id : array[0..3] of char;
+    id : array[0..3] of Ansichar;
     count : LongInt;
     index : TIndexArray;
   end;
@@ -92,7 +92,7 @@ type
     destructor Destroy; override;
     procedure ChangeResource(Instance : THandle; const ResourceName : string);
 
-    function GetAsciiZ(Ident : TInt32; Buffer : PChar; BufChars : Integer) : PChar;
+    function GetAsciiZ(Ident : TInt32; Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
 
     function GetIdentAtIndex(const anIndex : longInt) : integer;
 
@@ -177,8 +177,7 @@ begin
   Result := Buffer;
 end;
 {--------}
-function TffStringResource.GetAsciiZ(Ident : TInt32;
-  Buffer : PChar; BufChars : Integer) : PChar;
+function TffStringResource.GetAsciiZ(Ident : TInt32; Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
 var
   P : PIndexRec;
   Src : PWideChar;
@@ -191,7 +190,7 @@ begin
       OLen := 0
 
     else begin
-      Src := PWideChar(PChar(srP)+P^.ofs);
+      Src := PWideChar(PAnsiChar(srP)+P^.ofs);
       Len := P^.len;
 
       {see if entire string fits in Buffer}
@@ -245,7 +244,7 @@ begin
       Len := P^.len;
       OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
       SetLength(Result, OLen);
-      WideCharToMultiByte(CP_ACP, 0, Src, Len, PChar(Result), OLen, nil, nil);
+      WideCharToMultiByte(CP_ACP, 0, Src, Len, PAnsiChar(Result), OLen, nil, nil);
     end;
   finally
     srUnLock;
@@ -272,7 +271,7 @@ begin
       Len := P^.len;
       OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
       SetLength(Result, OLen);
-      WideCharToMultiByte(CP_ACP, 0, Src, Len, PChar(Result), OLen, nil, nil);
+      WideCharToMultiByte(CP_ACP, 0, Src, Len, PAnsiChar(Result), OLen, nil, nil);
     end;
   finally
     srUnLock;

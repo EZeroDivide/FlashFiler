@@ -36,6 +36,7 @@ interface
 uses
   Windows,
   SysUtils,
+  AnsiStrings,
   Classes,
   Forms,
   Messages,
@@ -510,7 +511,7 @@ function TffSrFilter.sfCompareValue(var aFirst      : TffNodeValue;
     end;
   end;
   {------}
-  function ConvertStringValue(var aNode : TffNodeValue; var P : PChar) : boolean;
+  function ConvertStringValue(var aNode : TffNodeValue; var P : PAnsiChar) : boolean;
   var
     StrZ : TffStringZ;
   begin
@@ -527,19 +528,19 @@ function TffSrFilter.sfCompareValue(var aFirst      : TffNodeValue;
         case TffFieldType(nvType) of
           fftChar :
             begin
-              P := StrAlloc(2);
-              P[0] := char(nvValue^);
+              P := AnsiStrAlloc(2);
+              P[0] := AnsiChar(nvValue^);
               P[1] := #0;
             end;
           fftShortString,
           fftShortAnsiStr :
             begin
-              P := StrNew(StrPCopy(StrZ, TffShStr(nvValue^)));
+              P := AnsiStrings.StrNew(AnsiStrings.StrPCopy(StrZ, TffShStr(nvValue^)));
             end;
           fftNullString,
           fftNullAnsiStr :
             begin
-              P := StrNew(nvValue);
+              P := AnsiStrings.StrNew(nvValue);
             end;
         else
           Result := false;
@@ -614,13 +615,13 @@ begin
         Result := FFAnsiStrLIComp(PChar1, PChar2, aPartLen)           {!!.06}{!!.07}
     else
       if (aPartLen = 0) then
-        Result := AnsiStrComp(PChar1, PChar2)                         {!!.06}
+        Result := AnsiStrings.AnsiStrComp(PChar1, PChar2)                         {!!.06}
       else
-        Result := AnsiStrLComp(PChar1, PChar2, aPartLen);             {!!.06}
+        Result := AnsiStrings.AnsiStrLComp(PChar1, PChar2, aPartLen);             {!!.06}
     if not aFirst.nvIsConst then
-      StrDispose(PChar1);
+      AnsiStrings.StrDispose(PChar1);
     if not aSecond.nvIsConst then
-      StrDispose(PChar2);
+      AnsiStrings.StrDispose(PChar2);
     Exit;                     
   end;
 

@@ -422,7 +422,7 @@ end;
 {--------}
 function EffDatabaseError.deGetErrorString : string;
 var
-  PC : array [0..127] of char;
+  PC : array [0..127] of AnsiChar;
 begin
   if (deErrorCode >= ffDSCNSTLow) and (deErrorCode <= ffDSCNSTHigh) then
     ffStrResDataSet.GetASCIIZ(deErrorCode, PC, sizeOf(DBIMSG))

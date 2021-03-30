@@ -32,9 +32,9 @@ type
   TFFSQLScanner = class(TCocoRScanner)
   private
     FOwner : TFFSQL;
-function CharInIgnoreSet(const Ch : char) : boolean;
+function CharInIgnoreSet(const Ch : AnsiChar) : boolean;
 procedure CheckLiteral(var Sym : integer);
-function Equal(s : string) : boolean;
+function Equal(s : AnsiString) : boolean;
     function Comment : boolean;
   protected
     procedure NextCh; override;
@@ -57,10 +57,10 @@ function Equal(s : string) : boolean;
     symSet : array[0..7] of SymbolSet; // symSet[0] = allSyncSyms
 
     function GetBuildDate : TDateTime;
-    function GetVersion : string;
-    function GetVersionStr : string;
-    procedure SetVersion(const Value : string);
-    function GetVersionInfo : string;
+    function GetVersion : AnsiString;
+    function GetVersionStr : AnsiString;
+    procedure SetVersion(const Value : AnsiString);
+    function GetVersionInfo : AnsiString;
     function _In(var s : SymbolSet; x : integer) : boolean;
     procedure InitSymSet;
 
@@ -163,7 +163,7 @@ function Equal(s : string) : boolean;
     procedure _SimpleTableRefOrParenTableExp (Parent: TFFSqlNode; var TableRef: TffSqlTableRef);
     procedure _InsertColumnList (Parent: TFFSqlNode;
            var InsertColumnList : TFFSqlInsertColumnList);
-    procedure _SQLName (var aName : string);
+    procedure _SQLName (var aName : AnsiString);
     procedure _OrderList (Parent: TFFSqlNode;
            var OrderList : TFFSqlOrderList);
     procedure _GroupColumnList (Parent: TFFSqlNode; 
@@ -193,7 +193,7 @@ function Equal(s : string) : boolean;
     procedure Final;
     procedure InitReservedWordList;
     
-    function CheckSQLName(const SQLNameString : string) : string;
+    function CheckSQLName(const SQLNameString : AnsiString) : AnsiString;
     function IsColumnList : Boolean;
     function Matches(n : integer) : Boolean;
     function IsSymbol(n: integer): boolean; {mwr}
@@ -215,7 +215,7 @@ function Equal(s : string) : boolean;
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
 
-    function ErrorStr(const ErrorCode : integer; const Data : string) : string; override;
+    function ErrorStr(const ErrorCode : integer; const Data : AnsiString) : AnsiString; override;
     procedure Execute;
     function GetScanner : TFFSQLScanner;
     procedure Parse;
@@ -225,8 +225,8 @@ function Equal(s : string) : boolean;
     property SourceStream;
     property Successful;
     property BuildDate : TDateTime read GetBuildDate;
-    property VersionStr : string read GetVersionStr;
-    property VersionInfo : string read GetVersionInfo;
+    property VersionStr : AnsiString read GetVersionStr;
+    property VersionInfo : AnsiString read GetVersionInfo;
 
   public
     property RootNode : TFFSqlStatement read FRootNode write FRootNode;
@@ -242,7 +242,7 @@ function Equal(s : string) : boolean;
     property ClearSourceStream;
     property GenListWhen;
     property SourceFileName;
-property Version : string read GetVersion write SetVersion;
+property Version : AnsiString read GetVersion write SetVersion;
 
     property OnCustomError;
     property OnError;
@@ -407,7 +407,7 @@ begin
     fRootNode.ReduceStrength;       
 end;
 
-function TFFSQL.CheckSQLName(const SQLNameString : string) : string;
+function TFFSQL.CheckSQLName(const SQLNameString : AnsiString) : AnsiString;
 var
   Idx : integer;
 begin                                                               
@@ -434,7 +434,7 @@ end; {Expect}
 
 function TFFSQL.IsColumnList : boolean;
 var
-  BS: string;
+  BS: AnsiString;
 begin
   Result := False;
   BS := Bookmark;
@@ -456,7 +456,7 @@ end;
 
 function TFFSQL.IsParenNonJoinTableExp : boolean;
 var
-  BS: string;
+  BS: AnsiString;
 begin
   Result := False;
   BS := Bookmark;
@@ -473,7 +473,7 @@ end;
 
 function TFFSQL.IsNonJoinTableExp : boolean;
 var
-  BS: string;
+  BS: AnsiString;
 begin
   Result := False;
   BS := Bookmark;
@@ -503,7 +503,7 @@ end;
 
 function TFFSQL.IsParenJoinTableExp : boolean;
 var
-  BS: string;
+  BS: AnsiString;
 begin
   Result := False;
   BS := Bookmark;
@@ -520,7 +520,7 @@ end;
 
 function TFFSQL.IsJoinTableExp : boolean;
 var
-  BS: string;
+  BS: AnsiString;
 begin
   Result := False;
   BS := Bookmark;
@@ -576,7 +576,7 @@ var
   level : integer;
   startLine : integer;
   oldLineStart : longint;
-  CommentStr : string;
+  CommentStr : AnsiString;
 begin
   level := 1;
   startLine := CurrLine;
@@ -740,13 +740,13 @@ end;
 end;
 end;  { Comment }
 
-function TFFSQLScanner.CharInIgnoreSet(const Ch : char) : boolean;
+function TFFSQLScanner.CharInIgnoreSet(const Ch : AnsiChar) : boolean;
 begin
 Result := (Ch = ' ')    OR
 ((CurrInputCh >= CHR(1)) AND (CurrInputCh <= ' '));
 end; {CharInIgnoreSet}
 
-function TFFSQLScanner.Equal(s : string) : boolean;
+function TFFSQLScanner.Equal(s : AnsiString) : boolean;
 var
   i : integer;
   q : longint;
@@ -1532,7 +1532,7 @@ FReservedWordList.Free;
   inherited;
 end; {Destroy}
 
-function TFFSQL.ErrorStr(const ErrorCode : integer; const Data : string) : string;
+function TFFSQL.ErrorStr(const ErrorCode : integer; const Data : AnsiString) : AnsiString;
 begin
   case ErrorCode of
        0 : Result := 'EOF expected';
@@ -1771,7 +1771,7 @@ begin
   _In := x mod setsize in s[x div setsize];
 end;  {_In}
 
-procedure TFFSQL._SimpleAlias (var  TableRef:  TffSqlTableRef);var  aSQLName:  string;
+procedure TFFSQL._SimpleAlias (var  TableRef:  TffSqlTableRef);var  aSQLName:  AnsiString;
 begin
 if (fCurrentInputSymbol = ASSym) then begin
 Get;
@@ -2652,7 +2652,7 @@ end;
 
 procedure TFFSQL._GroupColumn (Parent:  TFFSqlNode;
 var  Col  :  TFFSqlGroupColumn);var
-   aSQLName  :  string;
+   aSQLName  :  AnsiString;
 begin
 Col  :=  TFFSqlGroupColumn.Create(Parent);
 aSQLName  :=  '';
@@ -2666,7 +2666,7 @@ Col.FieldName  :=  aSQLName;
 end;
 
 procedure TFFSQL._FieldRef (Parent:  TFFSqlNode;  var  FieldRef:  TFFSqlFieldRef);var
-   aSQLName  :  string;
+   aSQLName  :  AnsiString;
 begin
 FieldRef  :=  TFFSqlFieldRef.Create(Parent);
 aSQLName  :=  '';
@@ -2749,7 +2749,7 @@ end;
 end;
 
 procedure TFFSQL._Column (Parent:  TFFSqlNode;
-var  Col  :  TFFSqlColumn);var  ColumnName  :  string;
+var  Col  :  TFFSqlColumn);var  ColumnName  :  AnsiString;
 begin
 Col  :=  TFFSqlColumn.Create(Parent);
 _SQLName(ColumnName);
@@ -2799,7 +2799,7 @@ SelectionList.AddSelection(Selection);
 end;
 
 procedure TFFSQL._OrderColumn (Parent:  TFFSqlNode;  var  Col  :  TFFSqlOrderColumn);var
-   aSQLName  :  string;
+   aSQLName  :  AnsiString;
 begin
 Col  :=  TFFSqlOrderColumn.Create(Parent);
 aSQLName  :=  '';
@@ -2839,7 +2839,7 @@ end;
 
 procedure TFFSQL._UpdateItem (Parent:  TFFSqlNode;
 var  UpdateItem  :  TFFSqlUpdateItem);var  Simplex  :  TFFSqlSimpleExpression;
-var  aSQLName  :  string;
+var  aSQLName  :  AnsiString;
 begin
 UpdateItem  :=  TFFSqlUpdateItem.Create(Parent);
 _SQLName(aSQLName);
@@ -2870,7 +2870,7 @@ UpdateList.AddItem(UpdateItem);
 end;
 end;
 
-procedure TFFSQL._SimpleTableRef (Parent:  TFFSqlNode;  var  TableRef:  TffSqlTableRef);var  aSQLName  :  string;
+procedure TFFSQL._SimpleTableRef (Parent:  TFFSqlNode;  var  TableRef:  TffSqlTableRef);var  aSQLName  :  AnsiString;
 begin
 TableRef  :=  TFFSqlTableRef.Create(Parent);
 _SQLName(aSQLName);
@@ -2930,7 +2930,7 @@ end;
 end;
 
 procedure TFFSQL._InsertItem (Parent:  TFFSqlNode;
-var  InsertItem  :  TFFSqlInsertItem);var  aSQLName:  string;
+var  InsertItem  :  TFFSqlInsertItem);var  aSQLName:  AnsiString;
 begin
 InsertItem  :=  TFFSqlInsertItem.Create(Parent);
 _SQLName(aSQLName);
@@ -2990,7 +2990,7 @@ NonJoinTableTerm.NonJoinTablePrimary  :=  NonJoinTablePrimary;
 end;
 
 procedure TFFSQL._UsingItem (Parent:  TFFSqlNode;
-var  UsingItem  :  TFFSqlUsingItem);var  aSQLName:  string;
+var  UsingItem  :  TFFSqlUsingItem);var  aSQLName:  AnsiString;
 begin
 UsingItem  :=  TFFSqlUsingItem.Create(Parent);
 _SQLName(aSQLName);
@@ -3010,7 +3010,7 @@ UsingList.AddItem(UsingItem);
 end;
 end;
 
-procedure TFFSQL._TableRef (Parent:  TFFSqlNode;  var  TableRef:  TffSqlTableRef);var  aSQLName  :  string;
+procedure TFFSQL._TableRef (Parent:  TFFSqlNode;  var  TableRef:  TffSqlTableRef);var  aSQLName  :  AnsiString;
 var  TableExp:  TffSqlTableExp;
 var  ColumnList  :  TFFSqlInsertColumnList;
 begin
@@ -3123,7 +3123,7 @@ end;
 end;
 
 procedure TFFSQL._SimpleTableRefOrParenTableExp (Parent:  TFFSqlNode;  var  TableRef:  TffSqlTableRef);var  TableExp:  TffSqlTableExp;
-var  aSQLName  :  string;
+var  aSQLName  :  AnsiString;
 begin
 TableRef  :=  TFFSqlTableRef.Create(Parent);
 if (fCurrentInputSymbol = identSym) OR
@@ -3167,7 +3167,7 @@ InsertColumnList.AddItem(InsertItem);
 end;
 end;
 
-procedure TFFSQL._SQLName (var  aName  :  string);begin
+procedure TFFSQL._SQLName (var  aName  :  AnsiString);begin
 if (fCurrentInputSymbol = identSym) then begin
 Get;
 aName  :=  LexString;
@@ -3324,7 +3324,7 @@ end;
 end;
 
 procedure TFFSQL._InsertStatement (Parent:  TFFSqlNode;
-var  InsertSt  :  TFFSqlINSERT);var  aSQLName:  string;
+var  InsertSt  :  TFFSqlINSERT);var  aSQLName:  AnsiString;
 var  InsertColumnList:  TffSqlInsertColumnList;
 var  TableExp:  TffSqlTableExp;
 
@@ -3442,24 +3442,24 @@ begin
   Result := BDate + EncodeTime(Hour, Min, 0 ,0);
 end;
 
-function TFFSQL.GetVersion : string;
+function TFFSQL.GetVersion : AnsiString;
 begin
   Result := '0.0.0.102';
 end;
 
-function TFFSQL.GetVersionStr : string;
+function TFFSQL.GetVersionStr : AnsiString;
 begin
   Result := '0.0.0.102';
 end;
 
-function TFFSQL.GetVersionInfo : string;
+function TFFSQL.GetVersionInfo : AnsiString;
 begin
   Result := 'Comment: ' + #13#10 +
 'Author: ' + #13#10 +
 'Copyright: ';
 end;
 
-procedure TFFSQL.SetVersion(const Value : string);
+procedure TFFSQL.SetVersion(const Value : AnsiString);
 begin
   // This is a read only property. However, we want the value
   // to appear in the Object Inspector during design time.

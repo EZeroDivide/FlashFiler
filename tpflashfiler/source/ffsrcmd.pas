@@ -37,6 +37,7 @@ uses
   Classes,
   Windows,
   SysUtils,
+  AnsiStrings,
   ffconst,
   ffhash,                                                              {!!.05}
   ffllbase,
@@ -604,7 +605,7 @@ end;
 procedure TffServerCommandHandler.nmCursorCompareBMs(var Msg : TffDataMessage);
 var
   Error : TffResult;
-  BM2   : PffByteArray;
+  BM2   : TffBookmark;
   Reply : TffnmCursorCompareBMsRpy;
 begin
   with Msg, PffnmCursorCompareBMsReq(dmData)^ do begin
@@ -614,12 +615,12 @@ begin
                  format(csCursorID, [CursorID]),
                  format('  BM Size  %d', [BookmarkSize])]);
 
-    BM2 := PffByteArray(PAnsiChar(@Bookmark1) + BookmarkSize);
+    BM2 := TffBookmark(PByte(@Bookmark1) + BookmarkSize);
     if FLogEnabled then begin
       ichLogBlock('  BM1', @Bookmark1, BookmarkSize);
       ichLogBlock('  BM2', BM2, BookmarkSize);
     end;
-    Error := FServerEngine.CursorCompareBookmarks(CursorID, @Bookmark1, BM2, Reply.CompareResult);
+    Error := FServerEngine.CursorCompareBookmarks(CursorID, TffBookmark(@Bookmark1), BM2, Reply.CompareResult);
     if (Reply.CompareResult < 0) then
       Reply.CompareResult := -1
     else if (Reply.CompareResult > 0) then
@@ -636,7 +637,7 @@ end;
 {--------}
 procedure TffServerCommandHandler.nmCursorCopyRecords(var Msg : TffDataMessage);
 var
-  CopyBLOBsStr : string;
+  CopyBLOBsStr : AnsiString;
   Error : TffResult;
 begin
   with Msg, PffnmCursorCopyRecordsReq(dmData)^ do begin
@@ -725,7 +726,7 @@ end;
 procedure TffServerCommandHandler.nmCursorGetBookmark(var Msg : TffDataMessage);
 var
   Error : TffResult;
-  BM    : PffByteArray;
+  BM    : TffBookmark;
 begin
   with Msg, PffnmCursorGetBookmarkReq(dmData)^ do begin
     if FLogEnabled then
@@ -932,7 +933,7 @@ begin
       ichLogBlock('  Bookmark', @Bookmark, BookmarkSize);
     end;
 
-    Error := FServerEngine.CursorSetToBookmark(CursorID, @Bookmark);
+    Error := FServerEngine.CursorSetToBookmark(CursorID, TffBookmark(@Bookmark));
 
     if FLogEnabled then
       ichLogFmt(csErr, [Error]);
@@ -2280,6 +2281,7 @@ var
   MsgData : PffByteArray;
   SubMsg  : PffsmHeader;
   Buffer  : PffByteArray;
+  Bookm   : TffBookmark;
 begin
   with Msg, PffnmRecordGetReq(dmData)^ do begin
     
@@ -2330,15 +2332,15 @@ begin
 
 
       if (BookmarkSize <> 0) then begin
-        Buffer := PffByteArray(@SubMsg^.smhData);
-        Error := FServerEngine.CursorGetBookmark(CursorID, Buffer);
+        Bookm := TffBookmark(@SubMsg^.smhData);
+        Error := FServerEngine.CursorGetBookmark(CursorID, Bookm);
       end else
         Error := DBIERR_INVALIDBOOKMARK;
 
 
       if FLogEnabled then begin
         if (Error = 0) then
-          ichLogBlock('  Bookmark', Buffer, BookmarkSize);
+          ichLogBlock('  Bookmark', Bookm, BookmarkSize);
         ichLogFmt(csErr, [Error]);
       end;
 
@@ -2403,6 +2405,7 @@ var
   MsgData : PffByteArray;
   SubMsg  : PffsmHeader;
   Buffer  : PffByteArray;
+  Bookm   : TffBookmark;
 begin
   with Msg, PffnmRecordGetForKeyReq(dmData)^ do begin
     
@@ -2458,15 +2461,15 @@ begin
         ichLog('CursorGetBookmark (multipart)');
 
       if (BookmarkSize <> 0) then begin
-        Buffer := PffByteArray(@SubMsg^.smhData);
-        Error := FServerEngine.CursorGetBookmark(CursorID, Buffer);
+        Bookm := TffBookmark(@SubMsg^.smhData);
+        Error := FServerEngine.CursorGetBookmark(CursorID, Bookm);
       end
       else
         Error := DBIERR_INVALIDBOOKMARK;
 
       if FLogEnabled then begin
         if (Error = 0) then
-          ichLogBlock('  Bookmark', Buffer, BookmarkSize);
+          ichLogBlock('  Bookmark', Bookm, BookmarkSize);
         ichLogFmt(csErr, [Error]);
       end;
 
@@ -2490,6 +2493,7 @@ var
   MsgData : PffByteArray;
   SubMsg  : PffsmHeader;
   Buffer  : PffByteArray;
+  Bookm   : TffBookmark;
 begin
   with Msg, PffnmRecordGetForKeyReq2(dmData)^ do begin
     
@@ -2551,15 +2555,15 @@ begin
         ichLog('CursorGetBookmark (multipart)');
 
       if (BookmarkSize <> 0) then begin
-        Buffer := PffByteArray(@SubMsg^.smhData);
-        Error := FServerEngine.CursorGetBookmark(CursorID, Buffer);
+        Bookm := TffBookmark(@SubMsg^.smhData);
+        Error := FServerEngine.CursorGetBookmark(CursorID, Bookm);
       end
       else
         Error := DBIERR_INVALIDBOOKMARK;
 
       if FLogEnabled then begin
         if (Error = 0) then
-          ichLogBlock('  Bookmark', Buffer, BookmarkSize);
+          ichLogBlock('  Bookmark', Bookm, BookmarkSize);
         ichLogFmt(csErr, [Error]);
       end;
 
@@ -2583,6 +2587,7 @@ var
   MsgData : PffByteArray;
   SubMsg  : PffsmHeader;
   Buffer  : PffByteArray;
+  Bookm   : TffBookmark;
 begin
   with Msg, PffnmRecordGetNextReq(dmData)^ do begin
     
@@ -2631,15 +2636,15 @@ begin
         ichLog('CursorGetBookmark (multipart)');
 
       if (BookmarkSize <> 0) then begin
-        Buffer := PffByteArray(@SubMsg^.smhData);
-        Error := FServerEngine.CursorGetBookmark(CursorID, Buffer);
+        Bookm := TffBookmark(@SubMsg^.smhData);
+        Error := FServerEngine.CursorGetBookmark(CursorID, Bookm);
       end
       else
         Error := DBIERR_INVALIDBOOKMARK;
 
       if FLogEnabled then begin
         if (Error = 0) then
-          ichLogBlock('  Bookmark', Buffer, BookmarkSize);
+          ichLogBlock('  Bookmark', Bookm, BookmarkSize);
         ichLogFmt(csErr, [Error]);
       end;
 
@@ -2663,6 +2668,7 @@ var
   MsgData : PffByteArray;
   SubMsg  : PffsmHeader;
   Buffer  : PffByteArray;
+  Bookm   : TffBookmark;
 begin
   with Msg, PffnmRecordGetPrevReq(dmData)^ do begin
     
@@ -2711,15 +2717,15 @@ begin
         ichLog('CursorGetBookmark (multipart)');
 
       if (BookmarkSize <> 0) then begin
-        Buffer := PffByteArray(@SubMsg^.smhData);
-        Error := FServerEngine.CursorGetBookmark(CursorID, Buffer);
+        Bookm := TffBookmark(@SubMsg^.smhData);
+        Error := FServerEngine.CursorGetBookmark(CursorID, Bookm);
       end
       else
         Error := DBIERR_INVALIDBOOKMARK;
 
       if FLogEnabled then begin
         if (Error = 0) then
-          ichLogBlock('  Bookmark', Buffer, BookmarkSize);
+          ichLogBlock('  Bookmark', Bookm, BookmarkSize);
         ichLogFmt(csErr, [Error]);
       end;
 
@@ -2743,6 +2749,7 @@ var
   MsgData : PffByteArray;
   SubMsg  : PffsmHeader;
   Buffer  : PffByteArray;
+  Bookm   : TffBookmark;
 begin
   with Msg, PffnmRecordInsertReq( dmData )^ do begin
 
@@ -2803,12 +2810,12 @@ begin
       if FLogEnabled then
         ichLog('CursorGetBookmark (multipart)');
 
-      Buffer := PffByteArray(@SubMsg^.smhData);
-      Error := FServerEngine.CursorGetBookmark(CursorID, Buffer);
+      Bookm := TffBookmark(@SubMsg^.smhData);
+      Error := FServerEngine.CursorGetBookmark(CursorID, Bookm);
 
       if FLogEnabled then begin
         if (Error = 0) then
-          ichLogBlock('  Bookmark', Buffer, BookmarkSize);
+          ichLogBlock('  Bookmark', Bookm, BookmarkSize);
         ichLogFmt(csErr, [Error]);
       end;
 
@@ -2885,6 +2892,7 @@ var
   MsgData : PffByteArray;
   SubMsg  : PffsmHeader;
   Buffer  : PffByteArray;
+  Bookm   : TffBookmark;
 begin
   with Msg, PffnmRecordModifyReq( dmData )^ do begin
     
@@ -2945,12 +2953,12 @@ begin
       if FLogEnabled then
         ichLog('CursorGetBookmark (multipart)');
 
-      Buffer := PffByteArray(@SubMsg^.smhData);
-      Error := FServerEngine.CursorGetBookmark(CursorID, Buffer);
+      Bookm := TffBookmark(@SubMsg^.smhData);
+      Error := FServerEngine.CursorGetBookmark(CursorID, Bookm);
 
       if FLogEnabled then begin
         if (Error = 0) then
-          ichLogBlock('  Bookmark', Buffer, BookmarkSize);
+          ichLogBlock('  Bookmark', Bookm, BookmarkSize);
         ichLogFmt(csErr, [Error]);
       end;
 
@@ -3413,7 +3421,7 @@ var
   DbID : TffDatabaseID;
   FailSafe : Boolean;
   CursorIDList : TffPointerList;
-  CursorIDStr : string;
+  CursorIDStr : AnsiString;
 begin
   with Msg do begin
     CursorIDList := TffPointerList.Create;
@@ -3530,7 +3538,7 @@ procedure TffServerCommandHandler.nmSQLExecDirect(var Msg : TffDataMessage);
 var
   aBuffer : pointer;
   Error : TffResult;
-  QueryText : PChar;
+  QueryText : PAnsiChar;
   CursorID : TffCursorID;
   Stream : TMemoryStream;
   StreamSize : longInt;
@@ -3542,7 +3550,7 @@ begin
       ichLogAll(['SQLExecDirect',
                  format(csClientID, [dmClientID]),
                  format('  DBase ID [%d]', [DatabaseID]),
-                 format('  Query    [%s]', [StrPas(QueryText)]),
+                 format('  Query    [%s]', [AnsiStrings.StrPas(QueryText)]),
                  format('  Timeout  %d', [Timeout]),
                  format('  OpenMode [%d]', [Ord(OpenMode)])]);
 
@@ -3602,7 +3610,7 @@ begin
       ichLogAll(['SQLPrepare',
                  format(csClientID, [dmClientID]),
                  format('  StmtID   %d', [StmtID]),
-                 format('  Query    [%s]', [StrPas(@Query)])]);
+                 format('  Query    [%s]', [AnsiStrings.StrPas(@Query)])]);
 
     Stream := TMemoryStream.Create;
     try

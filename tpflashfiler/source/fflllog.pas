@@ -73,17 +73,17 @@ type
 
     procedure Flush; virtual;                                          {!!.06}
 
-    procedure WriteBlock(const S : string; Buf : pointer;
+    procedure WriteBlock(const S : AnsiString; Buf : pointer;
                          BufLen : TffMemSize); virtual; abstract;
       { Use this method to write a block of data to the event log. }
 
-    procedure WriteString(const aMsg : string); virtual; abstract;
+    procedure WriteString(const aMsg : AnsiString); virtual; abstract;
       { Used to write a string to the event log. }
 
-    procedure WriteStringFmt(const aMsg : string; args : array of const); virtual; abstract;
+    procedure WriteStringFmt(const aMsg : AnsiString; args : array of const); virtual; abstract;
       { Used to write a formatted string to the event log. }
 
-    procedure WriteStrings(const Msgs : array of string); virtual; abstract;
+    procedure WriteStrings(const Msgs : array of AnsiString); virtual; abstract;
       { Used to write a block of strings to the event log. }
       
     { Properties }
@@ -123,7 +123,7 @@ type
     FWriteBlockData : Boolean;                                         {!!.06}
 
     procedure elTruncateCheck(const Stream : TStream);                 {!!.06}
-    procedure elWritePrim(const LogStr : string); virtual;             {!!.05}
+    procedure elWritePrim(const LogStr : AnsiString); virtual;             {!!.05}
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
@@ -131,11 +131,11 @@ type
     procedure Flush; override;                                         {!!.06}
       { Flushes the contents of the cache to the log. }                {!!.06}
 
-    procedure WriteBlock(const S : string; Buf : pointer;
+    procedure WriteBlock(const S : AnsiString; Buf : pointer;
                          BufLen : TffMemSize); override;
-    procedure WriteString(const aMsg : string); override;
-    procedure WriteStringFmt(const aMsg : string; args : array of const); override;
-    procedure WriteStrings(const Msgs : array of string); override;
+    procedure WriteString(const aMsg : AnsiString); override;
+    procedure WriteStringFmt(const aMsg : AnsiString; args : array of const); override;
+    procedure WriteStrings(const Msgs : array of AnsiString); override;
 
   published
 
@@ -308,7 +308,7 @@ procedure TffEventLog.elTruncateCheck(const Stream : TStream);
 var
   TruncBytes,
   MaxBytes   : Integer;
-  TempStr    : string;
+  TempStr    : AnsiString;
 begin
   { Convert MaxSize to Bytes. }
   MaxBytes := (FMaxSize * ffcl_1MB);
@@ -338,7 +338,7 @@ begin
 end;
 {--------}
 {End !!.06}
-procedure TffEventLog.elWritePrim(const LogStr : string);
+procedure TffEventLog.elWritePrim(const LogStr : AnsiString);
 {Rewritten !!.06}
 var
   FileStm : TFileStream;
@@ -377,7 +377,7 @@ end;
 procedure TffEventLog.Flush;
 var
   Inx : Integer;
-  aStr : string;
+  aStr : AnsiString;
   FileStm : TFileStream;
   LogMode : Word;
 begin
@@ -408,12 +408,12 @@ begin
 end;
 {End !!.06}
 {--------}
-procedure TffEventLog.WriteBlock(const S : string; Buf : pointer;
+procedure TffEventLog.WriteBlock(const S : AnsiString; Buf : pointer;
                                  BufLen : TffMemSize);
 const
   HexPos : array [0..15] of byte =
     (1, 4, 7, 10, 14, 17, 20, 23, 27, 30, 33, 36, 40, 43, 46, 49);
-  HexChar : array [0..15] of char =
+  HexChar : array [0..15] of AnsiChar =
     '0123456789abcdef';
 var
   B : PffByteArray absolute Buf;
@@ -448,7 +448,7 @@ begin
             Line[HexPos[j]+1] := HexChar[Work and $F];
             if (Work < 32) or (Work >= $80) then
               Work := ord('.');
-            Line[54+j] := char(Work);
+            Line[54+j] := AnsiChar(Work);
           end;
           elWritePrim(ffcsSpaces13 + Line + ffcCRLF);
           dec(BufLen, ThisWidth);
@@ -461,9 +461,9 @@ begin
 {End !!.06}
 end;
 {--------}
-procedure TffEventLog.WriteString(const aMsg : string);
+procedure TffEventLog.WriteString(const aMsg : AnsiString);
 var
-  LogStr : string;
+  LogStr : AnsiString;
 begin
 
   { Bail if logging isn't turned on }
@@ -483,9 +483,9 @@ begin
   end;
 end;
 {--------}
-procedure TffEventLog.WriteStringFmt(const aMsg : string; args : array of const);
+procedure TffEventLog.WriteStringFmt(const aMsg : AnsiString; args : array of const);
 var
-  LogStr : string;
+  LogStr : AnsiString;
 begin
 
   { Bail if logging isn't turned on }
@@ -505,11 +505,11 @@ begin
   end;
 end;
 {--------}
-procedure TffEventLog.WriteStrings(const Msgs : array of string);
+procedure TffEventLog.WriteStrings(const Msgs : array of AnsiString);
 var
   Index : longInt;
-  LogStr : string;
-  MsgStr : string;
+  LogStr : AnsiString;
+  MsgStr : AnsiString;
 begin
 
   { Bail if logging isn't turned on }

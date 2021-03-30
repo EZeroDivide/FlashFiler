@@ -39,6 +39,7 @@ uses
   classes,
   windows,
   sysutils,
+  AnsiStrings,
   ffconst,
   ffllbase,
   fflleng,
@@ -76,7 +77,7 @@ type
                        var aCursorID: TffCursorID;
                        var aRowsAffected: Integer;
                        var aRecordsRead: Integer): TffResult; override;{!!.10}
-      function Parse(aQuery: PChar): Boolean; override;                {!!.10}
+      function Parse(aQuery: PAnsiChar): Boolean; override;                {!!.10}
       function SetParams(aNumParams: Word; aParamInfo: PffSqlParamInfoList; aDataBuffer: PffByteArray): TffResult;
     end;
 
@@ -121,7 +122,7 @@ type
       function ExecDirect(anEngine    : TffBaseServerEngine;
                           aClientID   : TffClientID;
                           aDatabaseID : TffDatabaseID;
-                          aQueryText  : PChar;
+                          aQueryText  : PAnsiChar;
                           aOpenMode   : TffOpenMode;
                           aTimeout    : Longint;
                       var aCursorID   : TffCursorID;
@@ -134,7 +135,7 @@ type
       {- Implementation of DbiQFree }
 
       function Prepare(aStmtID: TffSqlStmtID;
-                       aQueryText: PChar;
+                       aQueryText: PAnsiChar;
                        aStream : TStream): TffResult; override;
       {- Implementation of DbiQPrepare }
 
@@ -238,14 +239,14 @@ begin
 end;
 {End !!.11}
 {--------}
-function TffSqlPreparedStatement.Parse(aQuery: PChar): Boolean;
+function TffSqlPreparedStatement.Parse(aQuery: PAnsiChar): Boolean;
 begin
   if spsParser.RootNode <> nil then begin
     spsParser.RootNode.Free;
     spsParser.RootNode := nil;
   end;
-  spsParser.SourceStream.SetSize(StrLen(aQuery) + 1);
-  move(aQuery^, spsParser.SourceStream.Memory^, StrLen(aQuery) + 1);
+  spsParser.SourceStream.SetSize(AnsiStrings.StrLen(aQuery) + 1);
+  move(aQuery^, spsParser.SourceStream.Memory^, AnsiStrings.StrLen(aQuery) + 1);
   spsParser.Execute;
   Result := spsParser.Successful;
 end;
@@ -273,7 +274,7 @@ begin
       fftBoolean :
         Value := Boolean(FieldBuffer^[0]);
       fftChar :
-        Value := Char(FieldBuffer^[0]);
+        Value := AnsiChar(FieldBuffer^[0]);
       fftWideChar :
         begin
           WC := PWideChar(FieldBuffer)^;
@@ -321,9 +322,9 @@ begin
       fftShortAnsiStr :
         Value := PShortString(FieldBuffer)^;
       fftNullString :
-        Value := StrPas(PChar(FieldBuffer));
+        Value := AnsiStrings.StrPas(PAnsiChar(FieldBuffer));
       fftNullAnsiStr :
-        Value := string(PChar(FieldBuffer));
+        Value := string(PAnsiChar(FieldBuffer));
       fftWideString :
         Value := WideString(PWideChar(FieldBuffer));
 {Begin !!.13}
@@ -433,7 +434,7 @@ end;
 function TffSqlEngine.ExecDirect(anEngine    : TffBaseServerEngine;
                                  aClientID   : TffClientID;
                                  aDatabaseID : TffDatabaseID;
-                                 aQueryText  : PChar;
+                                 aQueryText  : PAnsiChar;
                                  aOpenMode   : TffOpenMode;
                                  aTimeout    : Longint;
                              var aCursorID   : TffCursorID;
@@ -577,7 +578,7 @@ end;
 {End !!.01}
 {--------}
 function TffSqlEngine.Prepare(aStmtID: TffSqlStmtID;
-                              aQueryText: PChar;
+                              aQueryText: PAnsiChar;
                               aStream : TStream) : TffResult;
 var
   L : Integer;
