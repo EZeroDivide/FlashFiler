@@ -232,6 +232,8 @@ type
   TffInt64 = record                         {64-bit integer for Delphi 3}
     iLow : TffWord32;
     iHigh : TffWord32;
+    class operator Implicit(Value: TffInt64): UInt64;
+    class operator Implicit(Value: UInt64): TffInt64;
   end;
 
   PffBlock = ^TffBlock; { A FlashFiler file consists of a set of blocks. }
@@ -2364,7 +2366,7 @@ end;
 {--------}
 function FFCmpI64(const a, b : TffInt64) : Integer;                    {!!.06 - Rewritten}
 begin
-  if (a.iHigh = b.iHigh) then
+ if (a.iHigh = b.iHigh) then
     Result := FFCmpDW(a.iLow, b.iLow)
   else
     Result := FFCmpDW(a.iHigh, b.iHigh);
@@ -7085,6 +7087,18 @@ begin
                            SysErrorMessage(GetLastError));
 end;
 {End !!.11}                                                                   
+
+{ TffInt64 }
+
+class operator TffInt64.Implicit(Value: TffInt64): UInt64;
+begin
+  Result := UInt64(Value);
+end;
+
+class operator TffInt64.Implicit(Value: UInt64): TffInt64;
+begin
+  Move (Value, Result, 8);
+end;
 
 initialization
   InitializeUnit;
