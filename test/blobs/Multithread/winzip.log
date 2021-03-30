@@ -1,0 +1,1930 @@
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\FFExp155.zip" 
+Extracting to "C:\FF\explorer\"
+Use Path: yes   Overlay Files: yes
+cl:
+"E:\FF2BigFileTest.zip" 
+Action: Add (and replace) files Include subfolders: no Save full path: no
+Searching ...
+Adding FF2BigFileTest.ffd
+Adding FF2BigFileTest.ffd
+Warning: could not open for reading: E:/FF2BigFileTest.ffd
+Warning: could not open for reading: E:/FF2BigFileTest.ffd
+copying Zip file
+cl:
+"E:\FF2BigFileTest.zip" 
+Action: Add (and replace) files Include subfolders: no Save full path: no
+Searching ...
+Adding FF2BigFileTest.ffd
+Adding FF2BigFileTest.ffd
+copying Zip file
+cl:
+"D:\MoreTestTables\BigTest.zip" 
+Action: Add (and replace) files Include subfolders: no Save full path: no
+Searching ...
+Adding BigTest.FFD
+Adding BigTest.FFD
+copying Zip file
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\FF2BigFileTest.zip" 
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+Extracting to "E:\split\"
+Use Path: yes   Overlay Files: yes
+cl:
+"D:\MoreTestTables\BigTest.zip" 
+Action: Add (and replace) files Include subfolders: no Save full path: no
+Searching ...
+Adding BigTest.FFD
+Adding BigTest.FFD
+copying Zip file
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\FF2BigFileTest.zip" 
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+Extracting to "E:\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\mytable.zip" 
+Extracting to "D:\MoreTestTables\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\nthema.zip" 
+Extracting to "D:\MoreTestTables\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\nthema.zip" 
+Extracting to "D:\MoreTestTables\"
+Use Path: yes   Overlay Files: yes
+Action: Add (and replace) files Include subfolders: yes Save full path: yes
+Searching ...
+Adding NTHEMA.FFD
+Adding MoreTestTables/NTHEMA.FFD
+Adding NTHEMA.BLB
+Adding MoreTestTables/NTHEMA.BLB
+copying Zip file
+cl:
+"D:\Ff2.zip" 
+Action: Add (and replace) files Include subfolders: yes Save full path: no
+Searching ...
+Adding 
+Adding BDE Export/
+Adding beta.CNT
+Adding BDE Export/beta.CNT
+Adding BETA.dpr
+Adding BDE Export/BETA.dpr
+Adding BETA.FHB
+Adding BDE Export/BETA.FHB
+Adding BETA.HLP
+Adding BDE Export/BETA.HLP
+Adding BETA16.HLP
+Adding BDE Export/BETA16.HLP
+Adding vssver.scc
+Adding BDE Export/vssver.scc
+Adding fmMain.pas
+Adding BDE Export/fmMain.pas
+Adding fmMain.dfm
+Adding BDE Export/fmMain.dfm
+Adding 
+Adding BDE Transfer/
+Adding bde2ff.CNT
+Adding BDE Transfer/bde2ff.CNT
+Adding bde2ff.dpr
+Adding BDE Transfer/bde2ff.dpr
+Adding BDE2FF.FHB
+Adding BDE Transfer/BDE2FF.FHB
+Adding bde2ff.HLP
+Adding BDE Transfer/bde2ff.HLP
+Adding BDE2FF16.HLP
+Adding BDE Transfer/BDE2FF16.HLP
+Adding BDE2FFX.DPR
+Adding BDE Transfer/BDE2FFX.DPR
+Adding DGIMPDOX.DFM
+Adding BDE Transfer/DGIMPDOX.DFM
+Adding FMMAINX.DFM
+Adding BDE Transfer/FMMAINX.DFM
+Adding uConfig.pas
+Adding BDE Transfer/uConfig.pas
+Adding vssver.scc
+Adding BDE Transfer/vssver.scc
+Adding dgImpDo.pas
+Adding BDE Transfer/dgImpDo.pas
+Adding dgImpDo.dfm
+Adding BDE Transfer/dgImpDo.dfm
+Adding fmMain.pas
+Adding BDE Transfer/fmMain.pas
+Adding fmMain.dfm
+Adding BDE Transfer/fmMain.dfm
+Adding 
+Adding BDE2FF/
+Adding Bde2ff.cnt
+Adding BDE2FF/Bde2ff.cnt
+Adding Bde2ff.dpr
+Adding BDE2FF/Bde2ff.dpr
+Adding Bde2ff.hlp
+Adding BDE2FF/Bde2ff.hlp
+Adding Bde2ff16.hlp
+Adding BDE2FF/Bde2ff16.hlp
+Adding Bde2ffx.dpr
+Adding BDE2FF/Bde2ffx.dpr
+Adding Dgimpdox.dfm
+Adding BDE2FF/Dgimpdox.dfm
+Adding Fmmainx.dfm
+Adding BDE2FF/Fmmainx.dfm
+Adding Uconfig.pas
+Adding BDE2FF/Uconfig.pas
+Adding vssver.scc
+Adding BDE2FF/vssver.scc
+Adding Dgimpdo.pas
+Adding BDE2FF/Dgimpdo.pas
+Adding Dgimpdo.dfm
+Adding BDE2FF/Dgimpdo.dfm
+Adding Fmmain.pas
+Adding BDE2FF/Fmmain.pas
+Adding Fmmain.dfm
+Adding BDE2FF/Fmmain.dfm
+Adding 
+Adding BETA/
+Adding Beta.cnt
+Adding BETA/Beta.cnt
+Adding Beta.dpr
+Adding BETA/Beta.dpr
+Adding Beta.hlp
+Adding BETA/Beta.hlp
+Adding Beta16.hlp
+Adding BETA/Beta16.hlp
+Adding vssver.scc
+Adding BETA/vssver.scc
+Adding Fmmain.pas
+Adding BETA/Fmmain.pas
+Adding Fmmain.dfm
+Adding BETA/Fmmain.dfm
+Adding 
+Adding CBUILDR3/
+Adding FFAbout.hpp
+Adding CBUILDR3/FFAbout.hpp
+Adding FFClBase.hpp
+Adding CBUILDR3/FFClBase.hpp
+Adding FFClCfg.hpp
+Adding CBUILDR3/FFClCfg.hpp
+Adding FFClComm.hpp
+Adding CBUILDR3/FFClComm.hpp
+Adding FFClconv.hpp
+Adding CBUILDR3/FFClconv.hpp
+Adding FFCldbas.hpp
+Adding CBUILDR3/FFCldbas.hpp
+Adding FFClEng.hpp
+Adding CBUILDR3/FFClEng.hpp
+Adding FFClFLDG.hpp
+Adding CBUILDR3/FFClFLDG.hpp
+Adding FFClintf.hpp
+Adding CBUILDR3/FFClintf.hpp
+Adding FFClreg.hpp
+Adding CBUILDR3/FFClreg.hpp
+Adding FFClSess.hpp
+Adding CBUILDR3/FFClSess.hpp
+Adding FFClTabl.hpp
+Adding CBUILDR3/FFClTabl.hpp
+Adding FFClTbRg.hpp
+Adding CBUILDR3/FFClTbRg.hpp
+Adding FFClver.hpp
+Adding CBUILDR3/FFClver.hpp
+Adding FFConst.hpp
+Adding CBUILDR3/FFConst.hpp
+Adding FFDB.hpp
+Adding CBUILDR3/FFDB.hpp
+Adding FFDBBase.hpp
+Adding CBUILDR3/FFDBBase.hpp
+Adding FFDtMsgQ.hpp
+Adding CBUILDR3/FFDtMsgQ.hpp
+Adding FFHash.hpp
+Adding CBUILDR3/FFHash.hpp
+Adding FFLLbase.hpp
+Adding CBUILDR3/FFLLbase.hpp
+Adding FFLLDict.hpp
+Adding CBUILDR3/FFLLDict.hpp
+Adding FFLLexcp.hpp
+Adding CBUILDR3/FFLLexcp.hpp
+Adding FFLLNB.hpp
+Adding CBUILDR3/FFLLNB.hpp
+Adding FFLLnbct.hpp
+Adding CBUILDR3/FFLLnbct.hpp
+Adding FFLLProt.hpp
+Adding CBUILDR3/FFLLProt.hpp
+Adding FFLLwsck.hpp
+Adding CBUILDR3/FFLLwsck.hpp
+Adding FFLLwsct.hpp
+Adding CBUILDR3/FFLLwsct.hpp
+Adding FFLOGDLG.hpp
+Adding CBUILDR3/FFLOGDLG.hpp
+Adding FFNetMsg.hpp
+Adding CBUILDR3/FFNetMsg.hpp
+Adding FFSrMgr.hpp
+Adding CBUILDR3/FFSrMgr.hpp
+Adding FFSrVDLG.hpp
+Adding CBUILDR3/FFSrVDLG.hpp
+Adding FFStDate.hpp
+Adding CBUILDR3/FFStDate.hpp
+Adding FFTTbapi.hpp
+Adding CBUILDR3/FFTTbapi.hpp
+Adding FFTTcfg.hpp
+Adding CBUILDR3/FFTTcfg.hpp
+Adding FFTTcoll.hpp
+Adding CBUILDR3/FFTTcoll.hpp
+Adding FFTTdbas.hpp
+Adding CBUILDR3/FFTTdbas.hpp
+Adding FFTTEng.hpp
+Adding CBUILDR3/FFTTEng.hpp
+Adding FFTTFilt.hpp
+Adding CBUILDR3/FFTTFilt.hpp
+Adding FFTTSess.hpp
+Adding CBUILDR3/FFTTSess.hpp
+Adding FFTTStmt.hpp
+Adding CBUILDR3/FFTTStmt.hpp
+Adding FFTTTabl.hpp
+Adding CBUILDR3/FFTTTabl.hpp
+Adding FFTTType.hpp
+Adding CBUILDR3/FFTTType.hpp
+Adding FFTTUtil.hpp
+Adding CBUILDR3/FFTTUtil.hpp
+Adding FFWWreg.hpp
+Adding CBUILDR3/FFWWreg.hpp
+Adding FFWWtabl.hpp
+Adding CBUILDR3/FFWWtabl.hpp
+Adding vssver.scc
+Adding CBUILDR3/vssver.scc
+Adding FFTTBDTB.pas
+Adding FFTTBDTB.pas
+Adding 
+Adding cl32/
+Adding 
+Adding cl32/standard/
+Adding Bde.dcu
+Adding cl32/standard/Bde.dcu
+Adding Db.dcu
+Adding cl32/standard/Db.dcu
+Adding vssver.scc
+Adding cl32/standard/vssver.scc
+Adding 
+Adding cl32/dual/
+Adding Bde.dcu
+Adding cl32/dual/Bde.dcu
+Adding Db.dcu
+Adding cl32/dual/Db.dcu
+Adding FFTTBDPr.DCU
+Adding cl32/dual/FFTTBDPr.DCU
+Adding vssver.scc
+Adding cl32/dual/vssver.scc
+Adding 
+Adding Client Comm Utility/
+Adding ffcomms.dpr
+Adding Client Comm Utility/ffcomms.dpr
+Adding uFFComms.pas
+Adding Client Comm Utility/uFFComms.pas
+Adding uFFComms.dfm
+Adding Client Comm Utility/uFFComms.dfm
+Adding ffcomms.rc
+Adding Client Comm Utility/ffcomms.rc
+Adding vssver.scc
+Adding Client Comm Utility/vssver.scc
+Adding 
+Adding Crystal/
+Adding FFCRDEFN.INC
+Adding Crystal/FFCRDEFN.INC
+Adding FFCRDRVR.R32
+Adding Crystal/FFCRDRVR.R32
+Adding P2BFF154.DLL
+Adding Crystal/P2BFF154.DLL
+Adding P2BFF154.DPR
+Adding Crystal/P2BFF154.DPR
+Adding PDBFF154.DLL
+Adding Crystal/PDBFF154.DLL
+Adding PDBFF154.DPR
+Adding Crystal/PDBFF154.DPR
+Adding README.TXT
+Adding Crystal/README.TXT
+Adding FFCRUTIL.PAS
+Adding Crystal/FFCRUTIL.PAS
+Adding FFCRMAIN.PAS
+Adding Crystal/FFCRMAIN.PAS
+Adding FFCRLTYP.PAS
+Adding Crystal/FFCRLTYP.PAS
+Adding FFCRDRVR.RC
+Adding Crystal/FFCRDRVR.RC
+Adding FFCREXPO.INC
+Adding Crystal/FFCREXPO.INC
+Adding FFCRPTYP.PAS
+Adding Crystal/FFCRPTYP.PAS
+Adding FFCRTYPE.PAS
+Adding Crystal/FFCRTYPE.PAS
+Adding vssver.scc
+Adding Crystal/vssver.scc
+Adding 
+Adding Crystal Reports Driver/
+Adding ffcrdefn.inc
+Adding Crystal Reports Driver/ffcrdefn.inc
+Adding P2BFF154.DPR
+Adding Crystal Reports Driver/P2BFF154.DPR
+Adding PDBFF154.DPR
+Adding Crystal Reports Driver/PDBFF154.DPR
+Adding readme.txt
+Adding Crystal Reports Driver/readme.txt
+Adding 
+Adding Crystal Reports Driver/Original/
+Adding DATE2YMD.CPP
+Adding Crystal Reports Driver/Original/DATE2YMD.CPP
+Adding DATE2YMD.HPP
+Adding Crystal Reports Driver/Original/DATE2YMD.HPP
+Adding DBTYPES.HPP
+Adding Crystal Reports Driver/Original/DBTYPES.HPP
+Adding DLLCFG.H
+Adding Crystal Reports Driver/Original/DLLCFG.H
+Adding PDBBDE2.CPP
+Adding Crystal Reports Driver/Original/PDBBDE2.CPP
+Adding PHYSDB.HPP
+Adding Crystal Reports Driver/Original/PHYSDB.HPP
+Adding PHYSTYPE.HPP
+Adding Crystal Reports Driver/Original/PHYSTYPE.HPP
+Adding TYPES.HPP
+Adding Crystal Reports Driver/Original/TYPES.HPP
+Adding YMD2DATE.CPP
+Adding Crystal Reports Driver/Original/YMD2DATE.CPP
+Adding YMD2DATE.HPP
+Adding Crystal Reports Driver/Original/YMD2DATE.HPP
+Adding vssver.scc
+Adding Crystal Reports Driver/Original/vssver.scc
+Adding ffcrutil.pas
+Adding Crystal Reports Driver/ffcrutil.pas
+Adding ffcrltyp.pas
+Adding Crystal Reports Driver/ffcrltyp.pas
+Adding ffcrexpo.inc
+Adding Crystal Reports Driver/ffcrexpo.inc
+Adding ffcrptyp.pas
+Adding Crystal Reports Driver/ffcrptyp.pas
+Adding ffcrtype.pas
+Adding Crystal Reports Driver/ffcrtype.pas
+Adding FFCRDRVR.RC
+Adding Crystal Reports Driver/FFCRDRVR.RC
+Adding vssver.scc
+Adding Crystal Reports Driver/vssver.scc
+Adding 
+Adding Demo Edition/
+Adding MAKEDEMO.BAT
+Adding Demo Edition/MAKEDEMO.BAT
+Adding README
+Adding Demo Edition/README
+Adding vssver.scc
+Adding Demo Edition/vssver.scc
+Adding 
+Adding doc/
+Adding FF154.TXT
+Adding doc/FF154.TXT
+Adding Ff_faq.txt
+Adding doc/Ff_faq.txt
+Adding License.txt
+Adding doc/License.txt
+Adding Readme.txt
+Adding doc/Readme.txt
+Adding vssver.scc
+Adding doc/vssver.scc
+Adding 
+Adding Docs/
+Adding Chapter 7.doc
+Adding Docs/Chapter 7.doc
+Adding Chapter3.doc
+Adding Docs/Chapter3.doc
+Adding Chapter4.doc
+Adding Docs/Chapter4.doc
+Adding Chapter5.doc
+Adding Docs/Chapter5.doc
+Adding Chapter6.doc
+Adding Docs/Chapter6.doc
+Adding Datatypes.doc
+Adding Docs/Datatypes.doc
+Adding FF.ZIP
+Adding Docs/FF.ZIP
+Adding ff150.TXT
+Adding Docs/ff150.TXT
+Adding ff151.txt
+Adding Docs/ff151.txt
+Adding ff152.txt
+Adding Docs/ff152.txt
+Adding ff153.txt
+Adding Docs/ff153.txt
+Adding ff154.txt
+Adding Docs/ff154.txt
+Adding ffd01.fm
+Adding Docs/ffd01.fm
+Adding ffd02.fm
+Adding Docs/ffd02.fm
+Adding ffd03.fm
+Adding Docs/ffd03.fm
+Adding ffd04.fm
+Adding Docs/ffd04.fm
+Adding ffd05.fm
+Adding Docs/ffd05.fm
+Adding ffd06.fm
+Adding Docs/ffd06.fm
+Adding ffd07.fm
+Adding Docs/ffd07.fm
+Adding ffd08.fm
+Adding Docs/ffd08.fm
+Adding ffd09.fm
+Adding Docs/ffd09.fm
+Adding ffdTitle.fm
+Adding Docs/ffdTitle.fm
+Adding ff_faq.txt
+Adding Docs/ff_faq.txt
+Adding FlashFiler15.book
+Adding Docs/FlashFiler15.book
+Adding FlashFiler15II.fm
+Adding Docs/FlashFiler15II.fm
+Adding FlashFiler15IX.fm
+Adding Docs/FlashFiler15IX.fm
+Adding FlashFiler15TOC.fm
+Adding Docs/FlashFiler15TOC.fm
+Adding License.TXT
+Adding Docs/License.TXT
+Adding readbeta.txt
+Adding Docs/readbeta.txt
+Adding README.TXT
+Adding Docs/README.TXT
+Adding 
+Adding Docs/Updates/
+Adding FF.101
+Adding Docs/Updates/FF.101
+Adding FF.102
+Adding Docs/Updates/FF.102
+Adding FF.103
+Adding Docs/Updates/FF.103
+Adding FF.104
+Adding Docs/Updates/FF.104
+Adding FF.105
+Adding Docs/Updates/FF.105
+Adding FF.106
+Adding Docs/Updates/FF.106
+Adding FF.107
+Adding Docs/Updates/FF.107
+Adding FFPATCH.TXT
+Adding Docs/Updates/FFPATCH.TXT
+Adding vssver.scc
+Adding Docs/Updates/vssver.scc
+Adding 
+Adding Docs/Graphics/
+Adding vssver.scc
+Adding Docs/vssver.scc
+Adding 
+Adding examples/
+Adding ExBLOB.FFD
+Adding examples/ExBLOB.FFD
+Adding ExCust.FFD
+Adding examples/ExCust.FFD
+Adding ExLines.FFD
+Adding examples/ExLines.FFD
+Adding ExOrders.FFD
+Adding examples/ExOrders.FFD
+Adding ExProds.FFD
+Adding examples/ExProds.FFD
+Adding 
+Adding examples/delphi/
+Adding ExBlob.dpr
+Adding examples/delphi/ExBlob.dpr
+Adding ExBlobu.dfm
+Adding examples/delphi/ExBlobu.dfm
+Adding ExBlobu.pas
+Adding examples/delphi/ExBlobu.pas
+Adding ExCust.dpr
+Adding examples/delphi/ExCust.dpr
+Adding ExCustu.dfm
+Adding examples/delphi/ExCustu.dfm
+Adding ExCustu.pas
+Adding examples/delphi/ExCustu.pas
+Adding ExFilter.dpr
+Adding examples/delphi/ExFilter.dpr
+Adding ExFiltru.dfm
+Adding examples/delphi/ExFiltru.dfm
+Adding ExFiltru.pas
+Adding examples/delphi/ExFiltru.pas
+Adding ExOrders.dpr
+Adding examples/delphi/ExOrders.dpr
+Adding ExOrderu.dfm
+Adding examples/delphi/ExOrderu.dfm
+Adding ExOrderu.pas
+Adding examples/delphi/ExOrderu.pas
+Adding EXUSRINX.DPR
+Adding examples/delphi/EXUSRINX.DPR
+Adding FFTBCRYP.PAS
+Adding examples/delphi/FFTBCRYP.PAS
+Adding vssver.scc
+Adding examples/delphi/vssver.scc
+Adding 
+Adding examples/cbuildr4/
+Adding ExBlob.bpr
+Adding examples/cbuildr4/ExBlob.bpr
+Adding ExBlob.cpp
+Adding examples/cbuildr4/ExBlob.cpp
+Adding ExBlob.res
+Adding examples/cbuildr4/ExBlob.res
+Adding ExBlobu.cpp
+Adding examples/cbuildr4/ExBlobu.cpp
+Adding ExBlobu.dfm
+Adding examples/cbuildr4/ExBlobu.dfm
+Adding ExBlobu.h
+Adding examples/cbuildr4/ExBlobu.h
+Adding ExCust.bpr
+Adding examples/cbuildr4/ExCust.bpr
+Adding ExCust.cpp
+Adding examples/cbuildr4/ExCust.cpp
+Adding ExCust.res
+Adding examples/cbuildr4/ExCust.res
+Adding ExCustu.cpp
+Adding examples/cbuildr4/ExCustu.cpp
+Adding ExCustu.dfm
+Adding examples/cbuildr4/ExCustu.dfm
+Adding ExCustu.h
+Adding examples/cbuildr4/ExCustu.h
+Adding ExFilter.bpr
+Adding examples/cbuildr4/ExFilter.bpr
+Adding ExFilter.cpp
+Adding examples/cbuildr4/ExFilter.cpp
+Adding ExFilter.res
+Adding examples/cbuildr4/ExFilter.res
+Adding ExFiltru.cpp
+Adding examples/cbuildr4/ExFiltru.cpp
+Adding ExFiltru.dfm
+Adding examples/cbuildr4/ExFiltru.dfm
+Adding ExFiltru.h
+Adding examples/cbuildr4/ExFiltru.h
+Adding ExOrder.bpr
+Adding examples/cbuildr4/ExOrder.bpr
+Adding ExOrder.cpp
+Adding examples/cbuildr4/ExOrder.cpp
+Adding ExOrder.res
+Adding examples/cbuildr4/ExOrder.res
+Adding ExOrderu.cpp
+Adding examples/cbuildr4/ExOrderu.cpp
+Adding ExOrderu.dfm
+Adding examples/cbuildr4/ExOrderu.dfm
+Adding ExOrderu.h
+Adding examples/cbuildr4/ExOrderu.h
+Adding vssver.scc
+Adding examples/cbuildr4/vssver.scc
+Adding 
+Adding examples/cbuildr3/
+Adding ExBlob.bpr
+Adding examples/cbuildr3/ExBlob.bpr
+Adding ExBlob.cpp
+Adding examples/cbuildr3/ExBlob.cpp
+Adding ExBlob.res
+Adding examples/cbuildr3/ExBlob.res
+Adding ExBlobu.cpp
+Adding examples/cbuildr3/ExBlobu.cpp
+Adding ExBlobu.dfm
+Adding examples/cbuildr3/ExBlobu.dfm
+Adding ExBlobu.h
+Adding examples/cbuildr3/ExBlobu.h
+Adding ExCust.bpr
+Adding examples/cbuildr3/ExCust.bpr
+Adding ExCust.cpp
+Adding examples/cbuildr3/ExCust.cpp
+Adding ExCust.res
+Adding examples/cbuildr3/ExCust.res
+Adding ExCustu.cpp
+Adding examples/cbuildr3/ExCustu.cpp
+Adding ExCustu.dfm
+Adding examples/cbuildr3/ExCustu.dfm
+Adding ExCustu.h
+Adding examples/cbuildr3/ExCustu.h
+Adding ExFilter.bpr
+Adding examples/cbuildr3/ExFilter.bpr
+Adding ExFilter.cpp
+Adding examples/cbuildr3/ExFilter.cpp
+Adding ExFilter.res
+Adding examples/cbuildr3/ExFilter.res
+Adding ExFiltru.cpp
+Adding examples/cbuildr3/ExFiltru.cpp
+Adding ExFiltru.dfm
+Adding examples/cbuildr3/ExFiltru.dfm
+Adding ExFiltru.h
+Adding examples/cbuildr3/ExFiltru.h
+Adding ExOrder.bpr
+Adding examples/cbuildr3/ExOrder.bpr
+Adding ExOrder.cpp
+Adding examples/cbuildr3/ExOrder.cpp
+Adding ExOrder.res
+Adding examples/cbuildr3/ExOrder.res
+Adding ExOrderu.cpp
+Adding examples/cbuildr3/ExOrderu.cpp
+Adding ExOrderu.dfm
+Adding examples/cbuildr3/ExOrderu.dfm
+Adding ExOrderu.h
+Adding examples/cbuildr3/ExOrderu.h
+Adding vssver.scc
+Adding examples/cbuildr3/vssver.scc
+Adding vssver.scc
+Adding examples/vssver.scc
+Adding 
+Adding explorer/
+Adding DGADDALS.dcu
+Adding explorer/DGADDALS.dcu
+Adding dgImpDef.dcu
+Adding explorer/dgImpDef.dcu
+Adding DGIMPDO.dcu
+Adding explorer/DGIMPDO.dcu
+Adding DGIMPORT.dcu
+Adding explorer/DGIMPORT.dcu
+Adding DGPRINTG.dcu
+Adding explorer/DGPRINTG.dcu
+Adding DGREGSRV.dcu
+Adding explorer/DGREGSRV.dcu
+Adding DGRENDB.dcu
+Adding explorer/DGRENDB.dcu
+Adding DGRENTBL.dcu
+Adding explorer/DGRENTBL.dcu
+Adding DGSELIDX.dcu
+Adding explorer/DGSELIDX.dcu
+Adding ffe.CNT
+Adding explorer/ffe.CNT
+Adding Dgprintg.dfm
+Adding explorer/Dgprintg.dfm
+Adding ffe.HLP
+Adding explorer/ffe.HLP
+Adding Ffe.r32
+Adding explorer/Ffe.r32
+Adding FFE16.HLP
+Adding explorer/FFE16.HLP
+Adding FMMAIN.dcu
+Adding explorer/FMMAIN.dcu
+Adding Dgregsrv.pas
+Adding explorer/Dgregsrv.pas
+Adding Dgregsrv.dfm
+Adding explorer/Dgregsrv.dfm
+Adding Dgrendb.pas
+Adding explorer/Dgrendb.pas
+Adding FMPROG.dcu
+Adding explorer/FMPROG.dcu
+Adding FMSTRUCT.dcu
+Adding explorer/FMSTRUCT.dcu
+Adding UBASE.dcu
+Adding explorer/UBASE.dcu
+Adding UCONFIG.dcu
+Adding explorer/UCONFIG.dcu
+Adding UCONSTS.dcu
+Adding explorer/UCONSTS.dcu
+Adding UDATAACC.dcu
+Adding explorer/UDATAACC.dcu
+Adding UELEMENT.dcu
+Adding explorer/UELEMENT.dcu
+Adding UENTITY.dcu
+Adding explorer/UENTITY.dcu
+Adding 
+Adding explorer/Help/
+Adding ffe.CNT
+Adding explorer/Help/ffe.CNT
+Adding FFE.FHB
+Adding explorer/Help/FFE.FHB
+Adding ffe.HLP
+Adding explorer/Help/ffe.HLP
+Adding FFE16.HLP
+Adding explorer/Help/FFE16.HLP
+Adding vssver.scc
+Adding explorer/Help/vssver.scc
+Adding Dgimpdef.pas
+Adding explorer/Dgimpdef.pas
+Adding Dgimpdef.dfm
+Adding explorer/Dgimpdef.dfm
+Adding Dgimpdo.pas
+Adding explorer/Dgimpdo.pas
+Adding Dgimpdo.dfm
+Adding explorer/Dgimpdo.dfm
+Adding Dgimport.pas
+Adding explorer/Dgimport.pas
+Adding Dgimport.dfm
+Adding explorer/Dgimport.dfm
+Adding Dgprintg.pas
+Adding explorer/Dgprintg.pas
+Adding Dgrendb.dfm
+Adding explorer/Dgrendb.dfm
+Adding Dgrentbl.pas
+Adding explorer/Dgrentbl.pas
+Adding Dgrentbl.dfm
+Adding explorer/Dgrentbl.dfm
+Adding Dgselidx.pas
+Adding explorer/Dgselidx.pas
+Adding Dgselidx.dfm
+Adding explorer/Dgselidx.dfm
+Adding Fmmain.pas
+Adding explorer/Fmmain.pas
+Adding Fmmain.dfm
+Adding explorer/Fmmain.dfm
+Adding Fmprog.pas
+Adding explorer/Fmprog.pas
+Adding Fmprog.dfm
+Adding explorer/Fmprog.dfm
+Adding Ubase.pas
+Adding explorer/Ubase.pas
+Adding Uconfig.pas
+Adding explorer/Uconfig.pas
+Adding Uconsts.pas
+Adding explorer/Uconsts.pas
+Adding Udataacc.pas
+Adding explorer/Udataacc.pas
+Adding Uelement.pas
+Adding explorer/Uelement.pas
+Adding Fmstruct.pas
+Adding explorer/Fmstruct.pas
+Adding Fmstruct.dfm
+Adding explorer/Fmstruct.dfm
+Adding Uentity.pas
+Adding explorer/Uentity.pas
+Adding Ffe.rc
+Adding explorer/Ffe.rc
+Adding Dgaddals.pas
+Adding explorer/Dgaddals.pas
+Adding Dgaddals.dfm
+Adding explorer/Dgaddals.dfm
+Adding vssver.scc
+Adding explorer/vssver.scc
+Adding Ffe.dpr
+Adding explorer/Ffe.dpr
+Adding Ffe.dof
+Adding explorer/Ffe.dof
+Adding Ffe.cfg
+Adding explorer/Ffe.cfg
+Adding 
+Adding help/
+Adding FFE.CNT
+Adding help/FFE.CNT
+Adding FFE.GID
+Adding help/FFE.GID
+Adding FFE.hlp
+Adding help/FFE.hlp
+Adding 
+Adding help/delphi/
+Adding FF.CNT
+Adding help/delphi/FF.CNT
+Adding ff.fhb
+Adding help/delphi/ff.fhb
+Adding FF.GID
+Adding help/delphi/FF.GID
+Adding FF.hlp
+Adding help/delphi/FF.hlp
+Adding vssver.scc
+Adding help/delphi/vssver.scc
+Adding 
+Adding help/CBuildr3/
+Adding ffbcb.CNT
+Adding help/CBuildr3/ffbcb.CNT
+Adding ffbcb.fhb
+Adding help/CBuildr3/ffbcb.fhb
+Adding FFBCB.HLP
+Adding help/CBuildr3/FFBCB.HLP
+Adding vssver.scc
+Adding help/CBuildr3/vssver.scc
+Adding 
+Adding help/cbuilder/
+Adding FFBCB.CNT
+Adding help/cbuilder/FFBCB.CNT
+Adding FFBCB.hlp
+Adding help/cbuilder/FFBCB.hlp
+Adding vssver.scc
+Adding help/vssver.scc
+Adding Uffsmain.pas
+Adding Uffsmain.pas
+Adding FFTTstmt.pas
+Adding FFTTstmt.pas
+Adding 
+Adding REDIST/
+Adding Deploy.txt
+Adding REDIST/Deploy.txt
+Adding F154IR30.DPL
+Adding REDIST/F154IR30.DPL
+Adding F154JR30.DPL
+Adding REDIST/F154JR30.DPL
+Adding F154JR35.BPL
+Adding REDIST/F154JR35.BPL
+Adding F154JR40.BPL
+Adding REDIST/F154JR40.BPL
+Adding F154JR41.BPL
+Adding REDIST/F154JR41.BPL
+Adding F154_R30.DPL
+Adding REDIST/F154_R30.DPL
+Adding F154_R35.BPL
+Adding REDIST/F154_R35.BPL
+Adding F154_R40.BPL
+Adding REDIST/F154_R40.BPL
+Adding F154_R41.BPL
+Adding REDIST/F154_R41.BPL
+Adding F154_R50.BPL
+Adding REDIST/F154_R50.BPL
+Adding vssver.scc
+Adding REDIST/vssver.scc
+Adding 
+Adding server/
+Adding vssver.scc
+Adding server/vssver.scc
+Adding 
+Adding Setup/
+Adding FF.BMP
+Adding Setup/FF.BMP
+Adding FF.STX
+Adding Setup/FF.STX
+Adding FFBUILD.WSE
+Adding Setup/FFBUILD.WSE
+Adding FFPATCH.WSE
+Adding Setup/FFPATCH.WSE
+Adding FFscreen2.bmp
+Adding Setup/FFscreen2.bmp
+Adding FFTR.BMP
+Adding Setup/FFTR.BMP
+Adding FINISH32.DPR
+Adding Setup/FINISH32.DPR
+Adding FINISH32.INI
+Adding Setup/FINISH32.INI
+Adding FFTTCFG.pas
+Adding FFTTCFG.pas
+Adding FFTTtabl.pas
+Adding FFTTtabl.pas
+Adding BuildCRDlls.bat
+Adding BuildCRDlls.bat
+Adding BUILDDCU.BAT
+Adding BUILDDCU.BAT
+Adding BUILDEXE.BAT
+Adding BUILDEXE.BAT
+Adding vssver.scc
+Adding vssver.scc
+Adding changes.108
+Adding changes.108
+Adding changes.txt
+Adding changes.txt
+Adding CRTPKGRS.BAT
+Adding CRTPKGRS.BAT
+Adding FFTTtype.pas
+Adding FFTTtype.pas
+Adding FFSUSER.FFD
+Adding FFSUSER.FFD
+Adding F154_D30.DCP
+Adding F154_D30.DCP
+Adding F154_D30.DPK
+Adding F154_D30.DPK
+Adding F154_D30.DPL
+Adding F154_D30.DPL
+Adding F154_D35.rc
+Adding F154_D35.rc
+Adding F154_D30.RES
+Adding F154_D30.RES
+Adding F154_D35.BPI
+Adding F154_D35.BPI
+Adding F154_D35.BPK
+Adding F154_D35.BPK
+Adding F154_D35.BPL
+Adding F154_D35.BPL
+Adding F154_D35.CPP
+Adding F154_D35.CPP
+Adding F154_D35.LIB
+Adding F154_D35.LIB
+Adding DBIPROCS.PAS
+Adding DBIPROCS.PAS
+Adding F154_D35.RES
+Adding F154_D35.RES
+Adding F154_D40.BPL
+Adding F154_D40.BPL
+Adding F154_D40.DCP
+Adding F154_D40.DCP
+Adding F154_D40.DPK
+Adding F154_D40.DPK
+Adding F154_D41.rc
+Adding F154_D41.rc
+Adding F154_D40.RES
+Adding F154_D40.RES
+Adding F154_D41.BPI
+Adding F154_D41.BPI
+Adding F154_D41.BPK
+Adding F154_D41.BPK
+Adding F154_D41.BPL
+Adding F154_D41.BPL
+Adding F154_D41.CPP
+Adding F154_D41.CPP
+Adding F154_D41.LIB
+Adding F154_D41.LIB
+Adding F154_D50.rc
+Adding F154_D50.rc
+Adding F154_D41.RES
+Adding F154_D41.RES
+Adding F154_D50.BPL
+Adding F154_D50.BPL
+Adding F154_D50.DCP
+Adding F154_D50.DCP
+Adding F154_D50.DPK
+Adding F154_D50.DPK
+Adding F154_R30.rc
+Adding F154_R30.rc
+Adding F154_D50.RES
+Adding F154_D50.RES
+Adding F154_R30.DCP
+Adding F154_R30.DCP
+Adding F154_R30.DPK
+Adding F154_R30.DPK
+Adding F154_R30.DPL
+Adding F154_R30.DPL
+Adding F154_R35.rc
+Adding F154_R35.rc
+Adding F154_R30.RES
+Adding F154_R30.RES
+Adding F154_R35.BPI
+Adding F154_R35.BPI
+Adding F154_R35.BPK
+Adding F154_R35.BPK
+Adding F154_R35.BPL
+Adding F154_R35.BPL
+Adding F154_R35.CPP
+Adding F154_R35.CPP
+Adding F154_R35.LIB
+Adding F154_R35.LIB
+Adding F154_R40.rc
+Adding F154_R40.rc
+Adding F154_R35.RES
+Adding F154_R35.RES
+Adding F154_R40.BPL
+Adding F154_R40.BPL
+Adding F154_R40.DCP
+Adding F154_R40.DCP
+Adding F154_R40.DPK
+Adding F154_R40.DPK
+Adding F154_R41.rc
+Adding F154_R41.rc
+Adding F154_R40.RES
+Adding F154_R40.RES
+Adding F154_R41.BPI
+Adding F154_R41.BPI
+Adding F154_R41.BPK
+Adding F154_R41.BPK
+Adding F154_R41.BPL
+Adding F154_R41.BPL
+Adding F154_R41.CPP
+Adding F154_R41.CPP
+Adding F154_R41.LIB
+Adding F154_R41.LIB
+Adding F154_R50.rc
+Adding F154_R50.rc
+Adding F154_R41.RES
+Adding F154_R41.RES
+Adding F154_R50.BPL
+Adding F154_R50.BPL
+Adding F154_R50.DCP
+Adding F154_R50.DCP
+Adding F154_R50.dcu
+Adding F154_R50.dcu
+Adding F154_R50.DPK
+Adding F154_R50.DPK
+Adding F154ID30.rc
+Adding F154ID30.rc
+Adding F154_R50.RES
+Adding F154_R50.RES
+Adding F154ID30.DCP
+Adding F154ID30.DCP
+Adding F154ID30.DPK
+Adding F154ID30.DPK
+Adding F154ID30.DPL
+Adding F154ID30.DPL
+Adding F154IR30.rc
+Adding F154IR30.rc
+Adding F154ID30.RES
+Adding F154ID30.RES
+Adding F154IR30.DCP
+Adding F154IR30.DCP
+Adding F154IR30.DPK
+Adding F154IR30.DPK
+Adding F154IR30.DPL
+Adding F154IR30.DPL
+Adding F154JD30.rc
+Adding F154JD30.rc
+Adding F154IR30.RES
+Adding F154IR30.RES
+Adding F154JD30.DCP
+Adding F154JD30.DCP
+Adding F154JD30.DPK
+Adding F154JD30.DPK
+Adding F154JD30.DPL
+Adding F154JD30.DPL
+Adding F154JD35.rc
+Adding F154JD35.rc
+Adding F154JD30.RES
+Adding F154JD30.RES
+Adding F154JD35.BPI
+Adding F154JD35.BPI
+Adding F154JD35.BPK
+Adding F154JD35.BPK
+Adding F154JD35.BPL
+Adding F154JD35.BPL
+Adding F154JD35.CPP
+Adding F154JD35.CPP
+Adding F154JD35.LIB
+Adding F154JD35.LIB
+Adding F154JD40.rc
+Adding F154JD40.rc
+Adding F154JD35.RES
+Adding F154JD35.RES
+Adding F154JD40.BPL
+Adding F154JD40.BPL
+Adding F154JD40.DCP
+Adding F154JD40.DCP
+Adding F154JD40.DPK
+Adding F154JD40.DPK
+Adding F154JD41.rc
+Adding F154JD41.rc
+Adding F154JD40.RES
+Adding F154JD40.RES
+Adding F154JD41.BPI
+Adding F154JD41.BPI
+Adding F154JD41.BPK
+Adding F154JD41.BPK
+Adding F154JD41.BPL
+Adding F154JD41.BPL
+Adding F154JD41.CPP
+Adding F154JD41.CPP
+Adding F154JD41.LIB
+Adding F154JD41.LIB
+Adding F154JR30.rc
+Adding F154JR30.rc
+Adding F154JD41.RES
+Adding F154JD41.RES
+Adding F154JR30.DCP
+Adding F154JR30.DCP
+Adding F154JR30.DPK
+Adding F154JR30.DPK
+Adding F154JR30.DPL
+Adding F154JR30.DPL
+Adding F154JR35.rc
+Adding F154JR35.rc
+Adding F154JR30.RES
+Adding F154JR30.RES
+Adding F154JR35.BPI
+Adding F154JR35.BPI
+Adding F154JR35.BPK
+Adding F154JR35.BPK
+Adding F154JR35.BPL
+Adding F154JR35.BPL
+Adding F154JR35.CPP
+Adding F154JR35.CPP
+Adding F154JR35.LIB
+Adding F154JR35.LIB
+Adding F154JR40.rc
+Adding F154JR40.rc
+Adding F154JR35.RES
+Adding F154JR35.RES
+Adding F154JR40.BPL
+Adding F154JR40.BPL
+Adding F154JR40.DCP
+Adding F154JR40.DCP
+Adding F154JR40.DPK
+Adding F154JR40.DPK
+Adding F154JR41.rc
+Adding F154JR41.rc
+Adding F154JR40.RES
+Adding F154JR40.RES
+Adding F154JR41.BPI
+Adding F154JR41.BPI
+Adding F154JR41.BPK
+Adding F154JR41.BPK
+Adding F154JR41.BPL
+Adding F154JR41.BPL
+Adding F154JR41.CPP
+Adding F154JR41.CPP
+Adding F154JR41.LIB
+Adding F154JR41.LIB
+Adding FFCLFLDG.pas
+Adding FFCLFLDG.pas
+Adding F154JR41.RES
+Adding F154JR41.RES
+Adding FFTTdbas.pas
+Adding FFTTdbas.pas
+Adding FFTTeng.pas
+Adding FFTTeng.pas
+Adding FFTTfilt.pas
+Adding FFTTfilt.pas
+Adding FFTBCRYP.PAS
+Adding FFTBCRYP.PAS
+Adding f155_D41.bpk
+Adding f155_D41.bpk
+Adding f155_D41.cpp
+Adding f155_D41.cpp
+Adding f155_R41.rc
+Adding f155_R41.rc
+Adding FFTTUtil.pas
+Adding FFTTUtil.pas
+Adding Uffcomms.pas
+Adding Uffcomms.pas
+Adding f155_D51.bpk
+Adding f155_D51.bpk
+Adding f155_D51.cpp
+Adding f155_D51.cpp
+Adding f155_D51.obj
+Adding f155_D51.obj
+Adding f155_D51.rc
+Adding f155_D51.rc
+Adding f155_D51.res
+Adding f155_D51.res
+Adding Uffcomms.dfm
+Adding Uffcomms.dfm
+Adding f155_R41.bpk
+Adding f155_R41.bpk
+Adding f155_R41.cpp
+Adding f155_R41.cpp
+Adding Ffclcnst.rc
+Adding Ffclcnst.rc
+Adding Uffsgenl.pas
+Adding Uffsgenl.pas
+Adding Uffsgenl.dfm
+Adding Uffsgenl.dfm
+Adding f155_R51.bpk
+Adding f155_R51.bpk
+Adding f155_R51.cpp
+Adding f155_R51.cpp
+Adding f155_R51.obj
+Adding f155_R51.obj
+Adding f155_R51.rc
+Adding f155_R51.rc
+Adding f155_R51.RES
+Adding f155_R51.RES
+Adding FFAbout.dcu
+Adding FFAbout.dcu
+Adding Uffsmain.dfm
+Adding Uffsmain.dfm
+Adding FFAbout.hpp
+Adding FFAbout.hpp
+Adding FFAbout.obj
+Adding FFAbout.obj
+Adding Ffcleng.pas
+Adding Ffcleng.pas
+Adding Ffclbase.dcu
+Adding Ffclbase.dcu
+Adding FFClBase.hpp
+Adding FFClBase.hpp
+Adding Ffclbase.obj
+Adding Ffclbase.obj
+Adding Ffclbase.pas
+Adding Ffclbase.pas
+Adding Ffclcfg.dcu
+Adding Ffclcfg.dcu
+Adding FFClCfg.hpp
+Adding FFClCfg.hpp
+Adding Ffclcfg.inc
+Adding Ffclcfg.inc
+Adding Ffclcfg.obj
+Adding Ffclcfg.obj
+Adding Ffclimex.pas
+Adding Ffclimex.pas
+Adding FFClcfg.std
+Adding FFClcfg.std
+Adding Fftbdict.pas
+Adding Fftbdict.pas
+Adding Ffclcnst.res
+Adding Ffclcnst.res
+Adding FFCLFLDG.dfm
+Adding FFCLFLDG.dfm
+Adding FFFIX1XX.ASM
+Adding FFFIX1XX.ASM
+Adding Ffclcnst.str
+Adding Ffclcnst.str
+Adding FFStdate.pas
+Adding FFStdate.pas
+Adding Ffclcomm.dcu
+Adding Ffclcomm.dcu
+Adding FFClComm.hpp
+Adding FFClComm.hpp
+Adding Ffclcomm.obj
+Adding Ffclcomm.obj
+Adding FFTTCOLL.pas
+Adding FFTTCOLL.pas
+Adding FFDB.pas
+Adding FFDB.pas
+Adding Ffclconv.dcu
+Adding Ffclconv.dcu
+Adding FFClconv.hpp
+Adding FFClconv.hpp
+Adding Ffclconv.obj
+Adding Ffclconv.obj
+Adding F154_D30.rc
+Adding F154_D30.rc
+Adding F154_D40.rc
+Adding F154_D40.rc
+Adding Ffcldbas.dcu
+Adding Ffcldbas.dcu
+Adding FFCldbas.hpp
+Adding FFCldbas.hpp
+Adding Ffcldbas.obj
+Adding Ffcldbas.obj
+Adding Ffserver.dof
+Adding Ffserver.dof
+Adding Ffcleng.dcu
+Adding Ffcleng.dcu
+Adding FFClEng.hpp
+Adding FFClEng.hpp
+Adding Ffcleng.obj
+Adding Ffcleng.obj
+Adding Ffserver.cfg
+Adding Ffserver.cfg
+Adding FFFile.INC
+Adding FFFile.INC
+Adding Ffsrbde.old
+Adding Ffsrbde.old
+Adding FFCLFLDG.dcu
+Adding FFCLFLDG.dcu
+Adding FFFIX200.ASM
+Adding FFFIX200.ASM
+Adding FFClFLDG.hpp
+Adding FFClFLDG.hpp
+Adding FFCLFLDG.obj
+Adding FFCLFLDG.obj
+Adding FFSERVER.LOG
+Adding FFSERVER.LOG
+Adding FFClImEx.dcu
+Adding FFClImEx.dcu
+Adding Ffsrfmap.pas
+Adding Ffsrfmap.pas
+Adding Ffclintf.dcu
+Adding Ffclintf.dcu
+Adding FFClintf.hpp
+Adding FFClintf.hpp
+Adding Ffclintf.obj
+Adding Ffclintf.obj
+Adding Ffcltabl.pas
+Adding Ffcltabl.pas
+Adding Ffclreg.dcr
+Adding Ffclreg.dcr
+Adding FFCLReg.dcu
+Adding FFCLReg.dcu
+Adding FFClreg.hpp
+Adding FFClreg.hpp
+Adding FFCLReg.obj
+Adding FFCLReg.obj
+Adding Ffclver.pas
+Adding Ffclver.pas
+Adding Ffclsess.dcu
+Adding Ffclsess.dcu
+Adding FFClSess.hpp
+Adding FFClSess.hpp
+Adding Ffclsess.obj
+Adding Ffclsess.obj
+Adding FFSrBase.pas
+Adding FFSrBase.pas
+Adding Ffcltabl.dcu
+Adding Ffcltabl.dcu
+Adding FFClTabl.hpp
+Adding FFClTabl.hpp
+Adding Ffcltabl.obj
+Adding Ffcltabl.obj
+Adding Ffcltbrg.dcu
+Adding Ffcltbrg.dcu
+Adding FFClTbRg.hpp
+Adding FFClTbRg.hpp
+Adding Ffcltbrg.obj
+Adding Ffcltbrg.obj
+Adding Ffsrbde.pas
+Adding Ffsrbde.pas
+Adding FFCLVer.dcu
+Adding FFCLVer.dcu
+Adding FFClver.hpp
+Adding FFClver.hpp
+Adding FFCLVer.obj
+Adding FFCLVer.obj
+Adding Ffcomms.rc
+Adding Ffcomms.rc
+Adding Ffcomms.dpr
+Adding Ffcomms.dpr
+Adding Ffserver.dpr
+Adding Ffserver.dpr
+Adding Ffcomms.res
+Adding Ffcomms.res
+Adding Ffconst.pas
+Adding Ffconst.pas
+Adding FFSINFO.FFD
+Adding FFSINFO.FFD
+Adding Ffconst.dcu
+Adding Ffconst.dcu
+Adding FFConst.hpp
+Adding FFConst.hpp
+Adding INSTALL.LOG
+Adding INSTALL.LOG
+Adding ffllcore.dcu
+Adding ffllcore.dcu
+Adding Ffconst.obj
+Adding Ffconst.obj
+Adding Ffdbcnst.rc
+Adding Ffdbcnst.rc
+Adding Ffconvff.dcu
+Adding Ffconvff.dcu
+Adding FFSALIAS.FFD
+Adding FFSALIAS.FFD
+Adding Uffsalas.pas
+Adding Uffsalas.pas
+Adding Ffdb.dcu
+Adding Ffdb.dcu
+Adding FFDB.hpp
+Adding FFDB.hpp
+Adding Ffdb.obj
+Adding Ffdb.obj
+Adding FFTTBDSS.pas
+Adding FFTTBDSS.pas
+Adding Ffdbbase.dcu
+Adding Ffdbbase.dcu
+Adding FFDBBase.hpp
+Adding FFDBBase.hpp
+Adding Ffdbbase.obj
+Adding Ffdbbase.obj
+Adding Uffsalas.dfm
+Adding Uffsalas.dfm
+Adding Uffsindx.pas
+Adding Uffsindx.pas
+Adding Ffdbcnst.res
+Adding Ffdbcnst.res
+Adding Ffdbcnst.str
+Adding Ffdbcnst.str
+Adding Ffdscnst.inc
+Adding Ffdscnst.inc
+Adding Uffsindx.dfm
+Adding Uffsindx.dfm
+Adding FFDefine.bld
+Adding FFDefine.bld
+Adding FFDefine.dul
+Adding FFDefine.dul
+Adding Ffdefine.inc
+Adding Ffdefine.inc
+Adding FFDefine.STD
+Adding FFDefine.STD
+Adding Ffdscnst.rc
+Adding Ffdscnst.rc
+Adding Ffdscnst.res
+Adding Ffdscnst.res
+Adding Ffdscnst.str
+Adding Ffdscnst.str
+Adding FFSrIntf.pas
+Adding FFSrIntf.pas
+Adding Ffdtmsgq.dcu
+Adding Ffdtmsgq.dcu
+Adding FFDtMsgQ.hpp
+Adding FFDtMsgQ.hpp
+Adding Ffdtmsgq.obj
+Adding Ffdtmsgq.obj
+Adding Ffdbbase.pas
+Adding Ffdbbase.pas
+Adding Fffile.dcu
+Adding Fffile.dcu
+Adding Ffsrcomm.pas
+Adding Ffsrcomm.pas
+Adding Fftbdata.pas
+Adding Fftbdata.pas
+Adding Ffsreng.pas
+Adding Ffsreng.pas
+Adding FFTTbapi.pas
+Adding FFTTbapi.pas
+Adding Ffllcnst.rc
+Adding Ffllcnst.rc
+Adding FFFIX1XX.OBJ
+Adding FFFIX1XX.OBJ
+Adding ffllcore.pas
+Adding ffllcore.pas
+Adding FFFIX200.OBJ
+Adding FFFIX200.OBJ
+Adding Ffhash.dcu
+Adding Ffhash.dcu
+Adding FFHash.hpp
+Adding FFHash.hpp
+Adding Ffhash.obj
+Adding Ffhash.obj
+Adding Ffllcnst.str
+Adding Ffllcnst.str
+Adding Ffllbase.dcu
+Adding Ffllbase.dcu
+Adding FFLLbase.hpp
+Adding FFLLbase.hpp
+Adding Ffllbase.obj
+Adding Ffllbase.obj
+Adding FFTTSess.pas
+Adding FFTTSess.pas
+Adding Ffsrrest.inc
+Adding Ffsrrest.inc
+Adding Ffllcnst.res
+Adding Ffllcnst.res
+Adding Ffllnbct.inc
+Adding Ffllnbct.inc
+Adding Ffllnbct.pas
+Adding Ffllnbct.pas
+Adding FFLLDate.dcu
+Adding FFLLDate.dcu
+Adding Ffsrstat.pas
+Adding Ffsrstat.pas
+Adding FFTbIndx.pas
+Adding FFTbIndx.pas
+Adding Fflldict.dcu
+Adding Fflldict.dcu
+Adding FFLLDict.hpp
+Adding FFLLDict.hpp
+Adding Fflldict.obj
+Adding Fflldict.obj
+Adding Ffconst.inc
+Adding Ffconst.inc
+Adding Ffllexcp.dcu
+Adding Ffllexcp.dcu
+Adding FFLLexcp.hpp
+Adding FFLLexcp.hpp
+Adding Ffllexcp.obj
+Adding Ffllexcp.obj
+Adding Ffllwsck.pas
+Adding Ffllwsck.pas
+Adding Ffllnb.dcu
+Adding Ffllnb.dcu
+Adding FFLLNB.hpp
+Adding FFLLNB.hpp
+Adding Ffllnb.obj
+Adding Ffllnb.obj
+Adding Ffsrhlpr.pas
+Adding Ffsrhlpr.pas
+Adding Ffllnbct.dcu
+Adding Ffllnbct.dcu
+Adding FFLLnbct.hpp
+Adding FFLLnbct.hpp
+Adding Ffllwsct.inc
+Adding Ffllwsct.inc
+Adding Ffllnbct.obj
+Adding Ffllnbct.obj
+Adding Ffllwsct.pas
+Adding Ffllwsct.pas
+Adding Ffllprot.dcu
+Adding Ffllprot.dcu
+Adding FFLLProt.hpp
+Adding FFLLProt.hpp
+Adding Ffllprot.obj
+Adding Ffllprot.obj
+Adding f155_D41.rc
+Adding f155_D41.rc
+Adding Ffllunc.dcu
+Adding Ffllunc.dcu
+Adding Ffclreg.pas
+Adding Ffclreg.pas
+Adding Ffllwsck.dcu
+Adding Ffllwsck.dcu
+Adding FFLLwsck.hpp
+Adding FFLLwsck.hpp
+Adding Ffllwsck.obj
+Adding Ffllwsck.obj
+Adding Ffnbcnst.rc
+Adding Ffnbcnst.rc
+Adding Ffllwsct.dcu
+Adding Ffllwsct.dcu
+Adding FFLLwsct.hpp
+Adding FFLLwsct.hpp
+Adding Ffnbcnst.str
+Adding Ffnbcnst.str
+Adding Ffllwsct.obj
+Adding Ffllwsct.obj
+Adding Ffserver.rc
+Adding Ffserver.rc
+Adding Fflogdlg.dcu
+Adding Fflogdlg.dcu
+Adding Ffsrbase.inc
+Adding Ffsrbase.inc
+Adding FFLOGDLG.hpp
+Adding FFLOGDLG.hpp
+Adding Fflogdlg.obj
+Adding Fflogdlg.obj
+Adding Ffsrcnst.rc
+Adding Ffsrcnst.rc
+Adding Ffsrcnst.str
+Adding Ffsrcnst.str
+Adding Ffnbcnst.res
+Adding Ffnbcnst.res
+Adding Ffsrmgr.rc
+Adding Ffsrmgr.rc
+Adding Ffsrmgr.str
+Adding Ffsrmgr.str
+Adding Ffwscnst.rc
+Adding Ffwscnst.rc
+Adding Ffnetmsg.dcu
+Adding Ffnetmsg.dcu
+Adding FFNetMsg.hpp
+Adding FFNetMsg.hpp
+Adding Ffnetmsg.obj
+Adding Ffnetmsg.obj
+Adding Ffsrcmd.pas
+Adding Ffsrcmd.pas
+Adding Ffsrcfg.pas
+Adding Ffsrcfg.pas
+Adding Ffwscnst.str
+Adding Ffwscnst.str
+Adding Ffwwreg.pas
+Adding Ffwwreg.pas
+Adding Ffserver.res
+Adding Ffserver.res
+Adding Ffwwtabl.pas
+Adding Ffwwtabl.pas
+Adding Sean64div.dpr
+Adding Sean64div.dpr
+Adding Uffsbrws.pas
+Adding Uffsbrws.pas
+Adding Ffsrbase.dcu
+Adding Ffsrbase.dcu
+Adding Uffsbrws.dfm
+Adding Uffsbrws.dfm
+Adding Uffslgin.pas
+Adding Uffslgin.pas
+Adding Uffslgin.dfm
+Adding Uffslgin.dfm
+Adding Ffsrbde.dcu
+Adding Ffsrbde.dcu
+Adding Uffsname.pas
+Adding Uffsname.pas
+Adding Ffsrcfg.dcu
+Adding Ffsrcfg.dcu
+Adding Uffsname.dfm
+Adding Uffsname.dfm
+Adding Ffsrcmd.dcu
+Adding Ffsrcmd.dcu
+Adding Uffspwd.pas
+Adding Uffspwd.pas
+Adding Uffspwd.dfm
+Adding Uffspwd.dfm
+Adding Ffsrcnst.res
+Adding Ffsrcnst.res
+Adding Uffsrjrn.pas
+Adding Uffsrjrn.pas
+Adding Uffsrjrn.dfm
+Adding Uffsrjrn.dfm
+Adding Ffsrcomm.dcu
+Adding Ffsrcomm.dcu
+Adding Uffsuser.pas
+Adding Uffsuser.pas
+Adding Ffsrcvex.dcu
+Adding Ffsrcvex.dcu
+Adding Uffsuser.dfm
+Adding Uffsuser.dfm
+Adding FFAbout.dfm
+Adding FFAbout.dfm
+Adding Ffsreng.dcu
+Adding Ffsreng.dcu
+Adding Ffserver.exe
+Adding Ffserver.exe
+Adding FFSrFltr.dcu
+Adding FFSrFltr.dcu
+Adding FFLLBase.pas
+Adding FFLLBase.pas
+Adding Ffsrfmap.dcu
+Adding Ffsrfmap.dcu
+Adding Ffhash.pas
+Adding Ffhash.pas
+Adding Ffsrfold.dcu
+Adding Ffsrfold.dcu
+Adding Fffile.pas
+Adding Fffile.pas
+Adding Ffsrhlpr.dcu
+Adding Ffsrhlpr.dcu
+Adding Fftblock.pas
+Adding Fftblock.pas
+Adding ffsrBlob.pas
+Adding ffsrBlob.pas
+Adding Ffsrintf.dcu
+Adding Ffsrintf.dcu
+Adding Sean64div.exe
+Adding Sean64div.exe
+Adding Ffsrjour.dcu
+Adding Ffsrjour.dcu
+Adding Sean64div.dof
+Adding Sean64div.dof
+Adding Ffsrmgr.dcu
+Adding Ffsrmgr.dcu
+Adding FFSrMgr.hpp
+Adding FFSrMgr.hpp
+Adding Ffsrmgr.obj
+Adding Ffsrmgr.obj
+Adding Fftbbase.pas
+Adding Fftbbase.pas
+Adding Fftbblob.pas
+Adding Fftbblob.pas
+Adding Ffsrmgr.res
+Adding Ffsrmgr.res
+Adding Ffllprot.pas
+Adding Ffllprot.pas
+Adding Ffllexcp.pas
+Adding Ffllexcp.pas
+Adding 
+Adding Design/
+Adding FF2.mpp
+Adding Design/FF2.mpp
+Adding vssver.scc
+Adding Design/vssver.scc
+Adding Sean64divUnit1.dfm
+Adding Sean64divUnit1.dfm
+Adding Sean64div.cfg
+Adding Sean64div.cfg
+Adding 
+Adding patch/
+Adding ffconfig.exe
+Adding patch/ffconfig.exe
+Adding Ffsrstat.dcu
+Adding Ffsrstat.dcu
+Adding Ffsrpack.inc
+Adding Ffsrpack.inc
+Adding Ffsrtran.dcu
+Adding Ffsrtran.dcu
+Adding Sean64div.res
+Adding Sean64div.res
+Adding Ffsrvdlg.dcu
+Adding Ffsrvdlg.dcu
+Adding FFDBx.bkm
+Adding FFDBx.bkm
+Adding FFSrVDLG.hpp
+Adding FFSrVDLG.hpp
+Adding Ffsrvdlg.obj
+Adding Ffsrvdlg.obj
+Adding FFDBx.pas
+Adding FFDBx.pas
+Adding FFStdate.dcu
+Adding FFStdate.dcu
+Adding FFStDate.hpp
+Adding FFStDate.hpp
+Adding FFStdate.obj
+Adding FFStdate.obj
+Adding Sean64divUnit1.dcu
+Adding Sean64divUnit1.dcu
+Adding Fftbbase.dcu
+Adding Fftbbase.dcu
+Adding Fftbstrm.pas
+Adding Fftbstrm.pas
+Adding Fftbblob.dcu
+Adding Fftbblob.dcu
+Adding Sean64divUnit1.pas
+Adding Sean64divUnit1.pas
+Adding Fftbdata.dcu
+Adding Fftbdata.dcu
+Adding Fflldict.pas
+Adding Fflldict.pas
+Adding Fftbdict.dcu
+Adding Fftbdict.dcu
+Adding FFNetMsg.pas
+Adding FFNetMsg.pas
+Adding Fftbindx.dcu
+Adding Fftbindx.dcu
+Adding Ffsrridx.inc
+Adding Ffsrridx.inc
+Adding Fftblock.dcu
+Adding Fftblock.dcu
+Adding Ffsrjour.pas
+Adding Ffsrjour.pas
+Adding Fftbstrm.dcu
+Adding Fftbstrm.dcu
+Adding FFTTbapi.dcu
+Adding FFTTbapi.dcu
+Adding FFTTbapi.hpp
+Adding FFTTbapi.hpp
+Adding FFTTbapi.obj
+Adding FFTTbapi.obj
+Adding FFTTBDPr.DCU
+Adding FFTTBDPr.DCU
+Adding FFTTCFG.dcu
+Adding FFTTCFG.dcu
+Adding FFTTcfg.hpp
+Adding FFTTcfg.hpp
+Adding FFTTCFG.obj
+Adding FFTTCFG.obj
+Adding FFTTCOLL.dcu
+Adding FFTTCOLL.dcu
+Adding FFTTcoll.hpp
+Adding FFTTcoll.hpp
+Adding FFTTCOLL.obj
+Adding FFTTCOLL.obj
+Adding FFTTdbas.dcu
+Adding FFTTdbas.dcu
+Adding FFTTdbas.hpp
+Adding FFTTdbas.hpp
+Adding FFTTdbas.obj
+Adding FFTTdbas.obj
+Adding FFTTeng.dcu
+Adding FFTTeng.dcu
+Adding FFTTEng.hpp
+Adding FFTTEng.hpp
+Adding FFTTeng.obj
+Adding FFTTeng.obj
+Adding FFTTfilt.dcu
+Adding FFTTfilt.dcu
+Adding FFTTFilt.hpp
+Adding FFTTFilt.hpp
+Adding FFTTfilt.obj
+Adding FFTTfilt.obj
+Adding FFTTSess.dcu
+Adding FFTTSess.dcu
+Adding FFTTSess.hpp
+Adding FFTTSess.hpp
+Adding FFTTSess.obj
+Adding FFTTSess.obj
+Adding FFTTstmt.dcu
+Adding FFTTstmt.dcu
+Adding FFTTStmt.hpp
+Adding FFTTStmt.hpp
+Adding FFTTstmt.obj
+Adding FFTTstmt.obj
+Adding FFTTtabl.dcu
+Adding FFTTtabl.dcu
+Adding FFTTTabl.hpp
+Adding FFTTTabl.hpp
+Adding FFTTtabl.obj
+Adding FFTTtabl.obj
+Adding FFTTtype.dcu
+Adding FFTTtype.dcu
+Adding FFTTType.hpp
+Adding FFTTType.hpp
+Adding FFTTtype.obj
+Adding FFTTtype.obj
+Adding FFTTUtil.dcu
+Adding FFTTUtil.dcu
+Adding FFTTUtil.hpp
+Adding FFTTUtil.hpp
+Adding FFTTUtil.obj
+Adding FFTTUtil.obj
+Adding Ffwscnst.res
+Adding Ffwscnst.res
+Adding Ffwwreg.dcr
+Adding Ffwwreg.dcr
+Adding FFWWreg.hpp
+Adding FFWWreg.hpp
+Adding FFWWtabl.hpp
+Adding FFWWtabl.hpp
+Adding FIXVER.BAT
+Adding FIXVER.BAT
+Adding TICKX.BMP
+Adding TICKX.BMP
+Adding Uffsalas.dcu
+Adding Uffsalas.dcu
+Adding Uffsbrws.dcu
+Adding Uffsbrws.dcu
+Adding Uffsgenl.dcu
+Adding Uffsgenl.dcu
+Adding Uffsindx.dcu
+Adding Uffsindx.dcu
+Adding Uffslgin.dcu
+Adding Uffslgin.dcu
+Adding UFFSMAIN.dcu
+Adding UFFSMAIN.dcu
+Adding Uffsname.dcu
+Adding Uffsname.dcu
+Adding Uffspwd.dcu
+Adding Uffspwd.dcu
+Adding Uffsrjrn.dcu
+Adding Uffsrjrn.dcu
+Adding Uffsuser.dcu
+Adding Uffsuser.dcu
+Adding buildpas.bat
+Adding buildpas.bat
+Adding Ffllnb.pas
+Adding Ffllnb.pas
+Adding Ffsrmgr.pas
+Adding Ffsrmgr.pas
+Adding FFAbout.pas
+Adding FFAbout.pas
+Adding Ffclcfg.pas
+Adding Ffclcfg.pas
+Adding Ffclcomm.pas
+Adding Ffclcomm.pas
+Adding Ffclconv.pas
+Adding Ffclconv.pas
+Adding Ffcldbas.pas
+Adding Ffcldbas.pas
+Adding Ffclintf.pas
+Adding Ffclintf.pas
+Adding Ffclsess.pas
+Adding Ffclsess.pas
+Adding Ffcltbrg.pas
+Adding Ffcltbrg.pas
+Adding Ffconvff.pas
+Adding Ffconvff.pas
+Adding Ffdtmsgq.pas
+Adding Ffdtmsgq.pas
+Adding Fflldate.pas
+Adding Fflldate.pas
+Adding Ffllunc.pas
+Adding Ffllunc.pas
+Adding Fflogdlg.pas
+Adding Fflogdlg.pas
+Adding Fflogdlg.dfm
+Adding Fflogdlg.dfm
+Adding Ffsrcvex.pas
+Adding Ffsrcvex.pas
+Adding FFSrFltr.pas
+Adding FFSrFltr.pas
+Adding Ffsrfold.pas
+Adding Ffsrfold.pas
+Adding Ffsrtran.pas
+Adding Ffsrtran.pas
+Adding Ffsrvdlg.pas
+Adding Ffsrvdlg.pas
+Adding Ffsrvdlg.dfm
+Adding Ffsrvdlg.dfm
+Adding FFTTBDDB.pas
+Adding FFTTBDDB.pas
+Adding FFTTBDST.pas
+Adding FFTTBDST.pas
+copying Zip file
+cl:
+"D:\Ff2.zip" 
+cl:
+"C:\Documents and Settings\ScottC\Local Settings\Temporary Internet Files\Content.IE5\G1I3WDUJ\ltools-4.9[1].zip" 
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+cl:
+"C:\Documents and Settings\ScottC\Local Settings\Temporary Internet Files\Content.IE5\G58P2HMT\explore2fs-1.00-pre3[1].zip" 
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+Extracting to "D:\Old_FF2\"
+Use Path: yes   Overlay Files: yes
+Extracting to "D:\Old_FF2\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\TestProject.zip" 
+Extracting to "D:\Ben_App\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\FF2Code.zip" 
+Extracting to "D:\Ben_FF2\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\indextest15.zip" 
+Extracting to "D:\Ben_App\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\indextest15.zip" 
+Extracting to "D:\Ben_App\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\indextest15.zip" 
+Extracting to "D:\Ben_App\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\indextest15.zip" 
+Extracting to "D:\Ben_App\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\BigTest.zip" 
+Extracting to "E:\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\test.zip" 
+Extracting to "e:\marceltest\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\Chronologie.zip" 
+Extracting to "E:\pfautest\"
+Use Path: yes   Overlay Files: yes
+cl:
+"E:\Pfautest\Chronologie.zip" 
+Action: Add (and replace) files Include subfolders: no Save full path: no
+Searching ...
+Adding Chronologie.FFD
+Adding Chronologie.FFD
+copying Zip file
+cl:
+"C:\Temp\Sqltest.zip" 
+Action: Add (and replace) files Include subfolders: no Save full path: no
+Searching ...
+Adding SQLTest.pas
+Adding SQLTest.pas
+copying Zip file
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\Sqltest.zip" 
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+cl:
+"D:\MoreTestTables\Chronologie.zip" 
+Extracting to "D:\MoreTestTables\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\BlobReadOnly.zip" 
+Extracting to "D:\ReadOnlyBLOB\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\Sqltest.zip" 
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\blobtest.zip" 
+Extracting to "D:\bensblob\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\blobtest.zip" 
+Extracting to "D:\bensblob\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\FFLeerlingen.zip" 
+Extracting to "C:\DOCUME~1\ScottC\LOCALS~1\Temp\"
+Use Path: no   Overlay Files: yes
+Extracting to "D:\MoreTestTables\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\DOCUME~1\ScottC\LOCALS~1\Temp\Convert.zip" 
+Extracting to "D:\FF2\convert\"
+Use Path: yes   Overlay Files: yes
+cl:
+"C:\temp\gxexplorer0993.zip" 
+Extracting to "C:\temp\"
+Use Path: yes   Overlay Files: yes
