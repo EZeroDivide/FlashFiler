@@ -9,3 +9,4 @@ bin\**
 *.local
 *.res
 *.dcu
+tpflashfiler/packages/ff2_r100.stat
