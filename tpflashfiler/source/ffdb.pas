@@ -1,5 +1,5 @@
 {*********************************************************}
-{* FlashFiler: Data Access Components for Delphi 3+      *}
+{* FlashFiler: Data Access Components for Delphi 10      *}
 {*********************************************************}
 
 (* ***** BEGIN LICENSE BLOCK *****
@@ -44,9 +44,7 @@ unit ffdb;
 interface
 
 uses
-  {$IFDEF DCC6OrLater}
   Variants,
-  {$ENDIF}
   Windows,
   Classes,
   Generics.Collections,
@@ -825,7 +823,7 @@ type
                                aFieldNo : Integer);
       function dsGetFieldDescItem(iField : Integer;
                               var FDI    : TffFieldDescItem) : Boolean;
-      function dsGetFieldNumber(FieldName : PAnsiChar) : Integer;
+      function dsGetFieldNumber(const FieldName : AnsiString) : Integer;
       procedure dsReadFieldDescs;
       function dsTranslateCmp(var aFirst      : TffNodeValue;
                               var aSecond     : TffNodeValue;
@@ -1740,9 +1738,7 @@ type
   protected
     procedure ActiveChanged; override;
     procedure RecordChanged(Field: TField); override;
-    {$IFDEF DCC4OrLater}
     function GetDetailDataSet: TDataSet; override;
-    {$ENDIF}
     procedure CheckBrowseMode; override;
   public
     constructor Create(aQuery: TffQuery);
@@ -1792,8 +1788,8 @@ type
                                     aOptions   : TLocateOptions;
                                     aSyncCursor: Boolean): Boolean;
 {End !!.01}
-      function quParseSQL(aStmt : string; createParams : boolean;
-                          aParams : TParams) : string;
+      function quParseSQL(aStmt : AnsiString; createParams : boolean;
+                          aParams : TParams) : AnsiString;
       procedure quPreparePrim(prepare : boolean);
       {$IFDEF DCC4OrLater}
       procedure quReadParams(Reader : TReader);
@@ -1894,10 +1890,8 @@ type
       property AfterDelete;
       property BeforeScroll;
       property AfterScroll;
-      {$IFDEF DCC5OrLater}
       property BeforeRefresh;
       property AfterRefresh;
-      {$ENDIF}
       property OnCalcFields;
       property OnDeleteError;
       property OnEditError;
@@ -2533,7 +2527,8 @@ function TffFilterListItem.fliEvaluateFieldNode(aNode   : PffFilterNode;
 var
   FieldDesc : TffFieldDescItem;
   RecBufAsBytes : PByteArray absolute aRecBuf;
-  FilterFldName : PAnsiChar;
+  FilterFldNamePtr : PAnsiChar;
+  FilterFldName: AnsiString;
 begin
   TffDataSet(fliOwner).dsGetFieldDescItem(aNode^.fnFIELD.iFieldNum, FieldDesc);
 
@@ -2545,8 +2540,10 @@ begin
    and incrementing for every field encountered in the filter string.
    We'll patch the filter binary block the first time through since
    GetFieldNumber is relatively slow.}
-  FilterFldName := fliGetLiteralPtr(aNode^.fnFIELD.iNameoffset);
-  if (FFAnsiStrIComp(FilterFldName, FieldDesc.PhyDesc^.szName) <> 0) then begin {!!.06, !!.07}
+  FilterFldNamePtr := fliGetLiteralPtr(aNode^.fnFIELD.iNameoffset);
+  FilterFldName := FilterFldNamePtr;
+  if not AnsiStrings.SameText(FilterFldName, FieldDesc.PhyDesc^.szName) then
+  begin
     {patch the filter block, so we don't keep on doing this}
     aNode^.fnFIELD.iFieldNum :=
       TffDataSet(fliOwner).dsGetFieldNumber(FilterFldName);
@@ -3891,7 +3888,7 @@ begin
           TmpList := TList.Create;
           try
             Check(ServerEngine.DatabaseTableList(DB.DatabaseID,
-                                                 PChar(aPattern),
+                                                 aPattern,
                                                  TmpList));
             for I := 0 to Pred(TmpList.Count) do begin
               PItem := PffTableDescriptor(TmpList.Items[I]);
@@ -5890,7 +5887,7 @@ end;
 function TffBaseTable.GotoKey : Boolean;
 var
   KeyRecInfo   : PKeyRecInfo;
-  KeyRecBuffer : PChar;
+  KeyRecBuffer : PByte;
 begin
   CheckBrowseMode;
   DoBeforeScroll;
@@ -5918,7 +5915,7 @@ procedure TffBaseTable.GotoNearest;
 var
   SearchCond   : TffSearchKeyAction;
   KeyRecInfo   : PKeyRecInfo;
-  KeyRecBuffer : PChar;
+  KeyRecBuffer : PByte;
   Status       : TffResult;
 begin
   CheckBrowseMode;
@@ -6600,9 +6597,6 @@ var
   BDESubType : Word;
   BDESize    : Word;
   VCLType    : TFieldType;
-  {$IFDEF CBuilder3}
-  FieldDef   : TFieldDef;
-  {$ENDIF}
 begin
   with aFieldDesc^ do begin
     {convert the ff type to the nearest BDE logical one}
@@ -6626,21 +6620,12 @@ begin
          (VCLType <> ftBytes) and
          (VCLType <> ftBCD) then
         BDESize := 0;
-      {$IFDEF CBuilder3}
-      FieldDef := TFieldDef.Create(FieldDefs);
-      FieldDef.Name := fdName;
-      FieldDef.DataType := VCLType;
-      FieldDef.Size := BDESize;
-      FieldDef.Required := fdRequired;
-      FieldDef.FieldNo := aFieldNo;
-      {$ELSE}
       TFieldDef.Create(FieldDefs,
                        fdName,
                        VCLType,
                        BDESize,
                        fdRequired,
                        aFieldNo);
-      {$ENDIF}
     end;
   end;
 end;
@@ -6946,16 +6931,19 @@ begin
   end;
 end;
 {--------}
-function TffDataSet.dsGetFieldNumber(FieldName : PAnsiChar) : Integer;
+function TffDataSet.dsGetFieldNumber(const FieldName : AnsiString) : Integer;
 var
   i   : Integer;
   FDI : TffFieldDescItem;
 begin
   Result := 0;
-  if (FieldDescs.Count <> 0) then begin
-    for i := 0 to pred(FieldDescs.Count) do begin
+  if (FieldDescs.Count <> 0) then
+  begin
+    for i := 0 to pred(FieldDescs.Count) do
+    begin
       FDI := TffFieldDescItem(FieldDescs.Items[i]);
-      if (FFAnsiStrIComp(FieldName, FDI.PhyDesc^.szName) = 0) then begin {!!.06, !!.07}
+      if AnsiStrings.SameText(FieldName, FDI.PhyDesc^.szName) then
+      begin
         Result := FDI.FieldNumber;
         Exit;
       end;
@@ -7346,7 +7334,7 @@ procedure TffBaseTable.btEndKeyBufferEdit(aCommit : Boolean);
 begin
   DataEvent(deCheckBrowseMode, 0);
   if aCommit then
-    PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^.kriModified := Modified
+    PKeyRecInfo(PByte(btKeyBuffer) + btKeyInfoOfs)^.kriModified := Modified
   else {rollback}
     Move(PKeyBuffers(btKeyBuffers)^[ketSaved]^, btKeyBuffer^, btKeyBufSize);
   SetState(dsBrowse);
@@ -7715,21 +7703,21 @@ end;
 function TffBaseTable.btGetKeyExclusive : Boolean;
 begin
   btCheckKeyEditMode;
-  Result := PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^.kriExclusive;
+  Result := PKeyRecInfo(PByte(btKeyBuffer) + btKeyInfoOfs)^.kriExclusive;
 end;
 {--------}
 function TffBaseTable.btGetKeyFieldCount : Integer;
 begin
   btCheckKeyEditMode;
-  Result := PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^.kriFieldCount;
+  Result := PKeyRecInfo(PByte(btKeyBuffer) + btKeyInfoOfs)^.kriFieldCount;
 end;
 {--------}
 function TffBaseTable.btGetLookupCursor(const aKeyFields : string;
                                           aNoCase    : Boolean) : TffCursorID;
 var
   KeyIndex  : TIndexDef;
-  RangeStart     : PChar;
-  RangeEnd       : PChar;
+  RangeStart     : PByte;
+  RangeEnd       : PByte;
   RangeStartInfo : PKeyRecInfo;
   RangeEndInfo   : PKeyRecInfo;
   TmpInt    : Integer;
@@ -7830,7 +7818,7 @@ end;
 {--------}
 procedure TffBaseTable.btInitKeyBuffer(aBuf : Pointer);
 begin
-  FillChar(PKeyRecInfo(PChar(aBuf) + btKeyInfoOfs)^, sizeof(TKeyRecInfo), 0);
+  FillChar(PKeyRecInfo(PByte(aBuf) + btKeyInfoOfs)^, sizeof(TKeyRecInfo), 0);
   Dictionary.InitRecord(aBuf);
   Dictionary.SetDefaultFieldValues(aBuf);
 end;
@@ -7983,8 +7971,8 @@ end;
 function TffBaseTable.btResetRange(aCursorID : TffCursorID;
                                    SwallowSeqAccessError : Boolean) : Boolean;
 var
-  RangeStart     : PChar;
-  RangeEnd       : PChar;
+  RangeStart     : PByte;
+  RangeEnd       : PByte;
   RangeStartInfo : PKeyRecInfo;
   RangeEndInfo   : PKeyRecInfo;
 begin
@@ -8263,7 +8251,7 @@ begin
   if aMustClear then
     btInitKeyBuffer(btKeyBuffer);
   SetState(dsSetKey);
-  SetModified(PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^.kriModified);
+  SetModified(PKeyRecInfo(PByte(btKeyBuffer) + btKeyInfoOfs)^.kriModified);
   DataEvent(deDataSetChange, 0);
 end;
 {--------}
@@ -8282,7 +8270,7 @@ begin
     btInitKeyBuffer(btKeyBuffer);
     for i := 0 to High(aValues) do
       btGetIndexField(i).AssignValue(aValues[i]);
-    with PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^ do begin
+    with PKeyRecInfo(PByte(btKeyBuffer) + btKeyInfoOfs)^ do begin
       kriFieldCount := High(aValues) + 1;
       kriExclusive := False;
       kriModified := Modified;
@@ -8581,20 +8569,20 @@ end;
 procedure TffBaseTable.btSetKeyExclusive(const aValue : Boolean);
 begin
   btCheckKeyEditMode;
-  PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^.kriExclusive := aValue;
+  PKeyRecInfo(PByte(btKeyBuffer) + btKeyInfoOfs)^.kriExclusive := aValue;
 end;
 {--------}
 procedure TffBaseTable.btSetKeyFieldCount(const aValue : Integer);
 begin
   btCheckKeyEditMode;
-  PKeyRecInfo(PChar(btKeyBuffer) + btKeyInfoOfs)^.kriFieldCount := aValue;
+  PKeyRecInfo(PByte(btKeyBuffer) + btKeyInfoOfs)^.kriFieldCount := aValue;
 end;
 {--------}
 procedure TffBaseTable.btSetLinkRange(aMasterFields : TList<TField>);
 var
   i              : Integer;
   SaveState      : TDataSetState;
-  RangeStart     : PChar;
+  RangeStart     : PByte;
   RangeStartInfo : PKeyRecInfo;
 begin
   {temporarily change the DataSet state so we can modify the key
@@ -8651,10 +8639,10 @@ end;
 {--------}
 function TffBaseTable.btSetRange : Boolean;
 var
-  RangeStart     : PChar;
-  RangeEnd       : PChar;
-  StartKeyOrRec  : PChar;
-  EndKeyOrRec    : PChar;
+  RangeStart     : PByte;
+  RangeEnd       : PByte;
+  StartKeyOrRec  : PByte;
+  EndKeyOrRec    : PByte;
   RangeStartInfo : PKeyRecInfo;
   RangeEndInfo   : PKeyRecInfo;
 begin
@@ -9202,7 +9190,7 @@ begin
       Result := 0;
       Status := bsTable.dsCheckBLOBHandle(bsRecBuf, bsFieldNo, ISNull, BLOBNr);
       if (Status = DBIERR_NONE) and (not IsNull) then begin
-        Dest := @PChar(@aBuffer)[T];
+        Dest := @PByte(@aBuffer)[T];
         Status := bsTable.ServerEngine.BLOBRead(bsTable.CursorID,
                                                 BLOBNr,
                                                 bsPosition,
@@ -9255,7 +9243,7 @@ begin
 
       Status := bsTable.dsEnsureBLOBHandle(bsRecBuf, bsFieldNo, BLOBNr);
       if (Status = DBIERR_NONE) then begin
-        Src := @PChar(@aBuffer)[T];
+        Src := @PByte(@aBuffer)[T];
         Status := bsTable.ServerEngine.BLOBWrite(bsTable.CursorID,
                                                  BLOBNr,
                                                  bsPosition,
@@ -9904,8 +9892,8 @@ begin
   Result := FRowsAffected;
 end;
 {--------}                                                        {end !!.10}
-function TffQuery.quParseSQL(aStmt : string; createParams : boolean;
-                             aParams : TParams) : string;
+function TffQuery.quParseSQL(aStmt : AnsiString; createParams : boolean;
+                             aParams : TParams) : AnsiString;
 const
   MaxNest = 5;
   ParamNameTerminators = [#9, #10, #13, ' ', ',', ';', ')', '=',       {!!.11}
@@ -9915,7 +9903,7 @@ const
 var
   CurPos, EndPos, NameEndPos, NameStartPos, StartPos : integer;
   DelimStackTop : integer;
-  DelimStack : array[1..MaxNest] of char;
+  DelimStack : array[1..MaxNest] of Ansichar;
   aLen : integer;
 begin
   { Parameter format:

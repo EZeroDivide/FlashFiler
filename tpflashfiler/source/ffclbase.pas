@@ -50,6 +50,33 @@ var
 
 function GetErrorStringPrim(aResult : TffResult; aStrZ : PAnsiChar) : TffResult;
 
+resourcestring
+  SDupItemInColl = 'Duplicate item in collection';
+  SInvalidParameter = 'Invalid Parameter';
+  SREG_PRODUCT = '\Software\TurboPower\FlashFiler\2.0';
+
+  SImport_NoSchemaFile = 'Schema file %s not found';
+  SImport_RECLENGTHRequired = 'RECLENGTH required in schema file for this import filetype';
+  SImport_NoMatchingFields = 'No import fields match any target table fields; nothing to import';
+  SImport_FILETYPEMissing = 'FILETYPE missing in schema file';
+  SImport_FILETYPEInvalid = 'Invalid FILETYPE in schema file';
+  SImport_BadFieldName = 'Error in schema file: %s has invalid fieldname %s';
+  SImport_BadFieldType = 'Error in schema file: %s has invalid datatype %s';
+  SImport_BadFloatSize = 'Error in schema file: %s has invalid field size for FLOAT';
+  SImport_BadIntegerSize = 'Error in schema file: %s has invalid field size for INTEGER';
+  SImport_BadUIntegerSize = 'Error in schema file: %s has invalid field size for UINTEGER';
+  SImport_BadAutoIncSize = 'Error in schema file: %s has invalid field size for AUTOINC';
+  SImport_NoFields = 'No fields defined in schema file';
+  SImport_BadOffset = 'Error in schema file: %s has invalid field offset %s';
+  SImport_BadSize = 'Error in schema file: %s has invalid field size %s';
+  SImport_BadDecPl = 'Error in schema file: %s  has invalid field decimal places %s';
+  SImport_BadDateMask = 'Error in schema file: %s has invalid field date/time picture mask %s';
+  SImport_BadSchemaHeader = 'Invalid section header in schema file: %s';
+
+  SDesign_SLinkMasterSource = 'The MasterSource property of ''%s'' must be linked to a DataSource';
+  SDesign_SLinkMaster = 'Unable to open the MasterSource Table';
+  SDesign_SLinkDesigner = 'Field ''%s'', from the Detail Fields list, must be linked';
+
 implementation
 
 function GetErrorStringPrim(aResult : TffResult; aStrZ : PAnsiChar) : TffResult;
@@ -58,21 +85,10 @@ begin
   Result := DBIERR_NONE;
 end;
 
-procedure InitializeUnit;
-begin
-  ffStrResClient := nil;
-  ffStrResClient := TffStringResource.Create(hInstance, 'FF_CLIENT_STRINGS');
-end;
-
-procedure FinalizeUnit;
-begin
-  ffStrResClient.Free;
-end;
-
 initialization
-  InitializeUnit;
+  ffStrResClient := TffStringResource.Create(hInstance, 'FF_CLIENT_STRINGS');
 
 finalization
-  FinalizeUnit;
+  ffStrResClient.Free;
 
 end.

@@ -146,7 +146,7 @@ function FFTblDeleteKey(const aTI           : PffTransInfo;
                           var aBTreeChanged : Boolean) : Boolean;      {!!.05}
   {-Delete a key/ref from an index}
 function FFTblFindKey(var aIndex   : TffKeyIndexData;
-                      var aRefNr   : TffInt64;
+                      var aRefNr   : UInt64;
                           aTI      : PffTransInfo;
                           aKey     : PffByteArray;
                       var aKeyPath : TffKeyPath;
@@ -164,19 +164,19 @@ function FFTblGetApproxPos(var aIndex   : TffKeyIndexData;
   {-Given a valid keypath to key/ref, calculate the approx position of
     that key/ref in the b-tree as percentage.}
 function FFTblInsertKey(var aIndex : TffKeyIndexData;
-                      const aRefNr : TffInt64;
+                      const aRefNr : UInt64;
                             aTI    : PffTransInfo;
                             aKey   : PffByteArray) : boolean;
   {-Insert a key/ref into an index}
 function FFTblKeyExists(var aIndex : TffKeyIndexData;
-                      const aRefNr : TffInt64;
+                      const aRefNr : UInt64;
                             aTI    : PffTransInfo;
                             aKey   : PffByteArray) : boolean;
   {-Return true if key/ref exists in index.  If the lock duration is
     ffldShort then index locks are released once this method has finished
     using the index pages. }
 function FFTblNextKey(var aIndex   : TffKeyIndexData;
-                      var aRefNr   : TffInt64;
+                      var aRefNr   : UInt64;
                           aTI      : PffTransInfo;
                           aKey     : PffByteArray;
                       var aKeyPath : TffKeyPath) : boolean;
@@ -184,7 +184,7 @@ function FFTblNextKey(var aIndex   : TffKeyIndexData;
     keypath and key/ref to it, return true; if no next key, return
     false and set keypath to EOF}
 function FFTblPrevKey(var aIndex   : TffKeyIndexData;
-                      var aRefNr   : TffInt64;
+                      var aRefNr   : UInt64;
                           aTI      : PffTransInfo;
                           aKey     : PffByteArray;
                       var aKeyPath : TffKeyPath) : boolean;
@@ -193,7 +193,7 @@ function FFTblPrevKey(var aIndex   : TffKeyIndexData;
     return false and set keypath to BOF}
 function FFTblSetApproxPos(var aIndex   : TffKeyIndexData;
                                aPos     : integer;
-                           var aRefNr   : TffInt64;
+                           var aRefNr   : UInt64;
                                aTI      : PffTransInfo;
                                aKey     : PffByteArray;
                            var aKeyPath : TffKeyPath) : boolean;
@@ -2062,7 +2062,7 @@ end;
 function BtreeNextKey(const aIndexData : TffKeyIndexData;
                             aTI        : PffTransInfo;
                             aKey       : PffByteArray;
-                        var aRefNr     : TffInt64;
+                        var aRefNr     : UInt64;
                         var aKeyPath   : TffKeyPath) : boolean;
 var
   aInx         : Longint;
@@ -2221,7 +2221,7 @@ end;
 function BtreePrevKey(const aIndexData : TffKeyIndexData;
                             aTI        : PffTransInfo;
                             aKey       : PffByteArray;
-                        var aRefNr     : TffInt64;
+                        var aRefNr     : UInt64;
                         var aKeyPath   : TffKeyPath) : boolean;
 var
   aInx         : Longint;
@@ -2395,7 +2395,7 @@ function BtreeFindKey(const aIndexData : TffKeyIndexData;
                             aTI        : PffTransInfo;
                             aRoot      : TffWord32;
                             aKey       : PffByteArray;
-                        var aRefNr     : TffInt64;
+                        var aRefNr     : UInt64;
                         var aKeyPath   : TffKeyPath;
                             aAction    : TffSearchKeyAction) : boolean;
 var
@@ -2430,7 +2430,7 @@ begin
                      ffc_InxFlagAllowDups) <> 0;
       {CheckDups means that we're trying to find an exact key/refnr
        combination}
-      CheckDups := HasDups and ((aRefNr.iLow <> 0) or (aRefNr.iHigh <> 0));
+      CheckDups := HasDups and ((TffInt64(aRefNr).iLow <> 0) or (TffInt64(aRefNr).iHigh <> 0));
       Compare := kidCompare;
     end;
 
@@ -2509,8 +2509,8 @@ begin
             {if the index allows dups, the key has been matched and the
              passed refnr is zero, return the first refnr in the index
              for the key}
-            if CheckDups and (KeyCompResult = 0) and
-               (aRefNr.iLow = 0) and (aRefNr.iHigh = 0) then begin
+            if CheckDups and (KeyCompResult = 0) and (aRefNr = 0) then
+            begin
               KeyFound := true;
               DoneRecursing := true;
               with kpPath[kpCount] do begin
@@ -2653,7 +2653,7 @@ procedure BtreeFindApprox(const aIndexData : TffKeyIndexData;
                                 aTI        : PffTransInfo;
                                 aRoot      : TffWord32;
                                 aKey       : PffByteArray;
-                            var aRefNr     : TffInt64;
+                            var aRefNr     : UInt64;
                             var aKeyPath   : TffKeyPath;
                                 aPos       : integer);
 var
@@ -2889,7 +2889,7 @@ begin
 end;
 {--------}
 function FFTblFindKey(var aIndex   : TffKeyIndexData;
-                      var aRefNr   : TffInt64;
+                      var aRefNr   : UInt64;
                           aTI      : PffTransInfo;
                           aKey     : PffByteArray;
                       var aKeyPath : TffKeyPath;
@@ -2981,7 +2981,7 @@ begin
 end;
 {--------}
 function FFTblInsertKey(var aIndex : TffKeyIndexData;
-                      const aRefNr : TffInt64;
+                      const aRefNr : UInt64;
                             aTI    : PffTransInfo;
                             aKey   : PffByteArray) : boolean;
 var
@@ -3039,7 +3039,7 @@ begin
 end;
 {--------}
 function FFTblKeyExists(var aIndex : TffKeyIndexData;
-                      const aRefNr : TffInt64;
+                      const aRefNr : UInt64;
                             aTI    : PffTransInfo;
                             aKey   : PffByteArray ) : boolean;
 var
@@ -3078,7 +3078,7 @@ begin
 end;
 {--------}
 function FFTblNextKey(var aIndex   : TffKeyIndexData;
-                      var aRefNr   : TffInt64;
+                      var aRefNr   : UInt64;
                           aTI      : PffTransInfo;
                           aKey     : PffByteArray;
                       var aKeyPath : TffKeyPath) : boolean;
@@ -3148,7 +3148,7 @@ begin
 end;
 {--------}
 function FFTblPrevKey(var aIndex   : TffKeyIndexData;
-                      var aRefNr   : TffInt64;
+                      var aRefNr   : UInt64;
                           aTI      : PffTransInfo;
                           aKey     : PffByteArray;
                       var aKeyPath : TffKeyPath) : boolean;
@@ -3217,7 +3217,7 @@ end;
 {--------}
 function FFTblSetApproxPos(var aIndex   : TffKeyIndexData;
                                aPos     : integer;
-                           var aRefNr   : TffInt64;
+                           var aRefNr   : UInt64;
                                aTI      : PffTransInfo;
                                aKey     : PffByteArray;
                            var aKeyPath : TffKeyPath) : boolean;

@@ -38,7 +38,7 @@
 { Uncomment the following to have memory obtained directly via GetMem,
   FreeMem, and ReallocMem instead of the FF memory pools. This aids leak
   detection using CodeWatch. }
-{.$DEFINE MemCheck}
+{$DEFINE MemCheck}
 
 {$DEFINE UseEventPool}
 unit ffllbase;
@@ -57,20 +57,6 @@ uses
 
 {$R ffllcnst.res}
 {$R ffdbcnst.res}
-
-{$IFDEF CBuilder3}
-(*$HPPEMIT '' *)
-(*$HPPEMIT '#pragma warn -hid' *)
-(*$HPPEMIT '' *)
-{$ENDIF}
-
-{$IFDEF CBuilder5}
-(*$HPPEMIT '' *)
-(*$HPPEMIT '#ifndef DELPHITHREAD' *)
-(*$HPPEMIT '#define DELPHITHREAD __declspec(thread)' *)
-(*$HPPEMIT '#endif' *)
-(*$HPPEMIT '' *)
-{$ENDIF}
 
 {===FlashFiler Version Number===}
 { Version number is used to determine whether or not a client can properly
@@ -103,33 +89,7 @@ const
 
 {===FlashFiler Version Number===}
 const
-  {$IFDEF Delphi3}
-  ffSpecialString : AnsiString = 'Release (D3)';
-  {$ENDIF}
-  {$IFDEF Delphi4}
-  ffSpecialString : AnsiString = 'Release (D4)';
-  {$ENDIF}
-  {$IFDEF Delphi5}
-  ffSpecialString : AnsiString = 'Release (D5)';
-  {$ENDIF}
-  {$IFDEF Delphi6}
-  ffSpecialString : AnsiString = 'Release (D6)';
-  {$ENDIF}
-  {$IFDEF Delphi7}
   ffSpecialString : AnsiString = 'Release (D7)';
-  {$ENDIF}
-  {$IFDEF CBuilder3}
-  ffSpecialString : AnsiString = 'Release (C3)';
-  {$ENDIF}
-  {$IFDEF CBuilder4}
-  ffSpecialString : AnsiString = 'Release (C4)';
-  {$ENDIF}
-  {$IFDEF CBuilder5}
-  ffSpecialString : AnsiString = 'Release (C5)';
-  {$ENDIF}
-  {$IFDEF CBuilder6}
-  ffSpecialString : AnsiString = 'Release (C6)';
-  {$ENDIF}
 
 
 {===FlashFiler Limits===}   {  ***DO NOT ALTER***  }
@@ -201,9 +161,6 @@ const
 {===Extra 'primary' types===}
 type
   PffLongint = ^Longint;                    {pointer to a Longint}
-  {$IFNDEF DCC4OrLater}
-  PShortInt = ^ShortInt;                    {pointer to a shortint}
-  {$ENDIF}
   PffDateTime = ^TDateTime;                 {pointer to a TDateTime; required
                                              because we use PDateTime but it
                                              occurs only in D5+ or BCB4+ }
@@ -1686,12 +1643,12 @@ function HasTimerExpired(const T : TffTimer) : boolean;
 
 
 {===Comparison declarations===}
-function FFCmpB(a, b : byte) : integer;
+function FFCmpB(a, b : byte) : integer; {$IFDEF PUREPASCAL} inline; {$ENDIF}
   {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b unsigned 8-bit}
 function FFCmpDW(const a, b : TffWord32) : integer;
   {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b unsigned 32-bit}
-function FFCmpI(a, b : integer) : integer;
-  {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b signed integers}
+(*function FFCmpI(a, b : integer) : integer;
+  {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b signed integers}*)
 function FFCmpI16(a, b : smallint) : integer;
   {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b signed 16-bit}
 function FFCmpI32(a, b : Longint) : integer;
@@ -1713,10 +1670,6 @@ function FFCmpI64(const a, b : TffInt64) : integer;
   {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b signed TffWord32}
 
 {===TffInt64 Operations===}
-procedure ffCloneI64(var aDest : TffInt64; const aSrc : TffInt64);
-  {-clone a variable of type TffInt64}
-procedure ffInitI64(var I : TffInt64);
-  {-initialize a variable of type TffInt64}
 procedure ffShiftI64L(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
   {-shift a TffInt64 to the left Bits spaces}
 procedure ffShiftI64R(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
@@ -2108,6 +2061,10 @@ end;
 
 {===Integer comparison declarations==================================}
 function FFCmpB(a, b : byte) : integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := Integer(a) - b;
+{$ELSE}
 asm
   xor ecx, ecx
   cmp al, dl
@@ -2120,6 +2077,7 @@ asm
   inc ecx
 @@EQ:
   mov eax, ecx
+{$ENDIF}
 end;
 {--------}
 function FFCmpDW(const a, b : TffWord32) : integer;
@@ -2137,6 +2095,7 @@ asm
   mov eax, ecx
 end;
 {--------}
+(*
 function FFCmpI(a, b : integer) : integer;
 asm
   xor ecx, ecx
@@ -2151,6 +2110,7 @@ asm
 @@EQ:
   mov eax, ecx
 end;
+*)
 {--------}
 function FFCmpI16(a, b : smallint) : integer;
 asm
@@ -2350,18 +2310,6 @@ asm
   pop ebx
   pop edi
   pop esi
-end;
-{--------}
-procedure  ffCloneI64(var aDest : TffInt64; const aSrc : TffInt64);
-begin
-  aDest.iLow := aSrc.iLow;
-  aDest.iHigh := aSrc.iHigh;
-end;
-{--------}
-procedure ffInitI64(var I : TffInt64);
-begin
-  I.iLow := 0;
-  I.iHigh := 0;
 end;
 {--------}
 function FFCmpI64(const a, b : TffInt64) : Integer;                    {!!.06 - Rewritten}

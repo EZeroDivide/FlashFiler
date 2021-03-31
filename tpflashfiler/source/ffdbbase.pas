@@ -428,8 +428,10 @@ begin
     ffStrResDataSet.GetASCIIZ(deErrorCode, PC, sizeOf(DBIMSG))
   else if (deErrorCode >= ffLLCNSTLow) and (deErrorCode <= ffLLCNSTHigh) then
     ffStrResGeneral.GetASCIIZ(deErrorCode, PC, sizeOf(DBIMSG))
-  else if (deErrorCode >= ffCLCNSTLow) and (deErrorCode <= ffCLCNSTHigh) then {!!.06}
-    ffStrResClient.GetASCIIZ(deErrorCode, PC, SizeOf(DBIMSG))                 {!!.06}
+  else if (deErrorCode >= ffCLCNSTLow) and (deErrorCode <= ffCLCNSTHigh) then
+  begin
+    ffStrResClient.GetASCIIZ(deErrorCode, PC, SizeOf(DBIMSG));
+  end
   else
     GetErrorStringPrim(deErrorCode, PC);
   Result := StrPas(PC);

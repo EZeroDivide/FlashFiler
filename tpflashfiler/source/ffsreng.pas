@@ -181,7 +181,7 @@ type
     sbPos      : TffCursorPosition;
     sbKeyValid : boolean;
     sbFill1    : array [0..1] of byte;  {to DWORD align}
-    sbRefNr    : TffInt64;
+    sbRefNr    : UInt64;
     sbKeyLen   : Longint;
     sbKey      : array [0..1] of byte;
   end;
@@ -366,7 +366,7 @@ type
     Pos : TffCursorPosition;
       { This tells us whether the cursor is on a specific record, at BOF,
         at EOF, or on a crack between two records. }
-    RefNr : TffInt64;
+    RefNr : UInt64;
       { Reference number of the current record.  This is its physical position
         within the file.  For example, if RefNr = 128,556 then the record
         starts at position 128,556 within the data file. }
@@ -512,7 +512,7 @@ type
 
       function bcGetPosition : TffCursorPosition;
 
-      function bcGetRefNr : TffInt64;
+      function bcGetRefNr : UInt64;
 
       procedure bcInit(const aOpenMode  : TffOpenMode;
                        const aShareMode : TffShareMode;
@@ -541,7 +541,7 @@ type
         { Primitive engine method for opening a table. }
 
       procedure bcRecordUpdated(aOp      : TffRecOp;
-                                aRefNr   : TffInt64;
+                                aRefNr   : UInt64;
                                 aIndexID : integer); virtual;
         { Called when another cursor has updated a record in the same
           table.  Gives this cursor a chance to update its internal
@@ -807,7 +807,7 @@ type
       property Filter: TffSrFilter read bcFilter;
       property IndexID : Longint read bcIndexID;
       property Position : TffCursorPosition read bcGetPosition;
-      property RefNr : TffInt64 read bcGetRefNr;
+      property RefNr : UInt64 read bcGetRefNr;
         { Returns the reference number of the current record. }
 //    property ServerEngine : TFFServerEngine read bcEngine;           {Deleted !!.03}
       property Table : TffSrBaseTable read bcTable;
@@ -958,7 +958,7 @@ type
       function btGetFolder : TffSrFolder; virtual;
       procedure btInformCursors(aSrcCursorID : TffCursorID;
                                 aOp          : TffRecOp;
-                                aRefNr       : TffInt64;
+                                aRefNr       : UInt64;
                                 aIndexID     : integer); virtual;
       function btGetOpenIntents : Longint; virtual;
 {Begin !!.03}
@@ -1023,7 +1023,7 @@ type
                                               : Integer; virtual; abstract;
       function DeleteRecord(aTI           : PffTransInfo;
                       const aCursorID     : TffCursorID;
-                      const aRefNr        : TffInt64;
+                      const aRefNr        : UInt64;
                       const aLockObtained : Boolean;
                         var aBTreeChanged : Boolean)                   {!!.05}
                                           : TffResult; virtual; abstract;
@@ -1040,13 +1040,13 @@ type
         { Call this method after calling BeginRead and finishing the read
           operation. }
       function FindKey(var aKID        : TffKeyIndexData;
-                       var aRefNr      : TffInt64;
+                       var aRefNr      : UInt64;
                            aTI         : PffTransInfo;
                            aKey        : PffByteArray;
                        var aKeyPath    : TffKeyPath;
                            aAction     : TffSearchKeyAction) : boolean; virtual; abstract;
       function GetNextKey(var aKID       : TffKeyIndexData;
-                          var aRefNr     : TffInt64;
+                          var aRefNr     : UInt64;
                               aTI        : PffTransInfo;
                               aKey       : PffByteArray;
                           var aKeyPath   : TffKeyPath) : TffResult; virtual; abstract;
@@ -1054,22 +1054,22 @@ type
                        const aDatabaseID : TffDatabaseID;              {!!.10}
                        const aCursorID  : TffCursorID;                 {!!.10}
                          var aKID       : TffKeyIndexData;
-                         var aRefNr     : TffInt64;
+                         var aRefNr     : UInt64;
                              aKey       : PffByteArray;
                          var aKeyPath   : TffKeyPath;
                              aData      : PffByteArray;
                        const aLockType  : TffSrLockType) : TffResult; virtual; abstract;
       procedure GetNextRecordSeq(aTI : PffTransInfo;
-                             var aRefNr : TffInt64;
+                             var aRefNr : UInt64;
                                  aData : PffByteArray); virtual;
       procedure GetPrevRecordSeq(aTI : PffTransInfo;
-                             var aRefNr : TffInt64;
+                             var aRefNr : UInt64;
                                  aData : PffByteArray); virtual;
       function GetPriorRecord(aTI        : PffTransInfo;
                         const aDatabaseID : TffDatabaseID;             {!!.10}
                         const aCursorID  : TffCursorID;                {!!.10}
                           var aKID       : TffKeyIndexData;
-                          var aRefNr     : TffInt64;
+                          var aRefNr     : UInt64;
                               aKey       : PffByteArray;
                           var aKeyPath   : TffKeyPath;
                               aData      : PffByteArray;
@@ -1077,7 +1077,7 @@ type
       function GetRecord(aTI        : PffTransInfo;
                    const aDatabaseID : TffDatabaseID;                  {!!.10}
                    const aCursorID  : TffCursorID;                     {!!.10}
-                         aRefNr     : TffInt64;
+                         aRefNr     : UInt64;
                          aData      : PffByteArray;
                    const aLockType  : TffSrLockType;                   {!!.10}
                    const aLockObtained : boolean;                      {!!.10}
@@ -1089,11 +1089,11 @@ type
       procedure GetRecordLock(aTI        : PffTransInfo;
                        const aDatabaseID : TffDatabaseID;              {!!.10}
                        const aCursorID  : TffCursorID;                 {!!.10}
-                       const aRefNr     : TffInt64;                    {!!.10}
+                       const aRefNr     : UInt64;                    {!!.10}
                        const aLockType  : TffSrLockType); virtual;     {!!.10}
 {Begin !!.10}
       procedure GetRecordNoLock(aTI : PffTransInfo;
-                                aRefNr : TffInt64;
+                                aRefNr : UInt64;
                                 aData  : PffByteArray);
         { Retrieve a record without obtaining any type of lock. }
 {End !!.10}
@@ -1112,19 +1112,19 @@ type
                             aCursorID  : TffCursorID;
                             aData      : PffByteArray;
                             aLockType  : TffSrLockType;
-                        var aNewRefNr  : TffInt64) : TffResult; virtual; abstract;
+                        var aNewRefNr  : UInt64) : TffResult; virtual; abstract;
       function InsertRecordNoDefault(aTI        : PffTransInfo;        {!!.10}
                                      aCursorID  : TffCursorID;
                                      aData      : PffByteArray;
                                      aLockType  : TffSrLockType;
-                                 var aNewRefNr  : TffInt64) : TffResult; virtual; abstract;
+                                 var aNewRefNr  : UInt64) : TffResult; virtual; abstract;
       function IsContentLockedBy(aTrans : TffSrTransaction) : boolean; virtual;
         { Returns True if the table's contents are locked by the specified
           transaction. This returns True whether the lock is a read lock or
           a write lock. }
       function IsRecordLocked(aTI        : PffTransInfo;
                               aCursorID  : TffCursorID;
-                              aRefNr     : TffInt64;
+                              aRefNr     : UInt64;
                               aLockType  : TffSrLockType) : Boolean; virtual;
       function IsServerTable : boolean; virtual;
         { Returns True if this table is a server table. }
@@ -1133,7 +1133,7 @@ type
                           aAttribs : TffFileAttributes); virtual;
       function PutRecord(aTI       : PffTransInfo;
                          aCursorID : TffCursorID;
-                         aRefNr    : TffInt64;
+                         aRefNr    : UInt64;
                          aData     : PffByteArray;
                          aRelLock  : boolean;                                   {!!.05}
                      var aKeyChanged : Boolean) : TffResult; virtual; abstract; {!!.05}
@@ -1142,7 +1142,7 @@ type
 {Begin !!.10}
       procedure RelaxRecordLock(aTI : PffTransInfo;
                                 aCursorID : TffCursorID;
-                                aRefNr : TffInt64); virtual;
+                                aRefNr : UInt64); virtual;
 {End !!.10}
       procedure RelClientLock(aCursorID : Longint; aRemoveAll : Boolean); virtual;
       procedure RelContentLock(aTrans : TffSrTransaction); virtual;
@@ -1151,10 +1151,10 @@ type
       procedure RelRecordLock(aTI : PffTransInfo;
                               aDatabaseID : TffDatabaseID;             {!!.10}
                               aCursorID : TffCursorID;
-                              aRefNr : TffInt64); virtual;
+                              aRefNr : UInt64); virtual;
       procedure RemoveLocksForCursor(const aDatabaseID : TffDatabaseID; {!!.10}
                                      const aCursorID : TffCursorID;
-                                     const aRefNr    : TffInt64;
+                                     const aRefNr    : UInt64;
                                            aTI       : PffTransInfo); virtual;
 
 {Begin !!.03}
@@ -1250,13 +1250,13 @@ type
                                    aLastFldLen : integer) : TffResult;
       function stDeleteKeyPrim(aInxFile      : Integer;
                                aTI           : PffTransInfo;
-                               aRefNr        : TffInt64;
+                               aRefNr        : UInt64;
                                aKey          : PffByteArray;
                                aCompare      : TffKeyCompareFunc;
                                aCmpData      : PffCompareData;
                            var aBTreeChanged : Boolean) : Boolean;     {!!.05}
       function stDeleteKeysForRecord(aTI           : PffTransInfo;
-                                     aRefNr        : TffInt64;
+                                     aRefNr        : UInt64;
                                      aData         : PffByteArray;
                                  var aBTreeChanged : Boolean)          {!!.05}
                                                  : TffResult;
@@ -1264,16 +1264,16 @@ type
       function stGetUserCompareKey(aIndexID : Integer) : TffKeyCompareFunc;
       function stInsertKeyPrim(aInxFile: integer;
                                aTI     : PffTransInfo;
-                               aRefNr  : TffInt64;
+                               aRefNr  : UInt64;
                                aKey    : PffByteArray;
                                aCompare: TffKeyCompareFunc;
                                aCmpData: PffCompareData) : boolean;
       function stInsertKeysForRecord(aTI : PffTransInfo;
-                                     aRefNr : TffInt64;
+                                     aRefNr : UInt64;
                                      aData : PffByteArray) : TffResult;
       function stUpdateKeysForRecord(aCursorID : TffCursorID;
                                      aTI       : PffTransInfo;
-                                     aRefNr    : TffInt64;
+                                     aRefNr    : UInt64;
                                      aData,
                                      aOldData  : PffByteArray;           {!!.05}
                                  var aKeyChanged : Boolean) : TffResult; {!!.05}
@@ -1302,20 +1302,20 @@ type
                                         aKey2 : PffByteArray) : integer; override;
       function DeleteRecord(aTI           : PffTransInfo;
                       const aCursorID     : TffCursorID;
-                      const aRefNr        : TffInt64;
+                      const aRefNr        : UInt64;
                       const aLockObtained : Boolean;
                         var aBTreeChanged : Boolean)                   {!!.05}
                                           : TffResult; override;
 
       procedure DropIndex(aTI : PffTransInfo; aIndexID : Longint); override;
       function FindKey(var aKID        : TffKeyIndexData;
-                       var aRefNr      : TffInt64;
+                       var aRefNr      : UInt64;
                            aTI         : PffTransInfo;
                            aKey        : PffByteArray;
                        var aKeyPath    : TffKeyPath;
                            aAction     : TffSearchKeyAction) : boolean; override;
       function GetNextKey(var aKID       : TffKeyIndexData;
-                          var aRefNr     : TffInt64;
+                          var aRefNr     : UInt64;
                               aTI        : PffTransInfo;
                               aKey       : PffByteArray;
                           var aKeyPath   : TffKeyPath) : TffResult; override;
@@ -1323,7 +1323,7 @@ type
                        const aDatabaseID : TffDatabaseID;              {!!.10}
                        const aCursorID  : TffCursorID;                 {!!.10}
                          var aKID       : TffKeyIndexData;
-                         var aRefNr     : TffInt64;
+                         var aRefNr     : UInt64;
                              aKey       : PffByteArray;
                          var aKeyPath   : TffKeyPath;
                              aData      : PffByteArray;
@@ -1332,7 +1332,7 @@ type
                         const aDatabaseID : TffDatabaseID;             {!!.10}
                         const aCursorID  : TffCursorID;                {!!.10}
                           var aKID       : TffKeyIndexData;
-                          var aRefNr     : TffInt64;
+                          var aRefNr     : UInt64;
                               aKey       : PffByteArray;
                           var aKeyPath   : TffKeyPath;
                               aData      : PffByteArray;
@@ -1341,16 +1341,16 @@ type
                             aCursorID  : TffCursorID;
                             aData      : PffByteArray;
                             aLockType  : TffSrLockType;
-                        var aNewRefNr  : TffInt64) : TffResult; override;
+                        var aNewRefNr  : UInt64) : TffResult; override;
       function InsertRecordNoDefault(aTI        : PffTransInfo;        {!!.10}
                                      aCursorID  : TffCursorID;
                                      aData      : PffByteArray;
                                      aLockType  : TffSrLockType;
-                                 var aNewRefNr  : TffInt64) : TffResult; override;
+                                 var aNewRefNr  : UInt64) : TffResult; override;
       procedure MakeKIDForCursor(aIndexID : integer; var aKID : TffKeyIndexData); override;
       function PutRecord(aTI       : PffTransInfo;
                          aCursorID : TffCursorID;
-                         aRefNr    : TffInt64;
+                         aRefNr    : UInt64;
                          aData     : PffByteArray;
                          aRelLock  : boolean;                          {!!.05}
                      var aKeyChanged : Boolean) : TffResult; override; {!!.05}
@@ -1859,7 +1859,7 @@ type
       function seTableRenamePrim(DB : TffSrDatabase;
                             const aOldName, aNewName : TffName) : TffResult;
 
-      function RecordGetNextSeq(aCursorID : TffCursorID; var aRefNr : TffInt64; aData : PffByteArray) : TffResult;
+      function RecordGetNextSeq(aCursorID : TffCursorID; var aRefNr : UInt64; aData : PffByteArray) : TffResult;
 
       {index stuff}
       function IndexClear(aCursorID : TffCursorID) : TffResult;
@@ -3293,7 +3293,7 @@ begin
   Result := bcInfo.Pos;
 end;
 {--------}
-function TffSrBaseCursor.bcGetRefNr : TffInt64;
+function TffSrBaseCursor.bcGetRefNr : UInt64;
 begin
   Result := bcInfo.RefNr;
 end;
@@ -3392,7 +3392,7 @@ begin
 end;
 {--------}
 procedure TffSrBaseCursor.bcRecordUpdated(aOp      : TffRecOp;
-                                          aRefNr   : TffInt64;
+                                          aRefNr   : UInt64;
                                           aIndexID : integer);
 begin
   { A cursor is affected by another cursor's operations as follows:
@@ -4019,7 +4019,7 @@ end;
 function TffSrBaseCursor.DeleteRecord(aData : PffByteArray) : TffResult;
 var
   BTreeChanged : Boolean;                                              {!!.05}
-  LockedRefNr : TffInt64;                                              {!!.05}
+  LockedRefNr : UInt64;                                              {!!.05}
 begin
   Result := DBIERR_NONE;                                               {!!.01}
   { Are we on a record? }
@@ -4108,7 +4108,7 @@ begin
         Table.RelRecordLock(bcDatabase.TransactionInfo,                {!!.10}
                             bcDatabase.DatabaseID,                     {!!.10}
                             CursorID, bcLockedRefNum);                 {!!.10}
-        FFInitI64(bcLockedRefNum);
+        bcLockedRefNum := 0;
       end;
     end;
 {End !!.03}
@@ -4422,15 +4422,13 @@ end;
 procedure TffSrBaseCursor.RelRecordLock(aAllLocks : boolean);
 begin
   Assert((not aAllLocks), 'Unsupported: Release all record locks for a cursor');
-{Begin !!.03}
   if not FFI64IsZero(bcInfo.refNr) then begin
     bcTable.RemoveLocksForCursor(bcDatabase.DatabaseID,                {!!.10}
                                  CursorID, bcInfo.refNr,               {!!.10}
                                  bcDatabase.TransactionInfo);          {!!.10}
     if FFCmpI64(bcInfo.refNr, bcLockedRefNum) = 0 then
-      FFInitI64(bcLockedRefNum);
+      bcLockedRefNum := 0;
   end;
-{End !!.03}
 end;
 {--------}
 procedure TffSrBaseCursor.RelTableLock(aAllLocks : Boolean);
@@ -5307,8 +5305,7 @@ begin
      matches it}
     if aFirstCall then begin
       FFInitKeyPath(bcInfo.KeyPath);
-      bcInfo.refNr.iLow := 0;
-      bcInfo.refNr.iHigh := 0;
+      bcInfo.refNr := 0;
       bcInfo.Deleted := false;
     end;
     Action := skaEqual;
@@ -5381,7 +5378,7 @@ end;
 function TffSrCursor.InsertRecord(aData     : PffByteArray;
                                   aLockType : TffSrLockType) : TffResult;
 var
-  NewRefNr : TffInt64;
+  NewRefNr : UInt64;
   SavInfo  : TffSrCursorInfo;                                          {!!.12}
   SavKey   : PffByteArray;                                             {!!.12}
 begin
@@ -5435,7 +5432,7 @@ end;
 function TffSrCursor.InsertRecordNoDefault(aData     : PffByteArray;   {!!.10}
                                            aLockType : TffSrLockType) : TffResult;
 var
-  NewRefNr : TffInt64;
+  NewRefNr : UInt64;
 begin
   { Notify extenders. }
   bcNewRecBuff := aData;
@@ -5712,7 +5709,7 @@ begin
     bcInfo.pos := cpBOF;
     FFSetKeyPathToBOF(bcInfo.KeyPath);
     bcInvalidateCurKey;
-    ffInitI64(bcInfo.refNr);
+    bcInfo.refNr := 0;
     bcInfo.Deleted := false;
   finally
     RelContentLock(ffclmRead);
@@ -5829,7 +5826,7 @@ begin
     bcInfo.pos := cpEOF;
     FFSetKeyPathToEOF(bcInfo.KeyPath);
     bcInvalidateCurKey;
-    ffInitI64(bcInfo.refNr);
+    bcInfo.refNr := 0;
     bcInfo.Deleted := false;
   finally
     RelContentLock(ffclmRead);
@@ -5861,7 +5858,7 @@ begin
     {now position the index on that key or the one that partially
      matches it}
     FFInitKeyPath(bcInfo.KeyPath);
-    ffInitI64(bcInfo.refNr);
+    bcInfo.refNr := 0;
     bcInfo.Deleted := false;
     aTI := Database.TransactionInfo;
     {try to find the key according to the search action}
@@ -6481,7 +6478,7 @@ end;
 {--------}
 procedure TffSrBaseTable.btInformCursors(aSrcCursorID : TffCursorID;
                                          aOp          : TffRecOp;
-                                         aRefNr       : TffInt64;
+                                         aRefNr       : UInt64;
                                          aIndexID     : integer);
 var
   Inx    : integer;
@@ -6672,14 +6669,14 @@ begin
 end;
 {--------}
 procedure TffSrBaseTable.GetNextRecordSeq(aTI : PffTransInfo;
-                                      var aRefNr : TffInt64;
+                                      var aRefNr : UInt64;
                                           aData : PffByteArray);
 begin
   FFTblReadNextRecord(Files[0], aTI, aRefNr, aRefNr, aData);
 end;
 {--------}
 procedure TffSrBaseTable.GetPrevRecordSeq(aTI : PffTransInfo;
-                                       var aRefNr : TffInt64;
+                                       var aRefNr : UInt64;
                                            aData : PffByteArray);
 begin
   FFTblReadPrevRecord(Files[0], aTI, aRefNr, aRefNr, aData);
@@ -6688,7 +6685,7 @@ end;
 function TffSrBaseTable.GetRecord(aTI        : PffTransInfo;
                             const aDatabaseID : TffDatabaseID;         {!!.10}
                             const aCursorID  : TffCursorID;            {!!.10}
-                                  aRefNr     : TffInt64;
+                                  aRefNr     : UInt64;
                                   aData      : PffByteArray;
                             const aLockType  : TffSrLockType;          {!!.10}
                             const aLockObtained : boolean;             {!!.02}{!!.10}
@@ -6715,7 +6712,7 @@ end;
 procedure TffSrBaseTable.GetRecordLock(aTI        : PffTransInfo;
                                  const aDatabaseID : TffDatabaseID;    {!!.10}
                                  const aCursorID  : TffCursorID;       {!!.10}
-                                 const aRefNr     : TffInt64;          {!!.10}
+                                 const aRefNr     : UInt64;          {!!.10}
                                  const aLockType  : TffSrLockType);    {!!.10}
 begin
   { Acquire a lock on the record. }
@@ -6725,7 +6722,7 @@ end;
 {Begin !!.10}
 {--------}
 procedure TffSrBaseTable.GetRecordNoLock(aTI : PffTransInfo;
-                                         aRefNr : TffInt64;
+                                         aRefNr : UInt64;
                                          aData  : PffByteArray);
 begin
   if Assigned(aData) then
@@ -6764,7 +6761,7 @@ end;
 {--------}
 function TffSrBaseTable.IsRecordLocked(aTI        : PffTransInfo;
                                        aCursorID  : TffCursorID;
-                                       aRefNr     : TffInt64;
+                                       aRefNr     : UInt64;
                                        aLockType  : TffSrLockType) : Boolean;
 begin
   Result := Folder.LockMgr.IsRecordLocked(aRefNr, Files[0]);
@@ -6946,7 +6943,7 @@ end;
 {--------}
 procedure TffSrBaseTable.RelaxRecordLock(aTI : PffTransInfo;
                                          aCursorID : TffCursorID;
-                                         aRefNr : TffInt64);
+                                         aRefNr : UInt64);
 begin
   FFRelaxRecordLock(Files[0], aTI, aCursorID, aRefNr);
 end;
@@ -6955,14 +6952,14 @@ end;
 procedure TffSrBaseTable.RelRecordLock(aTI       : PffTransInfo;
                                        aDatabaseID : TffDatabaseID;    {!!.10}
                                        aCursorID : TffCursorID;
-                                       aRefNr    : TffInt64);
+                                       aRefNr    : UInt64);
 begin
   FFRelRecordLock(Files[0], aTI, aRefNr, aDatabaseID, aCursorID);      {!!.10}
 end;
 {--------}
 procedure TffSrBaseTable.RemoveLocksForCursor(const aDatabaseID : TffDatabaseID; {!!.10}
                                               const aCursorID : TffCursorID;
-                                              const aRefNr    : TffInt64;
+                                              const aRefNr    : UInt64;
                                                     aTI       : PffTransInfo);
 begin
   { In FF 1, if aRefNr = 0 then all of a cursor's locks were
@@ -7153,7 +7150,7 @@ end;
 {--------}
 function TffSrTable.DeleteRecord(aTI           : PffTransInfo;
                            const aCursorID     : TffCursorID;
-                           const aRefNr        : TffInt64;
+                           const aRefNr        : UInt64;
                            const aLockObtained : Boolean;
                              var aBTreeChanged : Boolean) : TffResult; {!!.05}
 var
@@ -7195,7 +7192,7 @@ begin
 end;
 {--------}
 function TffSrTable.FindKey(var aKID        : TffKeyIndexData;
-                            var aRefNr      : TffInt64;
+                            var aRefNr      : UInt64;
                                 aTI         : PffTransInfo;
                                 aKey        : PffByteArray;
                             var aKeyPath    : TffKeyPath;
@@ -7205,7 +7202,7 @@ begin
 end;
 {--------}
 function TffSrTable.GetNextKey(var aKID       : TffKeyIndexData;
-                               var aRefNr     : TffInt64;
+                               var aRefNr     : UInt64;
                                    aTI        : PffTransInfo;
                                    aKey       : PffByteArray;
                                var aKeyPath   : TffKeyPath) : TffResult;
@@ -7220,7 +7217,7 @@ function TffSrTable.GetNextRecord(aTI        : PffTransInfo;
                             const aDatabaseID : TffDatabaseID;         {!!.10}
                             const aCursorID  : TffCursorID;            {!!.10}
                               var aKID       : TffKeyIndexData;
-                              var aRefNr     : TffInt64;
+                              var aRefNr     : UInt64;
                                   aKey       : PffByteArray;
                               var aKeyPath   : TffKeyPath;
                                   aData      : PffByteArray;
@@ -7247,7 +7244,7 @@ function TffSrTable.GetPriorRecord(aTI       : PffTransInfo;
                              const aDatabaseID : TffDatabaseID;        {!!.10}
                              const aCursorID : TffCursorID;            {!!.10}
                                var aKID      : TffKeyIndexData;
-                               var aRefNr    : TffInt64;
+                               var aRefNr    : UInt64;
                                    aKey      : PffByteArray;
                                var aKeyPath  : TffKeyPath;
                                    aData     : PffByteArray;
@@ -7274,7 +7271,7 @@ function TffSrTable.InsertRecord(aTI        : PffTransInfo;
                                  aCursorID  : TffCursorID;
                                  aData      : PffByteArray;
                                  aLockType  : TffSrLockType;
-                             var aNewRefNr  : TffInt64) : TffResult;
+                             var aNewRefNr  : UInt64) : TffResult;
 var
   RefNr : TffInt64;
 begin
@@ -7316,7 +7313,7 @@ function TffSrTable.InsertRecordNoDefault(aTI        : PffTransInfo;   {!!.10}
                                           aCursorID  : TffCursorID;
                                           aData      : PffByteArray;
                                           aLockType  : TffSrLockType;
-                                      var aNewRefNr  : TffInt64) : TffResult;
+                                      var aNewRefNr  : UInt64) : TffResult;
 var
   RefNr : TffInt64;
 begin
@@ -7379,7 +7376,7 @@ end;
 {--------}
 function TffSrTable.PutRecord(aTI       : PffTransInfo;
                               aCursorID : TffCursorID;
-                              aRefNr    : TffInt64;
+                              aRefNr    : UInt64;
                               aData     : PffByteArray;
                               aRelLock  : boolean;                     {!!.05}
                           var aKeyChanged : Boolean) : TffResult;      {!!.05}
@@ -7576,7 +7573,7 @@ end;
 {--------}
 function TffSrTable.stDeleteKeyPrim(aInxFile      : Integer;
                                     aTI           : PffTransInfo;
-                                    aRefNr        : TffInt64;
+                                    aRefNr        : UInt64;
                                     aKey          : PffByteArray;
                                     aCompare      : TffKeyCompareFunc;
                                     aCmpData      : PffCompareData;
@@ -7595,7 +7592,7 @@ begin
 end;
 {--------}
 function TffSrTable.stDeleteKeysForRecord(aTI           : PffTransInfo;
-                                          aRefNr        : TffInt64;
+                                          aRefNr        : UInt64;
                                           aData         : PffByteArray;
                                       var aBTreeChanged : Boolean)     {!!.05}
                                                         : TffResult;
@@ -7695,7 +7692,7 @@ end;
 {--------}
 function TffSrTable.stInsertKeyPrim(aInxFile: integer;
                                     aTI     : PffTransInfo;
-                                    aRefNr  : TffInt64;
+                                    aRefNr  : UInt64;
                                     aKey    : PffByteArray;
                                     aCompare: TffKeyCompareFunc;
                                     aCmpData: PffCompareData) : boolean;
@@ -7712,7 +7709,7 @@ begin
 end;
 {--------}
 function TffSrTable.stInsertKeysForRecord(aTI    : PffTransInfo;
-                                          aRefNr : TffInt64;
+                                          aRefNr : UInt64;
                                           aData  : PffByteArray) : TffResult;
 var
   IndexNumber  : integer;
@@ -7847,7 +7844,7 @@ end;
 {--------}
 function TffSrTable.stUpdateKeysForRecord(aCursorID   : TffCursorID;
                                           aTI         : PffTransInfo;
-                                          aRefNr      : TffInt64;
+                                          aRefNr      : UInt64;
                                           aData,
                                           aOldData    : PffByteArray;  {!!.05}
                                       var aKeyChanged : Boolean) : TffResult; {!!.05}
@@ -11913,7 +11910,7 @@ begin
 end;
 {--------}
 function TffServerEngine.RecordGetNextSeq(aCursorID : TffCursorID;
-                                      var aRefNr    : TffInt64;
+                                      var aRefNr    : UInt64;
                                           aData     : PffByteArray) : TffResult;
 var
   Cursor : TffSrBaseCursor;

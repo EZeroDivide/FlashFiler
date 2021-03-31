@@ -74,19 +74,19 @@ type
                                         aKey2 : PffByteArray) : integer; override;
       function DeleteRecord(aTI           : PffTransInfo;
                       const aCursorID     : TffCursorID;
-                      const aRefNr        : TffInt64;
+                      const aRefNr        : UInt64;
                       const aLockObtained : Boolean;
                         var aBTreeChanged : Boolean)                   {!!.05}
                                           : TffResult; override;
       procedure DropIndex(aTI : PffTransInfo; aIndexID : Longint); override;
       function FindKey(var aKID        : TffKeyIndexData;
-                       var aRefNr      : TffInt64;
+                       var aRefNr      : UInt64;
                            aTI         : PffTransInfo;
                            aKey        : PffByteArray;
                        var aKeyPath    : TffKeyPath;
                            aAction     : TffSearchKeyAction) : boolean; override;
       function GetNextKey(var aKID       : TffKeyIndexData;
-                          var aRefNr     : TffInt64;
+                          var aRefNr     : UInt64;
                               aTI        : PffTransInfo;
                               aKey       : PffByteArray;
                           var aKeyPath   : TffKeyPath) : TffResult; override;
@@ -94,7 +94,7 @@ type
                        const aDatabaseID : TffDatabaseID;              {!!.10}
                        const aCursorID  : TffCursorID;                 {!!.10}
                          var aKID       : TffKeyIndexData;
-                         var aRefNr     : TffInt64;
+                         var aRefNr     : UInt64;
                              aKey       : PffByteArray;
                          var aKeyPath   : TffKeyPath;
                              aData      : PffByteArray;
@@ -103,7 +103,7 @@ type
                         const aDatabaseID : TffDatabaseID;             {!!.10}
                         const aCursorID  : TffCursorID;                {!!.10}
                           var aKID       : TffKeyIndexData;
-                          var aRefNr     : TffInt64;
+                          var aRefNr     : UInt64;
                               aKey       : PffByteArray;
                           var aKeyPath   : TffKeyPath;
                               aData      : PffByteArray;
@@ -112,18 +112,18 @@ type
                             aCursorID  : TffCursorID;
                             aData      : PffByteArray;
                             aLockType  : TffSrLockType;
-                        var aNewRefNr  : TffInt64) : TffResult; override;
+                        var aNewRefNr  : UInt64) : TffResult; override;
       function InsertRecordNoDefault(aTI        : PffTransInfo;        {!!.10}
                                      aCursorID  : TffCursorID;
                                      aData      : PffByteArray;
                                      aLockType  : TffSrLockType;
-                                 var aNewRefNr  : TffInt64) : TffResult; override;
+                                 var aNewRefNr  : UInt64) : TffResult; override;
       procedure MakeKIDForCursor(aIndexID : integer; var aKID : TffKeyIndexData); override;
       procedure OpenFiles(aTI : PffTransInfo; aForServer : boolean;
                           aAttribs : TffFileAttributes); override;
       function PutRecord(aTI       : PffTransInfo;
                          aCursorID : TffCursorID;
-                         aRefNr    : TffInt64;
+                         aRefNr    : UInt64;
                          aData     : PffByteArray;
                          aRelLock  : boolean;                          {!!.05}
                      var aKeyChanged : Boolean) : TffResult; override; {!!.05}
@@ -303,7 +303,7 @@ end;
 {--------}
 function TffSrSimpleTable.DeleteRecord(aTI           : PffTransInfo;
                                  const aCursorID     : TffCursorID;
-                                 const aRefNr        : TffInt64;
+                                 const aRefNr        : UInt64;
                                  const aLockObtained : Boolean;
                                    var aBTreeChanged : Boolean)        {!!.05}
                                                      : TffResult;
@@ -340,18 +340,18 @@ begin
 end;
 {--------}
 function TffSrSimpleTable.FindKey(var aKID        : TffKeyIndexData;
-                                  var aRefNr      : TffInt64;
+                                  var aRefNr      : UInt64;
                                       aTI         : PffTransInfo;
                                       aKey        : PffByteArray;
                                   var aKeyPath    : TffKeyPath;
                                       aAction     : TffSearchKeyAction) : boolean;
 begin
-  ffInitI64(aRefNr);
+  aRefNr := 0;
   Result := False;
 end;
 {--------}
 function TffSrSimpleTable.GetNextKey(var aKID       : TffKeyIndexData;
-                                     var aRefNr     : TffInt64;
+                                     var aRefNr     : UInt64;
                                          aTI        : PffTransInfo;
                                          aKey       : PffByteArray;
                                      var aKeyPath   : TffKeyPath) : TffResult;
@@ -363,7 +363,7 @@ function TffSrSimpleTable.GetNextRecord(aTI        : PffTransInfo;
                                   const aDatabaseID : TffDatabaseID;   {!!.10}
                                   const aCursorID  : TffCursorID;      {!!.10}
                                     var aKID       : TffKeyIndexData;
-                                    var aRefNr     : TffInt64;
+                                    var aRefNr     : UInt64;
                                         aKey       : PffByteArray;
                                     var aKeyPath   : TffKeyPath;
                                         aData      : PffByteArray;
@@ -377,7 +377,7 @@ function TffSrSimpleTable.GetPriorRecord(aTI        : PffTransInfo;
                                    const aDatabaseID : TffDatabaseID;  {!!.10}
                                    const aCursorID  : TffCursorID;     {!!.10}
                                      var aKID       : TffKeyIndexData;
-                                     var aRefNr     : TffInt64;
+                                     var aRefNr     : UInt64;
                                          aKey       : PffByteArray;
                                      var aKeyPath   : TffKeyPath;
                                          aData      : PffByteArray;
@@ -391,7 +391,7 @@ function TffSrSimpleTable.InsertRecord(aTI        : PffTransInfo;
                                        aCursorID  : TffCursorID;
                                        aData      : PffByteArray;
                                        aLockType  : TffSrLockType;
-                                   var aNewRefNr  : TffInt64) : TffResult;
+                                   var aNewRefNr  : UInt64) : TffResult;
 var
   RefNr : TffInt64;
 begin
@@ -421,7 +421,7 @@ function TffSrSimpleTable.InsertRecordNoDefault(aTI        : PffTransInfo;{!!.10
                                                 aCursorID  : TffCursorID;
                                                 aData      : PffByteArray;
                                                 aLockType  : TffSrLockType;
-                                            var aNewRefNr  : TffInt64) : TffResult;
+                                            var aNewRefNr  : UInt64) : TffResult;
 var
   RefNr : TffInt64;
 begin
@@ -468,7 +468,7 @@ end;
 {--------}
 function TffSrSimpleTable.PutRecord(aTI       : PffTransInfo;
                                     aCursorID : TffCursorID;
-                                    aRefNr    : TffInt64;
+                                    aRefNr    : UInt64;
                                     aData     : PffByteArray;
                                     aRelLock  : boolean;                                   {!!.05}
                                 var aKeyChanged : Boolean) : TffResult; {!!.05}
@@ -823,7 +823,7 @@ end;
 {--------}
 function TffSrSimpleCursor.InsertRecord(aData : PffByteArray; aLockType : TffSrLockType) : TffResult;
 var
-  NewRefNr : TffInt64;
+  NewRefNr : UInt64;
 begin
   { Notify extenders. }
   Result := NotifyExtenders(ffeaBeforeRecInsert, ffeaInsertRecFail);
@@ -848,7 +848,7 @@ end;
 function TffSrSimpleCursor.InsertRecordNoDefault(aData : PffByteArray;{!!.10}
                                                  aLockType : TffSrLockType) : TffResult;
 var
-  NewRefNr : TffInt64;
+  NewRefNr : UInt64;
 begin
   { Notify extenders. }
   Result := NotifyExtenders(ffeaBeforeRecInsert, ffeaInsertRecFail);
@@ -967,7 +967,7 @@ begin
     bcInfo.Deleted := False;
     bcInfo.KeyValid := False;
     bcInfo.Pos := cpBOF;
-    FFInitI64(bcInfo.RefNr);
+    bcInfo.RefNr := 0;
   finally
     RelContentLock(ffclmRead);
   end;
@@ -1038,7 +1038,7 @@ begin
   try
     bcInfo.Pos := cpEOF;
     bcInfo.KeyValid := False;
-    FFInitI64(bcInfo.refNr);
+    bcInfo.refNr := 0;
     bcInfo.Deleted := false;
   finally
     RelContentLock(ffclmRead);

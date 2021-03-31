@@ -1576,9 +1576,9 @@ type
 
   TFFSqlUsingItem = class(TffSqlNode)
   protected
-    FColumnName: string;
+    FColumnName: AnsiString;
   public
-    property ColumnName: string read FColumnName write FColumnName;
+    property ColumnName: AnsiString read FColumnName write FColumnName;
     function Equals(Other: TffSqlNode): Boolean; override;
     procedure Assign(const Source: TffSqlNode); override;
     procedure EnumNodes(EnumMethod: TffSqlEnumMethod; const Deep: Boolean); override;

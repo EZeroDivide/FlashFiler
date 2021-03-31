@@ -3625,7 +3625,7 @@ begin
   bmMaxRAMDetail.iLow := bmMaxRAM;
   bmMaxRAMDetail.iHigh := 0;
   ffI64MultInt(bmMaxRAMDetail, ffcl_1MB, bmMaxRAMDetail);
-  ffInitI64(bmRAMDetail);
+  bmRAMDetail := 0;
   bmRAMUsed := 0;
   bmTempStore := ffcTempStorageClass.Create(bmConfigDir,
                                             TempStoreSizeInMB * ffcl_1MB,

@@ -105,13 +105,15 @@ uses
 {===TffCollectionItem================================================}
 constructor TffCollectionItem.Create(aParent    : TObject;
                                      aContainer : TffCollection);
+var X: Integer;
 begin
+  X := ffccDupItemInColl;
   inherited Create;
   ciParent := aParent;
   ciContainer := aContainer;
   if (aContainer <> nil) then
     if not aContainer.Insert(Self) then
-      raise Exception.Create(ffStrResClient[ffccDupItemInColl]);
+      raise Exception.Create(SDupItemInColl);
 end;
 {--------}
 destructor TffCollectionItem.Destroy;

@@ -1,6 +1,6 @@
 
 *.exe
-bin\**
+bin
 **\__history
 **\__recovery
 *.dll
@@ -9,4 +9,4 @@ bin\**
 *.local
 *.res
 *.dcu
-tpflashfiler/packages/ff2_r100.stat
+*.stat

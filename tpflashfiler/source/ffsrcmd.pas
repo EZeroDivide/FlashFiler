@@ -827,7 +827,7 @@ begin
     if KeyLen2 = 0 then
       pKey2 := nil
     else
-      pKey2 := PffByteArray(PAnsiChar(@KeyData1) + KeyLen1);
+      pKey2 := PffByteArray(PByte(@KeyData1) + KeyLen1);
     if FLogEnabled then begin
       ichLogAll(['SetRange',
                   format(csClientID, [dmClientID]),

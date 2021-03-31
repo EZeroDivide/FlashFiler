@@ -736,7 +736,7 @@ end;
 {--------}
 procedure TffSrTransactionMgr.tmWriteConfig(const CloseFile : Boolean); {!!.13}
 var
-  TempPos : TffInt64;
+  TempPos : UInt64;
 begin
   {$IFDEF TranLogging}
   FEventLog.WriteStrings(['',
@@ -746,7 +746,7 @@ begin
   if assigned(FConfigFile) and                                         {Start !!.01}
      (FConfigFile^.fiHandle <> INVALID_HANDLE_VALUE) then begin
     if (not FReadOnly) then begin
-      FFInitI64(TempPos);
+      TempPos := 0;
       FFPositionFilePrim(FConfigFile, TempPos);
       FFWriteFilePrim(FConfigFile, sizeOf(TffWord32), FNextLSN);
       FFWriteFilePrim(FConfigFile, sizeOf(TDateTime), FLSNRollTime);

@@ -829,7 +829,7 @@ end;
 function TFFSqlTableProxy.GetCurrentRecordID: tffint64;
 begin
   if NoRecord then
-    ffInitI64(Result)
+    Result := 0
   else begin
     Assert(FCursorID <> 0);
     Assert(TObject(FCursorID) is TffSrBaseCursor);

@@ -175,7 +175,7 @@ var
   OurTable: TffSrTable;
   OurIndexID: longint;
   OurIndexFileNumber: longint;
-  RefNr: TffInt64;
+  RefNr: UInt64;
   Compare: TffKeyCompareFunc;
   OurKey: PffByteArray;
   BuildKey: TffKeyBuildFunc;
@@ -270,13 +270,12 @@ begin
                   NextYieldPoint := aiYield;
                   {$ENDIF}
 
-                  RefNr.iLow := 0;
-                  RefNr.iHigh := 0;
+                  RefNr := 0;
 
                   { Loop through all the nondeleted records... }
                   OurTable.GetNextRecordSeq(rpDB.TransactionInfo,
                                             RefNr, RecordBuf);
-                  while (not (RefNr.iLow = 0) and (RefNr.iHigh = 0)) do begin
+                  while (not (TffInt64(RefNr).iLow = 0) and (TffInt64(RefNr).iHigh = 0)) do begin
                     Inc(RecordsRead);
 
                     { Reindexing the Sequential Access Index }

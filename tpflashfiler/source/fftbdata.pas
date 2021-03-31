@@ -70,28 +70,28 @@ procedure FFTblDeleteRecord(aFI    : PffFileInfo;
   {-Delete a record from the table}
 procedure FFTblReadNextRecord(aFI        : PffFileInfo;
                               aTI        : PffTransInfo;
-                        const aFromRefNr : TffInt64;
-                          var aRefNr     : TffInt64;
+                        const aFromRefNr : UInt64;
+                          var aRefNr     : UInt64;
                               aRecData   : PffByteArray);
   {-Read the next record from the table, given the record from which to read.
     Note: to read the first record, pass 0 as FromRefNr; 0 is returned if
           no further records}
 procedure FFTblReadPrevRecord(aFI        : PffFileInfo;
                               aTI        : PffTransInfo;
-                        const aFromRefNr : TffInt64;
-                          var aRefNr     : TffInt64;
+                        const aFromRefNr : UInt64;
+                          var aRefNr     : UInt64;
                               aRecData   : PffByteArray);
   {-Read the previous record from the table, given the record from which to read.
     Note: to read the last record, pass 0 as FromRefNr; 0 is returned if
           no further records}
 procedure FFTblReadRecord(aFI        : PffFileInfo;
                           aTI        : PffTransInfo;
-                    const aRefNr     : TffInt64;
+                    const aRefNr     : UInt64;
                           aRecData   : PffByteArray);
   {-Read a record from the table}
 procedure FFTblUpdateRecord(aFI      : PffFileInfo;
                             aTI      : PffTransInfo;
-                    const aRefNr     : TffInt64;
+                    const aRefNr     : UInt64;
                           aRecData   : PffByteArray);
   {-Update a record in the table}
 
@@ -372,8 +372,8 @@ end;
 {--------}
 procedure FFTblReadNextRecord(aFI        : PffFileInfo;
                               aTI        : PffTransInfo;
-                        const aFromRefNr : TffInt64;
-                          var aRefNr     : TffInt64;
+                        const aFromRefNr : UInt64;
+                          var aRefNr     : UInt64;
                               aRecData   : PffByteArray  );
 var
   FileHeader    : PffBlockHeaderFile;
@@ -383,7 +383,7 @@ var
   OffsetInBlock : Longint;
   RecordBlock   : PffBlock;
   RecBlockHdr   : PffBlockHeaderData absolute RecordBlock;
-  TempI64       : TffInt64;
+  TempI64       : UInt64;
   ThisBlock     : TffWord32;
   aFHRelMethod,
   aBlkRelMethod : TffReleaseMethod;
@@ -395,13 +395,12 @@ begin
     try
       {cater for silly case}
       if (bhfRecordCount = 0) then begin
-        ffInitI64(aRefNr);
+        aRefNr := 0;
         Exit;
       end;
       {read and verify the record's block, if reference is not zero}
-      TempI64.iLow := 0;
-      TempI64.iHigh := 0;
-      if (ffCmpI64(aFromRefNr, TempI64) <> 0) then
+      TempI64 := 0;
+      if (aFromRefNr <> TempI64) then
         RecordBlock := ReadVfyRefNrDataBlock(aFI, aTI, aFromRefNr, ffc_ReadOnly,
                                              OffsetInBlock, aBlkRelMethod)
       {otherwise, get the first data block}
@@ -440,14 +439,14 @@ begin
           if (PShortInt(@RecordBlock^[OffsetInBlock])^ = 0) then
             FoundIt := true;
         until FoundIt;
-        if not FoundIt then begin
-          aRefNr.iLow := 0;
-          aRefNr.iHigh := 0;
-        end else begin
-          TempI64.iLow := RecBlockHdr^.bhdThisBlock;
-          TempI64.iHigh := 0;
-          ffShiftI64L(TempI64, aFI^.fiLog2BlockSize, TempI64);
-          ffI64AddInt(TempI64, OffsetInBlock, aRefNr);
+        if not FoundIt then
+        begin
+          aRefNr := 0;
+        end else
+        begin
+          TempI64 := RecBlockHdr^.bhdThisBlock;
+          TempI64 := TempI64 shl aFI^.fiLog2BlockSize;
+          aRefNr := TempI64 + UInt64(OffsetInBlock);
           if aRecData <> nil then                                      {!!.01}
             Move(RecordBlock^[OffsetInBlock+sizeof(byte)], aRecData^,  {!!.01}
                  aFI^.fiRecordLength);                                 {!!.01}
@@ -463,8 +462,8 @@ end;
 {--------}
 procedure FFTblReadPrevRecord(aFI        : PffFileInfo;
                               aTI        : PffTransInfo;
-                        const aFromRefNr : TffInt64;
-                          var aRefNr     : TffInt64;
+                        const aFromRefNr : UInt64;
+                          var aRefNr     : UInt64;
                               aRecData   : PffByteArray  );
 var
   FileHeader    : PffBlockHeaderFile;
@@ -484,8 +483,7 @@ begin
     try
       {cater for silly case}
       if (bhfRecordCount = 0) then begin
-        aRefNr.iLow := 0;
-        aRefNr.iHigh := 0;
+        aRefNr := 0;
         Exit;
       end;
       {read and verify the record's block, if reference is not zero}
@@ -526,16 +524,15 @@ begin
           if (PShortInt(@RecordBlock^[OffsetInBlock])^ = 0) then
             FoundIt := True;
         until FoundIt;
-        if not FoundIt then begin
-          aRefNr.iLow := 0;
-          aRefNr.iHigh := 0
-        end else begin
+        if not FoundIt then
+        begin
+          aRefNr := 0;
+        end else
+        begin
           TempI64.iLow := OffsetInBlock;
           TempI64.iHigh := 0;
           aRefNr := TempI64;
-          ffI64AddInt(aRefNr,
-                      (RecBlockHdr^.bhdThisBlock shl aFI^.fiLog2BlockSize),
-                      aRefNr);
+          aRefNr := (RecBlockHdr^.bhdThisBlock shl aFI^.fiLog2BlockSize) + aRefNr;
           Move(RecordBlock^[OffsetInBlock+sizeof(byte)], aRecData^,
                aFI^.fiRecordLength);
         end;
@@ -549,7 +546,7 @@ end;
 {--------}
 procedure FFTblReadRecord(aFI        : PffFileInfo;
                           aTI        : PffTransInfo;
-                    const aRefNr     : TffInt64;
+                    const aRefNr     : UInt64;
                           aRecData   : PffByteArray);
 var
   DelLink       : PByte;
@@ -567,7 +564,7 @@ begin
       DelLink := @RecordBlock^[OffsetInBlock];
       if (DelLink^ <> 0) then
         FFRaiseException(EffServerException, ffStrResServer, fferrRecDeleted,
-                         [aFI^.fiName^, aRefNr.iLow, aRefNr.iHigh]);
+                         [aFI^.fiName^, TffInt64(aRefNr).iLow, TffInt64(aRefNr).iHigh]);
       {copy the record from the block}
       Move(RecordBlock^[OffsetInBlock+sizeof(byte)], aRecData^, fiRecordLength);
     finally
@@ -578,7 +575,7 @@ end;
 {--------}
 procedure FFTblUpdateRecord(aFI      : PffFileInfo;
                             aTI      : PffTransInfo;
-                      const aRefNr   : TffInt64;
+                      const aRefNr   : UInt64;
                             aRecData : PffByteArray);
 var
   DelLink       : PByte;
@@ -595,7 +592,7 @@ begin
     DelLink := @RecordBlock^[OffsetInBlock];
     if (DelLink^ <> 0) then
       FFRaiseException(EffServerException, ffStrResServer, fferrRecDeleted,
-                      [aFI^.fiName^, aRefNr.iLow, aRefNr.iHigh]);
+                      [aFI^.fiName^, TffInt64(aRefNr).iLow, TffInt64(aRefNr).iHigh]);
     {copy the record into the block}
     Move(aRecData^, RecordBlock^[OffsetInBlock+sizeof(Byte)], aFI^.fiRecordLength);
   finally

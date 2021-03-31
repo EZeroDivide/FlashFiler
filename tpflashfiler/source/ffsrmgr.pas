@@ -62,8 +62,8 @@ type
   TIndexArray = array[0..(MaxInt div SizeOf(TIndexRec))-2] of TIndexRec;
 
   PResourceRec = ^TResourceRec;
-  TResourceRec = record
-    id : array[0..3] of Ansichar;
+  TResourceRec = packed record
+    id : array[0..3] of AnsiChar;
     count : LongInt;
     index : TIndexArray;
   end;
@@ -96,19 +96,16 @@ type
 
     function GetIdentAtIndex(const anIndex : longInt) : integer;
 
-    function GetString(Ident : TInt32) : string;
-    function GetStringAtIndex(const anIndex : longInt) : string;
+    function GetString(Ident : TInt32) : AnsiString;
+    function GetStringAtIndex(const anIndex : longInt) : AnsiString;
 
-    property Strings[Ident : TInt32] : string
-      read GetString; default;
+    property Strings[Ident : TInt32] : AnsiString read GetString; default;
     function GetWideChar(Ident : TInt32; Buffer : PWideChar; BufChars : Integer) : PWideChar;
 
+    /// <summary> -Returns the number of strings managed by this resource. <summary>
     property Count : longInt read srGetCount;
-      {-Returns the number of strings managed by this resource. }
 
-    property ReportError : Boolean
-      read FReportError
-      write FReportError;
+    property ReportError : Boolean read FReportError write FReportError;
   end;
 
 var
@@ -168,7 +165,7 @@ begin
       OLen := P^.len;
       if OLen >= BufChars then
         OLen := BufChars-1;
-      WideCopy(Buffer, PWideChar(PChar(srP)+P^.ofs), OLen);
+      WideCopy(Buffer, PWideChar(PByte(srP)+P^.ofs), OLen);
     end;
   finally
     srUnLock;
@@ -227,7 +224,7 @@ begin
   end;
 end;
 {--------}
-function TffStringResource.GetString(Ident : TInt32) : string;
+function TffStringResource.GetString(Ident : TInt32) : Ansistring;
 var
   P : PIndexRec;
   Src : PWideChar;
@@ -239,8 +236,9 @@ begin
     if P = nil then
       Result := ''
 
-    else begin
-      Src := PWideChar(PChar(srP)+P^.ofs);
+    else
+    begin
+      Src := PWideChar(PByte(srP)+P^.ofs);
       Len := P^.len;
       OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
       SetLength(Result, OLen);
@@ -251,7 +249,7 @@ begin
   end;
 end;
 {--------}
-function TffStringResource.GetStringAtIndex(const anIndex : longInt) : string;
+function TffStringResource.GetStringAtIndex(const anIndex : longInt) : Ansistring;
 var
   P : PIndexRec;
   Src : PWideChar;
@@ -267,7 +265,7 @@ begin
       Result := ''
 
     else begin
-      Src := PWideChar(PChar(srP)+P^.ofs);
+      Src := PWideChar(PByte(srP)+P^.ofs);
       Len := P^.len;
       OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
       SetLength(Result, OLen);
@@ -380,17 +378,13 @@ begin
     srPadlock.Unlock;                                                  {!!.03}
   end;                                                                 {!!.03}
 end;
-{--------}
-procedure FreeTpsResStrings; far;
-begin
-  ffResStrings.Free;
-end;
+
 {====================================================================}
 
 initialization
   ffResStrings := TffStringResource.Create(HInstance, 'FFSRMGR_STRINGS');
 
 finalization
-  FreeTpsResStrings;
+  ffResStrings.Free;
 
 end.

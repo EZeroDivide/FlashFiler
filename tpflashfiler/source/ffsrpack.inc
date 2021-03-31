@@ -287,7 +287,7 @@ var
   TargetBufLength: LongInt;
   IsNull: Boolean;
   RAMTrigger : Longint;                                                {!!.03}
-  RefNr: TffInt64;
+  RefNr: UInt64;
   SourceName: TffTableName;
   TargetName: TffTableName;
   Restructuring: Boolean;
@@ -532,13 +532,13 @@ begin
                       {NextYieldPoint := aiYield;}                    {!!.03}
                       {$ENDIF}
 
-                      RefNr.iLow  := 0;
-                      RefNr.iHigh := 0;
+                      RefNr  := 0;
 
                       { Loop through all the nondeleted records... }
                       rpCursor.Table.GetNextRecordSeq(rpDB.TransactionInfo,
                                                       RefNr, RecordBuf);
-                      while not ((RefNr.iLow = 0) and (RefNr.iHigh = 0)) do begin
+                      while not (RefNr = 0) do
+                      begin
                         Inc(RecordsRead);
 
                         { Copy record to the new output file, restructuring
