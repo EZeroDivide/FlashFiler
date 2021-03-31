@@ -242,7 +242,7 @@ type
     procedure ReleaseContentLockAll(Container : TffLockContainer;
                                     Transaction : TffSrTransaction);
 
-    procedure ReleaseRecordLockAll(const ResourceID  : TffInt64;
+    procedure ReleaseRecordLockAll(const ResourceID  : UInt64;
                                    const FI          : PffFileInfo;
                                    const Transaction : TffSrTransaction;
                                    const DatabaseID  : TffDatabaseID); {!!.10}
@@ -254,7 +254,7 @@ type
           Transaction - The transaction in which the record was locked.
           CursorID - The cursor locking the record. }
 
-    procedure RelRecLockIterator(aKey : TffInt64; aData : pointer;
+    procedure RelRecLockIterator(aKey : UInt64; aData : pointer;
                            const cookie1, cookie2, cookie3 : TffWord32);
       { Used to free record locks held by a transaction. }
   public
@@ -279,7 +279,7 @@ type
         transaction.  Container is the table's content lock container.
         Transaction is the transaction requesting the content lock. }
 
-    function AcquireRecordLock(const ResourceID  : TffInt64;
+    function AcquireRecordLock(const ResourceID  : UInt64;
                                const FI          : PffFileInfo;
                                const LockType    : TffSrLockType;
                                const Conditional : Boolean;
@@ -298,7 +298,7 @@ type
       { CursorID requests a TableLock of type LockType on ResourceID
         for Duration. }
 
-    procedure GetWaitingRecordLocks(const ResourceID   : TffInt64;
+    procedure GetWaitingRecordLocks(const ResourceID   : UInt64;
                                     const FI           : PffFileInfo;
                                     const Transaction  : TffSrTransaction;
                                       var WaitingLocks : TffPointerList);
@@ -318,7 +318,7 @@ type
       { Returns True if a lock of the specified type was granted to the
         specified cursor. }
 
-    function IsRecordLocked(const aResourceID  : TffInt64;
+    function IsRecordLocked(const aResourceID  : UInt64;
                             const aFI          : PffFileInfo) : Boolean;
       { Returns True if the record is locked.  Assumption: FF only requests
         Exclusive record locks. }
@@ -327,13 +327,13 @@ type
       { Returns the summary mode for table ResourceID. If a lock is not
         present, this routine returns ffslNone. }
 
-    function RecordLockGranted(const ResourceID : TffInt64;
+    function RecordLockGranted(const ResourceID : UInt64;
                                const FI         : PffFileInfo) : TffSrLockType;
       { Returns the summary mode for record ResourceID. If a lock is not
         present, this routine returns ffslNone. }
 
 {Begin !!.10}
-    procedure RelaxRecordLock(const ResourceID : TffInt64;
+    procedure RelaxRecordLock(const ResourceID : UInt64;
                               const FI : PffFileInfo;
                               const DatabaseID : TffDatabaseID);
       { Called after a successful insert, update, or delete so that another
@@ -358,16 +358,16 @@ type
     procedure ReleaseContentWC(const Container : TffLockContainer;
                                const Transaction : TffSrTransaction);
 
-    procedure ReleaseRecordLock(const ResourceID  : TffInt64;
+    procedure ReleaseRecordLock(const ResourceID  : UInt64;
                                 const FI          : PffFileInfo;
                                 const Transaction : TffSrTransaction;
                                 const DatabaseID  : TffDatabaseID);    {!!.10}
 
-    procedure ReleaseRecordW(const ResourceID  : TffInt64;
+    procedure ReleaseRecordW(const ResourceID  : UInt64;
                              const FI          : PffFileInfo;
                              const DatabaseID  : TffDatabaseID);       {!!.10}
 
-    procedure ReleaseRecordWC(const ResourceID  : TffInt64;
+    procedure ReleaseRecordWC(const ResourceID  : UInt64;
                               const FI          : PffFileInfo;
                               const DatabaseID  : TffDatabaseID);      {!!.10}
 
@@ -428,10 +428,10 @@ type
                                LockType : TffSrLockType);
       procedure AddRecordLock(const FI         : PffFileInfo;
                               const CursorID   : TffCursorID;
-                              const ResourceID : TffInt64);
+                              const ResourceID : UInt64);
       procedure RemoveContentLock(Container : TffLockContainer);
       procedure RemoveRecordLock(const FI         : PffFileInfo;
-                                 const ResourceID : TffInt64);
+                                 const ResourceID : UInt64);
       function tcGetContentCount : Longint;
       function tcGetContentContainer(const aInx : Longint) : TffLockContainer;
       function tcGetContentLockType(const aInx : Longint) : TffSrLockType;
@@ -451,7 +451,7 @@ type
 
       function Key : pointer; override;
         { Return a pointer to this item's key: it'll be a pointer to a
-          TffInt64. }
+          UInt64. }
 
       function TableContentLockType(Container : TffLockContainer) : TffSrLockType;
         { Returns the type of lock held by the transaction on a table's content.
@@ -867,7 +867,7 @@ begin
   {$ENDIF}
 end;
 {--------}
-function TffLockManager.AcquireRecordLock(const ResourceID  : TffInt64;
+function TffLockManager.AcquireRecordLock(const ResourceID  : UInt64;
                                           const FI          : PffFileInfo;
                                           const LockType    : TffSrLockType;
                                           const Conditional : Boolean;
@@ -1198,7 +1198,7 @@ begin
   end;
 end;
 {--------}
-procedure TffLockManager.GetWaitingRecordLocks(const ResourceID   : TffInt64;
+procedure TffLockManager.GetWaitingRecordLocks(const ResourceID   : UInt64;
                                                const FI           : PffFileInfo;
                                                const Transaction  : TffSrTransaction;
                                                  var WaitingLocks : TffPointerList);
@@ -1247,7 +1247,7 @@ begin
   {$ENDIF}
 end;
 {--------}
-function TffLockManager.IsRecordLocked(const aResourceID  : TffInt64;
+function TffLockManager.IsRecordLocked(const aResourceID  : UInt64;
                                        const aFI          : PffFileInfo): Boolean;
 var
   LockContainerList : TffThreadHash64;
@@ -1359,7 +1359,7 @@ begin
   {$ENDIF}
 end;
 {--------}
-function TffLockManager.RecordLockGranted(const ResourceID : TffInt64;
+function TffLockManager.RecordLockGranted(const ResourceID : UInt64;
                                           const FI         : PffFileInfo): TffSrLockType;
 var
   LockContainerList : TffThreadHash64;
@@ -1409,7 +1409,7 @@ begin
 end;
 {Begin !!.10}
 {--------}
-procedure TffLockManager.RelaxRecordLock(const ResourceID : TffInt64;
+procedure TffLockManager.RelaxRecordLock(const ResourceID : UInt64;
                                          const FI : PffFileInfo;
                                          const DatabaseID : TffDatabaseID);
 var
@@ -1708,7 +1708,7 @@ begin
   end;
 end;
 {--------}
-procedure TffLockManager.ReleaseRecordLock(const ResourceID  : TffInt64;
+procedure TffLockManager.ReleaseRecordLock(const ResourceID  : UInt64;
                                            const FI          : PffFileInfo;
                                            const Transaction : TffSrTransaction;
                                            const DatabaseID  : TffDatabaseID); {!!.10}
@@ -1774,7 +1774,7 @@ begin
   {$ENDIF}
 end;
 {--------}
-procedure TffLockManager.ReleaseRecordLockAll(const ResourceID  : TffInt64;
+procedure TffLockManager.ReleaseRecordLockAll(const ResourceID  : UInt64;
                                               const FI          : PffFileInfo;
                                               const Transaction : TffSrTransaction;
                                               const DatabaseID  : TffDatabaseID); {!!.10}
@@ -1820,7 +1820,7 @@ begin
 
 end;
 {--------}
-procedure TffLockManager.ReleaseRecordW(const ResourceID  : TffInt64;
+procedure TffLockManager.ReleaseRecordW(const ResourceID  : UInt64;
                                         const FI          : PffFileInfo;
                                         const DatabaseID  : TffDatabaseID);  {!!.10}
 var
@@ -1850,7 +1850,7 @@ begin
 
 end;
 {--------}
-procedure TffLockManager.ReleaseRecordWC(const ResourceID  : TffInt64;
+procedure TffLockManager.ReleaseRecordWC(const ResourceID  : UInt64;
                                          const FI          : PffFileInfo;
                                          const DatabaseID  : TffDatabaseID);  { !!.10}
 var
@@ -2078,7 +2078,7 @@ begin
   {$ENDIF}
 end;
 {--------}
-procedure TffLockManager.RelRecLockIterator(aKey : TffInt64;
+procedure TffLockManager.RelRecLockIterator(aKey : UInt64;
                                             aData : pointer;
                                       const cookie1, cookie2, cookie3 : TffWord32);
 var
@@ -2968,7 +2968,7 @@ end;
 {--------}
 procedure TffTransContainer.AddRecordLock(const FI         : PffFileInfo;
                                           const CursorID   : TffCursorID;
-                                          const ResourceID : TffInt64);
+                                          const ResourceID : UInt64);
 var
   FileItem : TffWord32ListItem;
   FileIdx  : Longint;
@@ -3019,7 +3019,7 @@ begin
 end;
 {--------}
 procedure TffTransContainer.RemoveRecordLock(const FI         : PffFileInfo;
-                                             const ResourceID : TffInt64);
+                                             const ResourceID : UInt64);
 var
   FileItem : TffWord32ListItem;
   FileIdx  : Longint;

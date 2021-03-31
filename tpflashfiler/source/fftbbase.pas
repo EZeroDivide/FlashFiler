@@ -116,7 +116,7 @@ procedure FFBMUnlockBlock(aFI : PffFileInfo; aBlockNum : TffWord32);
 {---Lock manager access routines---}
 procedure FFAcqRecordLock(aFI       : PffFileInfo;
                           aTI       : PffTransInfo;
-                    const aRefNum   : TffInt64;
+                    const aRefNum   : UInt64;
                     const aLockType : TffSrLockType;
                     const aDatabaseID : TffDatabaseID;                 {!!.10}
                     const aCursorID : TffCursorID;                     {!!.02}
@@ -128,14 +128,14 @@ procedure FFAcqRecordLock(aFI       : PffFileInfo;
 procedure FFRelaxRecordLock(aFI : PffFileInfo;
                             aTI : PffTransInfo;
                       const aCursorID : TffCursorID;
-                      const aRefNum : TffInt64);
+                      const aRefNum : UInt64);
   { Used by data modification operations to make a modified record available
     to other cursors within the same transaction. }
 {End !!.10}
 
 procedure FFRelRecordLock(aFI         : PffFileInfo;
                           aTI         : PffTransInfo;
-                    const aRefNum     : TffInt64;
+                    const aRefNum     : UInt64;
                     const aDatabaseID : TffDatabaseID;                 {!!.10}
                     const aCursorID   : TffCursorID);
   { Use this procedure to release an existing record lock. }
@@ -535,7 +535,7 @@ end;
 {===Lock manager access routines=====================================}
 procedure FFAcqRecordLock(aFI       : PffFileInfo;
                           aTI       : PffTransInfo;
-                    const aRefNum   : TffInt64;
+                    const aRefNum   : UInt64;
                     const aLockType : TffSrLockType;
                     const aDatabaseID : TffDatabaseID;                 {!!.10}
                     const aCursorID : TffCursorID;                     {!!.02}
@@ -570,7 +570,7 @@ begin
 
     { Raise an exception if something went awry. }
     if LockStatus <> fflrsGranted then
-      RecStr := format(ffcRecord,[aRefNum.iHigh, aRefNum.iLow]);
+      RecStr := format(ffcRecord,[Int64Rec(aRefNum).Hi, Int64Rec(aRefNum).Lo]);
     case LockStatus of
       fflrsTimeout :
         FFRaiseException(EffServerException, ffStrResServer, fferrLockTimeout,
@@ -590,7 +590,7 @@ end;
 procedure FFRelaxRecordLock(aFI : PffFileInfo;
                             aTI : PffTransInfo;
                       const aCursorID : TffCursorID;
-                      const aRefNum : TffInt64);
+                      const aRefNum : UInt64);
 begin
   if (aFI^.fiExclOwner = aCursorID) then
     Exit;
@@ -601,7 +601,7 @@ end;
 {End !!.10}
 {--------}
 procedure FFRelRecordLock(aFI : PffFileInfo; aTI : PffTransInfo;
-                          const aRefNum : TffInt64;
+                          const aRefNum : UInt64;
                           const aDatabaseID : TffDatabaseID;           {!!.10}
                           const aCursorID : TffCursorID);
 begin

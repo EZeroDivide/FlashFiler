@@ -391,17 +391,8 @@ type
                                                {Null-terminated path&file name type}
 
   TffName = string[ffcl_GeneralNameSize];      {A general name type}
-{Begin !!.03}
-{$IFDEF IsDelphi}
   TffNetName = string[ffcl_NetNameSize];       {a network name type}
   TffNetAddress = string[ffcl_NetAddressSize]; {a network address type}
-{$ELSE}
-  TffNetName = AnsiString;                            {a network name type}
-  TffNetAddress = AnsiString;                         {a network address type}
-  TffNetNameShr = string[ffcl_NetNameSize];       {a network name type - for requests}
-  TffNetAddressShr = string[ffcl_NetAddressSize]; {a network address type - for requests}
-{$ENDIF}
-{End !!.03}
   TffTableName = string[ffcl_TableNameSize];   {Table name type}
 
   TffStringZ = array [0..255] of AnsiChar;     {For converting ShortStrings to StringZs}
@@ -1622,21 +1613,17 @@ type
 {===Timer declarations===}
 type
   TffTimer = packed record
-    trStart    : DWord;                                                {!!.10}
-    trExpire   : DWord;                                                {!!.10}
+    trStart    : DWord;
+    trExpire   : DWord;
     trWrapped  : boolean;
     trForEver  : boolean;
   end;
 
 const
-  ffc_TimerInfinite = 0;                                               {!!.06}
-//  {$IFDEF FF_DEBUG}                                                  {Deleted !!.03}
-    ffc_TimerMaxExpiry = 3600 * 1000;
-//  {$ELSE}                                                            {Deleted !!.03}
-//  ffc_TimerMaxExpiry = 30000;                                        {Deleted !!.03}
-//  {$ENDIF FF_DEBUG}                                                  {Deleted !!.03}
+  ffc_TimerInfinite = 0;
+  ffc_TimerMaxExpiry = 3600 * 1000;
 
-procedure SetTimer(var T : TffTimer; Time : DWord);                    {!!.10}
+procedure SetTimer(var T : TffTimer; Time : DWord);
   {-Set a timer to expire in Time milliseconds. 1 <= Time <= 30000.}
 function HasTimerExpired(const T : TffTimer) : boolean;
   {-Return true if the timer has expired}
@@ -1676,6 +1663,7 @@ procedure ffShiftI64L(const I : TffInt64; const Bits : Byte; var Result : TffInt
 procedure ffShiftI64R(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
   {-shift a TffInt64 to the right Bits spaces}
   *)
+(*
 procedure ffI64MinusI64(const a, b : TffInt64; var Result : TffInt64);
   {-subtract a TffInt64 from a TffInt64}
 procedure ffI64MinusInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
@@ -1690,12 +1678,15 @@ procedure ffI64AddInt(const aI64 : TffInt64; const aInt : TffWord32; var Result 
   {-add an integer to a TffInt64}
 function  ffI64ToInt(const aI64 : TffInt64) : TffWord32;
   {-convert a TffInt64 to an integer}
-function  ffI64ToStr(const aI64 : TffInt64) : AnsiString;
+*)
+function  ffI64ToStrHash(const aI64 : UInt64) : AnsiString;
   {-convert a TffInt64 to a string}
+(*
 procedure  ffIntToI64(const aInt : TffWord32; var Result : TffInt64);
   {-convert an integer to a TffInt64}
 function ffI64IsZero(const aI64 : TffInt64) : boolean;
   {-If the specified Int64 is zero then return True. }
+*)
 
 
 {===Minimum/maximum declarations===}
@@ -2394,6 +2385,7 @@ asm
   pop edi
 end;
 {--------}
+(*
 function  ffI64ModInt(const aI64 : TffInt64; const aInt : TffWord32) : integer;
 var
   Quotient : TffInt64;
@@ -2412,6 +2404,7 @@ begin
 
   Result := QSum.iLow;
 end;
+*)
 {--------}
 procedure ffI64DivInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
   {This procedure was originally intended to divide a 64-bit word by a
@@ -2526,9 +2519,9 @@ begin
   Result := aI64.iLow;
 end;
 {--------}
-function  ffI64ToStr(const aI64 : TffInt64) : AnsiString;
+function  ffI64ToStrHash(const aI64 : UInt64) : AnsiString;
 begin
-  Result := IntToStr(aI64.iHigh) + IntToStr(aI64.iLow);
+  Result := IntToStr(Int64Rec(aI64).Hi) + IntToStr(Int64Rec(aI64).Lo);
 end;
 {--------}
 procedure ffIntToI64(const aInt : TffWord32; var Result : TffInt64);

@@ -3749,18 +3749,17 @@ begin
   end;
 end;
 {--------}
-{Rewritten !!.11}
 procedure TffServerCommandHandler.FFAddDependent(ADependent : TffComponent);
 var
-  Method : PffInt64;
+  Method : ^TMethod;
   aTransport : TffBaseTransport;
 begin
   inherited;
   if (ADependent is TffBaseTransport) then begin
     aTransport := TffBaseTransport(ADependent);
     if Assigned(aTransport.OnAddClient) then begin
-      FFGetMem(Method, SizeOf(TffInt64));
-      Method^ := TffInt64(aTransport.OnAddClient);
+      FFGetMem(Method, SizeOf(TMethod));
+      Method^ := TMethod(aTransport.OnAddClient);
       schSavedAddClientEvents.BeginWrite;                               
       try
         schSavedAddClientEvents.Add(Longint(aTransport), Method);
@@ -3772,14 +3771,12 @@ begin
     aTransport.OnRemoveClient := schOnRemoveClient;
   end;  { if }
 end;
-{Begin !!.05}
 {--------}
 procedure TffServerCommandHandler.schDisposeRecord(Sender : TffBaseHashTable;
                                                    aData : Pointer);
 begin
-  FFFreeMem(aData, SizeOf(TffInt64));
+  FFFreeMem(aData, SizeOf(UInt64));
 end;
-{End !!.05}
 {--------}
 procedure TffServerCommandHandler.schOnAddClient
                                (Listener : TffBaseTransport;

@@ -415,9 +415,8 @@ function FFVCheckValToString(const aVal  : TffVCheckValue;
 
 var
   TempStr     : String[255];
-//  TempInt8    : ShortInt;                                            {!!.07}
   TempInt16   : SmallInt;
-  TempInt64   : TffInt64;                                              {!!.13}
+  TempInt64   : UInt64;
   TempInt     : Longint;
   TempExtend  : Extended;
   TempCurrency: Currency;
@@ -573,13 +572,11 @@ begin
         Move(aVal, TempWideStr, succ(i));
         TempStr := WideCharToString(@TempWideStr);
       end;
-{Begin !!.13}
     fftBLOB..fftBLOBTypedBin :
       begin
         Move(aVal, TempInt64, SizeOf(TempInt64));
-        TempStr := IntToStr(TempInt64.iHigh) + ':' + IntToStr(TempInt64.iLow);
+        TempStr := IntToStr(Int64Rec(TempInt64).Hi) + ':' + IntToStr(Int64Rec(TempInt64).Lo);
       end;
-{End !!.13}
     else
       begin
         TempStr :=  '';

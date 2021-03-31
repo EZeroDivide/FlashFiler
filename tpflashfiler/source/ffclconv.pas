@@ -967,37 +967,37 @@ begin
     ftBlob :
       begin
         FFType := fftBLOB;
-        FFSize := SizeOf(TffInt64);                                    {!!.13}
+        FFSize := SizeOf(UInt64);                                    {!!.13}
       end;
     ftMemo :
       begin
         FFType := fftBLOBMemo;
-        FFSize := SizeOf(TffInt64);                                    {!!.13}
+        FFSize := SizeOf(UInt64);                                    {!!.13}
       end;
     ftGraphic :
       begin
         FFType := fftBLOBGraphic;
-        FFSize := SizeOf(TffInt64);                                    {!!.13}
+        FFSize := SizeOf(UInt64);                                    {!!.13}
       end;
     ftFmtMemo :
       begin
         FFType := fftBLOBFmtMemo;
-        FFSize := SizeOf(TffInt64);                                    {!!.13}
+        FFSize := SizeOf(UInt64);                                    {!!.13}
       end;
     ftParadoxOLE :
       begin
         FFType := fftBLOBOleObj;
-        FFSize := SizeOf(TffInt64);                                    {!!.13}
+        FFSize := SizeOf(UInt64);                                    {!!.13}
       end;
     ftDBaseOLE :
       begin
         FFType := fftBLOBDBSOleObj;
-        FFSize := SizeOf(TffInt64);                                    {!!.13}
+        FFSize := SizeOf(UInt64);                                    {!!.13}
       end;
     ftTypedBinary :
       begin
         FFType := fftBLOBTypedBin;
-        FFSize := SizeOf(TffInt64);                                    {!!.13}
+        FFSize := SizeOf(UInt64);                                    {!!.13}
       end;
     {$IFDEF DCC4OrLater}
     ftFixedChar :

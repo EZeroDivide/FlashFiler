@@ -183,7 +183,7 @@ function FFKeyCompareDWord(const Key1, Key2;
 
 function FFKeyCompareI64(const Key1, Key2;
                          aData : PffCompareData) : integer; stdcall;
-  {-Treat Key1 and Key2 as TffInt64, compare}
+  {-Treat Key1 and Key2 as UInt64, compare}
 implementation
 
 {===Key Comparison routines==========================================}
@@ -197,8 +197,8 @@ end;
 function FFKeyCompareI64(const Key1, Key2;
                          aData : PffCompareData) : integer;
 begin
-  Result := FFCheckDescend(aData^.cdAscend, FFCmpI64(TffInt64(Key1),
-                           TffInt64(Key2)));
+  Result := FFCheckDescend(aData^.cdAscend, FFCmpI64(UInt64(Key1),
+                           UInt64(Key2)));
 end;
 {--------}
 function FFKeyCompareLongint(const Key1, Key2; aData : PffCompareData) : integer;

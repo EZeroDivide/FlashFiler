@@ -693,7 +693,7 @@ begin
     repeat
       bcTable.GetNextRecordSeq(bcDatabase.TransactionInfo, bcInfo.RefNr, aData);
 
-      if ffI64IsZero(bcInfo.RefNr) then begin
+      if (bcInfo.RefNr = 0) then begin
         Result := DBIERR_EOF;
         SetToEnd;
         Exit;
@@ -740,7 +740,7 @@ begin
     repeat
       bcTable.GetPrevRecordSeq(bcDatabase.TransactionInfo, bcInfo.RefNr,
                               aData);
-      if FFI64IsZero(bcInfo.RefNr) then begin
+      if (bcInfo.RefNr = 0) then begin
         Result := DBIERR_BOF;
         SetToBegin;
         Exit;

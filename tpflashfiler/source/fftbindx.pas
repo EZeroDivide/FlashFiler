@@ -141,7 +141,7 @@ procedure FFTblDeleteAllKeys(aTI : PffTransInfo; var aIndex : TffKeyIndexData);
           low level file update}
 function FFTblDeleteKey(const aTI           : PffTransInfo;
                         const aKey          : PffByteArray;
-                        const aRefNr        : TffInt64;
+                        const aRefNr        : UInt64;
                           var aIndex        : TffKeyIndexData;
                           var aBTreeChanged : Boolean) : Boolean;      {!!.05}
   {-Delete a key/ref from an index}
@@ -262,7 +262,7 @@ implementation
 
 type
   PRef = ^TRef;
-  TRef = TffInt64;
+  TRef = UInt64;
   PPageNum = ^TpageNum;
   TPageNum = TffWord32;
 
@@ -778,7 +778,7 @@ end;
 procedure InsertKeyInLeafPage(aLeaf    : PffBlock;
                               aElement : Longint;
                               aKey     : PffByteArray;
-                        const aRefNr   : TffInt64);
+                        const aRefNr   : UInt64);
 var
   LeafHeader: PffBlockHeaderIndex absolute aLeaf;
   RefBlock  : PRefBlock;
@@ -814,7 +814,7 @@ end;
 procedure InsertKeyInNodePage(aNode    : PffBlock;
                               aElement : Longint;
                               aKey     : PffByteArray;
-                        const aRefNr   : TffInt64;
+                        const aRefNr   : UInt64;
                               aChild   : TffWord32);
 var
   NodeHeader: PffBlockHeaderIndex absolute aNode;
@@ -939,7 +939,7 @@ var
   LeafHdr : PffBlockHeaderIndex absolute aLeaf;
   OffsetN : Longint;
   OffsetL : Longint;
-  Temp    : TffInt64;
+  Temp    : UInt64;
 begin
   {Assumptions: aNode, aLeaf have been marked dirty; the key at
                 aNElement in aNode compares equal to aKey}
@@ -1214,7 +1214,7 @@ function BtreeInsertNonFull(const aIndexData  : TffKeyIndexData;
                               var aPage       : PffBlock;
                               var aRelMethod  : TffReleaseMethod;
                                   aKey        : PffByteArray;
-                            const aRefNr      : TffInt64) : boolean;
+                            const aRefNr      : UInt64) : boolean;
 var
   PageHdr      : PffBlockHeaderIndex absolute aPage;
   PageNumBlock : PPageNumBlock;
@@ -1338,7 +1338,7 @@ function BtreeInsert(const aIndexData : TffKeyIndexData;
                            aTI        : PffTransInfo;
                            aRoot      : TffWord32;
                            aKey       : PffByteArray;
-                     const aRefNr     : TffInt64) : boolean;
+                     const aRefNr     : UInt64) : boolean;
 var
   RootPage       : PffBlock;
   RootPageHdr    : PffBlockHeaderIndex absolute RootPage;
@@ -1703,7 +1703,7 @@ function BtreeDeleteAmplePage(const aIndexData    : TffKeyIndexData;
                                     aTI           : PffTransInfo;
                                     aPage         : PffBlock;
                                     aKey          : PffByteArray;
-                              const aRefNr        : TffInt64;
+                              const aRefNr        : UInt64;
                                 var aBTreeChanged : Boolean)           {!!.05}
                                                   : Boolean;
   {-Routine to delete a key from a page; only called for
@@ -1885,7 +1885,7 @@ function BtreeDelete(const aRoot         : Longint;
                      const aKey          : PffByteArray;
                      const aTI           : PffTransInfo;
                      const aIndexData    : TffKeyIndexData;
-                     const aRefNr        : TffInt64;
+                     const aRefNr        : UInt64;
                        var aBTreeChanged : Boolean)                    {!!.05}
                                          : Boolean;
 var
@@ -1934,7 +1934,7 @@ function BtreeExistsKey(const aIndexData : TffKeyIndexData;
                               aTI        : PffTransInfo;
                               aRoot      : TffWord32;
                               aKey       : PffByteArray;
-                              aRefNr     : TffInt64) : boolean;
+                              aRefNr     : UInt64) : boolean;
 var
   Page         : PffBlock;
   PageHdr      : PffBlockHeaderIndex absolute Page;
@@ -1961,8 +1961,8 @@ begin
     {set up the invariants}
     with aIndexData do begin
       CheckDups := ((kidIndexHeader^.bihIndexFlags[kidIndex] and
-                     ffc_InxFlagAllowDups) <> 0) and (aRefNr.iLow <> 0) and
-                     (aRefNr.iHigh <> 0);
+                     ffc_InxFlagAllowDups) <> 0) and
+                     (Int64Rec(aRefNr).Lo <> 0) and (Int64Rec(aRefNr).Hi <> 0);
       Compare := kidCompare;
     end;
     {simulate recursion (ie unwind it)}
@@ -2430,7 +2430,7 @@ begin
                      ffc_InxFlagAllowDups) <> 0;
       {CheckDups means that we're trying to find an exact key/refnr
        combination}
-      CheckDups := HasDups and ((TffInt64(aRefNr).iLow <> 0) or (TffInt64(aRefNr).iHigh <> 0));
+      CheckDups := HasDups and ((Int64Rec(aRefNr).Lo <> 0) or (Int64Rec(aRefNr).Hi <> 0));
       Compare := kidCompare;
     end;
 
@@ -2847,7 +2847,7 @@ end;
 {--------}
 function FFTblDeleteKey(const aTI           : PffTransInfo;
                         const aKey          : PffByteArray;
-                        const aRefNr        : TffInt64;
+                        const aRefNr        : UInt64;
                           var aIndex        : TffKeyIndexData;
                           var aBTreeChanged : Boolean) : Boolean;      {!!.05}
 var

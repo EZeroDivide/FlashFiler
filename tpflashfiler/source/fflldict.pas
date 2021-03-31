@@ -499,7 +499,7 @@ begin
   FFGetMem(IndexDescriptor, SizeOf(PffIndexDescriptor) * FIndexCapacity);
   SeqAccessName := ffStrResGeneral[ffscSeqAccessIndexName];
   NewInxDesc := CreateUserIndexDesc(SeqAccessName, SeqAccessName, 0,
-                                    sizeof(TffInt64), false, true, true);
+                                    sizeof(UInt64), false, true, true);
   try
     NewInxDesc^.idNumber := 0;
     IndexDescriptor^[0] := NewInxDesc;
@@ -1107,7 +1107,7 @@ begin
         begin
           fdUnits := 0;
           fdDecPl := 0;
-          fdLength := sizeof(TffInt64);
+          fdLength := sizeof(UInt64);
         end;
       fftByteArray :
         begin

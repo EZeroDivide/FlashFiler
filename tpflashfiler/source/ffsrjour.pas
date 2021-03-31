@@ -257,15 +257,16 @@ var
   After : Boolean;
   TargetFile : PffFileInfo;
   tfName : AnsiString;
-  FileSize : TffInt64;
+  FileSize : UInt64;
   FFHeader : array [0..4] of longint;
-  TempI64  : TffInt64;
+  TempI64  : UInt64;
 begin
   FileSize := FFGetFileSize(aJnlFile);
   FFGetZeroMem(Block, ffcl_64k);
   try
     {as long as we're not at EOF, }
-    while (ffCmpI64(FFGetPositionFile(aJnlFile), FileSize) <> 0) do begin
+    while (FFGetPositionFile(aJnlFile) <> FileSize) do
+    begin
       {get a record header from the journal file}
       FFReadFileExact(aJnlFile, sizeof(JFRH), JFRH);
       {read a page into BLOCK}
@@ -290,9 +291,10 @@ begin
             FFReadFile(TargetFile, sizeof(FFHeader), FFHeader);
             TargetFile^.fiEncrypted := FFHeader[4] = 1;
             {write the data}
-            TempI64.iLow := JFRH.jfrhBlockSize;
-            TempI64.iHigh := 0;
-            ffI64MultInt(TempI64, JFRH.jfrhBlockNumber, TempI64);
+            Int64Rec(TempI64).Lo := JFRH.jfrhBlockSize;
+            Int64Rec(TempI64).Hi := 0;
+            // ffI64MultInt(TempI64, JFRH.jfrhBlockNumber, TempI64);
+            TempI64 := TempI64 * JFRH.jfrhBlockNumber;
             FFWriteEncryptFileExactAt(TargetFile,
                                        TempI64,
                                        JFRH.jfrhBlockSize,

@@ -48,7 +48,7 @@ type
     { Used by TffHash.Iterate.  Called for each item in the hash
       table. }
 
-  TffHash64IteratorFunction = procedure(aKey : TffInt64; aData : pointer;
+  TffHash64IteratorFunction = procedure(aKey : UInt64; aData : pointer;
                                         const cookie1, cookie2, cookie3 : TffWord32) of object;
     { Used by TffHash64.Iterate.  Called for each item in the hash
       table. }
@@ -218,13 +218,13 @@ type
         {calculate the index, ie hash, of the key}
 
     public
-      function Add(const AKey   : TffInt64;
+      function Add(const AKey   : UInt64;
                    AValue : Pointer) : Boolean;
         {-Use this method to add an entry to the hash table.  Returns True if
           the key/value pair was added or False if the key is already in the
           hash table. }
 
-      function Get(const AKey : TffInt64) : Pointer;
+      function Get(const AKey : UInt64) : Pointer;
         {-Use this method to find an entry in the hash table. }
 
       procedure Iterate(const CallBack : TffHash64IteratorFunction;
@@ -239,7 +239,7 @@ type
           free the item that is the current subject of the iteration.
           Callback will be called once for each entry. }
 
-      procedure Remove(const AKey : TffInt64);
+      procedure Remove(const AKey : UInt64);
         {-Use this method to remove an entry from the hash table.  The
           OnDisposeData event is raised in case the caller needs to free the
           data associated with the entry. }
@@ -718,16 +718,16 @@ end;
 
 
 {===TffHash64========================================================}
-function TffHash64.Add(const aKey   : TffInt64;
+function TffHash64.Add(const aKey   : UInt64;
                              aValue : Pointer): Boolean;
 var
   keyPtr : pointer;
 begin
-  FFGetMem(keyPtr, sizeOf(TffInt64));
-  TffInt64(keyPtr^) := aKey;
+  FFGetMem(keyPtr, sizeOf(UInt64));
+  UInt64(keyPtr^) := aKey;
   Result := fhAddPrim(keyPtr, aValue);
   if not Result then
-    FFFreeMem(keyPtr, SizeOf(TffInt64));
+    FFFreeMem(keyPtr, SizeOf(UInt64));
 end;
 {--------}
 {$IFDEF CompileDebugCode}
@@ -744,7 +744,7 @@ begin
     writeln(F, '---', i, '---');
     Node := TffHashNode(FTable[i]);
     while assigned(Node) do begin
-      writeln(F, FFI64ToStr(PffInt64(Node.fhKey)^), intToStr(longInt(Node.fhValue)):20);
+      writeln(F, FFI64ToStrHash(PffInt64(Node.fhKey)^), intToStr(longInt(Node.fhValue)):20);
       Node := Node.fhNext;
     end;
   end;
@@ -764,7 +764,7 @@ end;
 {--------}
 procedure TffHash64.fhFreeKeyPrim(aKey : pointer);
 begin
-  FFFreeMem(aKey, sizeOf(TffInt64));
+  FFFreeMem(aKey, sizeOf(UInt64));
 end;
 {--------}
 function TffHash64.fhGetIndex(const AKey   : Pointer;
@@ -772,11 +772,12 @@ function TffHash64.fhGetIndex(const AKey   : Pointer;
 var
   Int : Integer;
 begin
-  Int := ffI64ModInt(PffInt64(AKey)^, ACount);
+  // Int := ffI64ModInt(PffInt64(AKey)^, ACount);
+  Int := PUInt64(AKey)^ mod ACount;
   Result := Int;
 end;
 {--------}
-function TffHash64.Get(const AKey : TffInt64) : Pointer;
+function TffHash64.Get(const AKey : UInt64) : Pointer;
 var
   Inx  : integer;
   Node : TffHashNode;
@@ -795,7 +796,7 @@ begin
   for Count := 0 to Pred(FTable.Count) do begin
     Node := TffHashNode(FTable[Count]);
     while assigned(Node) do begin
-      CallBack(TffInt64(Node.fhKey^), Node.fhValue, cookie1, cookie2, cookie3);
+      CallBack(UInt64(Node.fhKey^), Node.fhValue, cookie1, cookie2, cookie3);
       Node := Node.fhNext;
     end;
   end;
@@ -834,13 +835,13 @@ begin
   Node := FirstNode;
   while assigned(Node) do begin
     NextNode := Node.ExtraData;
-    Callback(TffInt64(Node.fhKey^), Node.fhValue, cookie1, cookie2, cookie3);
+    Callback(UInt64(Node.fhKey^), Node.fhValue, cookie1, cookie2, cookie3);
     Node := NextNode;
   end;
 
 end;
 {--------}
-procedure TffHash64.Remove(const AKey : TffInt64);
+procedure TffHash64.Remove(const AKey : UInt64);
 var
   Inx : integer;
   Node : TffHashNode;

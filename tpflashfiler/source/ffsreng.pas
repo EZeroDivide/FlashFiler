@@ -3041,7 +3041,7 @@ begin
 
 {Begin !!.03}
     { If still have a record locked from TffTable.Edit then release the lock. }
-    if not FFI64IsZero(bcLockedRefNum) then
+    if (bcLockedRefNum <> 0) then
       bcTable.RemoveLocksForCursor(bcDatabase.DatabaseID,              {!!.10}
                                    CursorID, bcLockedRefNum,           {!!.10}
                                    bcDatabase.TransactionInfo);
@@ -4091,29 +4091,25 @@ begin
     finally
       bcOldRecBuff := nil;
     end;
-{Begin !!.01}
   finally
     { Release the record lock if an error occurred or we are in an implicit
       transaction. }
-{Begin !!.03}
     if (Result <> DBIERR_NONE) or
        bcDatabase.Transaction.IsImplicit then begin
-      Table.RelRecordLock(bcDatabase.TransactionInfo,                  {!!.10}
-                          bcDatabase.DatabaseID,                       {!!.10}
-                          CursorID, LockedRefNr);                      {!!.05}{!!.10}
+      Table.RelRecordLock(bcDatabase.TransactionInfo,
+                          bcDatabase.DatabaseID,
+                          CursorID, LockedRefNr);
       { Did an edit occur just prior to the delete? }
-      if not FFI64IsZero(bcLockedRefNum) then begin
-        Table.RelRecordLock(bcDatabase.TransactionInfo,                {!!.10}
-                            bcDatabase.DatabaseID,                     {!!.10}
-                            CursorID, bcLockedRefNum);                 {!!.10}
+      if (bcLockedRefNum <> 0) then
+      begin
+        Table.RelRecordLock(bcDatabase.TransactionInfo,
+                            bcDatabase.DatabaseID,
+                            CursorID, bcLockedRefNum);
         bcLockedRefNum := 0;
       end;
     end;
-{End !!.03}
   end;
-{End !!.01}
 end;
-{Begin !!.06}
 {--------}
 function TffSrBaseCursor.DeleteRecords : TffResult;
 var
@@ -4420,7 +4416,8 @@ end;
 procedure TffSrBaseCursor.RelRecordLock(aAllLocks : boolean);
 begin
   Assert((not aAllLocks), 'Unsupported: Release all record locks for a cursor');
-  if not FFI64IsZero(bcInfo.refNr) then begin
+  if (bcInfo.refNr <> 0) then
+  begin
     bcTable.RemoveLocksForCursor(bcDatabase.DatabaseID,                {!!.10}
                                  CursorID, bcInfo.refNr,               {!!.10}
                                  bcDatabase.TransactionInfo);          {!!.10}
