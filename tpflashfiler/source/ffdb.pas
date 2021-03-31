@@ -854,10 +854,10 @@ type
       function dsCheckBLOBHandle(pRecBuf : Pointer;
                                  iField  : Integer;
                              var aIsNull : Boolean;
-                             var aBLOBNr : TffInt64) : TffResult;
+                             var aBLOBNr : UInt64) : TffResult;
       function dsEnsureBLOBHandle(pRecBuf : Pointer;
                                   iField  : Integer;
-                              var aBLOBNr : TffInt64) : TffResult;
+                              var aBLOBNr : UInt64) : TffResult;
 
   {$IFDEF ResizePersistFields}
       procedure ReSizePersistentFields;
@@ -5030,7 +5030,7 @@ function TffDataSet.AddFileBlob(const aField    : Word;
                                 const aFileName : TffFullFileName) : TffResult;
 var
   IsNull : Boolean;
-  BLOBNr : TffInt64;
+  BLOBNr : UInt64;
   aData  : Pointer;
 begin
   Assert(aFileName <> '');
@@ -5607,7 +5607,7 @@ function TffDataSet.FreeBlob(                                { Free the blob }
                              iField  : Word                  { Field number of blob(1..n) }
                             ) : TffResult;
 var
-  BLOBNr : TffInt64;
+  BLOBNr : UInt64;
   IsNull : Boolean;
 begin
   Result := dsCheckBLOBHandle(pRecBuf, iField, IsNull, BLOBNr);
@@ -8758,12 +8758,11 @@ end;
 function TffDataSet.dsCheckBLOBHandle(pRecBuf : Pointer;
                                       iField  : Integer;
                                   var aIsNull : Boolean;
-                                  var aBLOBNr : TffInt64) : TffResult;
+                                  var aBLOBNr : UInt64) : TffResult;
 var
-  TempI64 : TffInt64;
+  TempI64 : UInt64;
 begin
-  TempI64.iLow := 0;
-  TempI64.iHigh := 0;
+  TempI64 := 0;
   Dictionary.GetRecordField(Pred(iField), pRecBuf, aIsNull, @aBLOBNr);
   if (not aIsNull) and (ffCmpI64(aBLOBNr, TempI64) = 0) then
     Result := DBIERR_INVALIDBLOBHANDLE
@@ -8773,13 +8772,12 @@ end;
 {------}
 function TffDataSet.dsEnsureBlobHandle(pRecBuf : Pointer;
                                        iField  : Integer;
-                                   var aBLOBNr : TffInt64) : TffResult;
+                                   var aBLOBNr : UInt64) : TffResult;
 var
   IsNull  : Boolean;
-  TempI64 : TffInt64;
+  TempI64 : UInt64;
 begin
-  TempI64.iLow := 0;
-  TempI64.iHigh := 0;
+  TempI64 := 0;
   Dictionary.GetRecordField(Pred(iField), pRecBuf, IsNull, @aBLOBNr);
   if IsNull then begin
     Result := ServerEngine.BLOBCreate(CursorID,
@@ -8788,7 +8786,7 @@ begin
       Dictionary.SetRecordField(Pred(iField), pRecBuf, @aBLOBNr);
     end;
   end
-  else if (ffCmpI64(aBLOBNr, TempI64) = 0) then
+  else if (aBLOBNr = TempI64) then
     Result := DBIERR_INVALIDBLOBHANDLE
   else
     Result := DBIERR_NONE;
@@ -8798,7 +8796,7 @@ function TffDataSet.TruncateBlob(pRecBuf : Pointer;
                                  iField  : Word;
                                  iLen    : Longint) : TffResult;
 var
-  BLOBNr  : TffInt64;
+  BLOBNr  : UInt64;
   IsNull  : boolean;
 begin
   Result := dsCheckBLOBHandle(pRecBuf, iField, IsNull, BLOBNr);
@@ -9150,7 +9148,7 @@ function TffBlobStream.bsGetBlobSize : Longint;
 var
   Status : TffResult;
   IsNull : Boolean;
-  BLOBNr : TffInt64;
+  BLOBNr : UInt64;
 begin
   Result := 0;
   if bsOpened then begin
@@ -9172,7 +9170,7 @@ var
   Status    : TffResult;
   T,N       : Integer;
   IsNull    : Boolean;
-  BLOBNr    : TffInt64;
+  BLOBNr    : UInt64;
   Dest      : Pointer;
   BytesRead : TffWord32;                                               {!!.06}
 begin
@@ -9225,7 +9223,7 @@ end;
 function TffBlobStream.Write(const aBuffer; aCount : Longint) : Longint;
 var
   T,N    : Integer;
-  BLOBNr : TffInt64;
+  BLOBNr : UInt64;
   Status : TffResult;
   Src    : Pointer;
 begin

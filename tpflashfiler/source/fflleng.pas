@@ -485,33 +485,33 @@ type
 
       {BLOB stuff}
       function BLOBCreate(aCursorID : TffCursorID;
-                      var aBlobNr   : TffInt64) : TffResult; virtual; abstract;
-      function BLOBDelete(aCursorID : TffCursorID; aBLOBNr : TffInt64) : TffResult; virtual; abstract;
+                      var aBlobNr   : UInt64) : TffResult; virtual; abstract;
+      function BLOBDelete(aCursorID : TffCursorID; aBLOBNr : UInt64) : TffResult; virtual; abstract;
 {Begin !!.03}
       function BLOBListSegments(aCursorID : TffCursorID;
-                                aBLOBNr : TffInt64;
+                                aBLOBNr : UInt64;
                                 aStream : TStream) : TffResult; virtual; abstract;
 {End !!.03}
       function BLOBRead(aCursorID   : TffCursorID;
-                        aBLOBNr     : TffInt64;
+                        aBLOBNr     : UInt64;
                          aOffset    : TffWord32;                       {!!.06}
                          aLen       : TffWord32;                       {!!.06}
                      var aBLOB;
                      var aBytesRead : TffWord32)                       {!!.06}
                                     : TffResult; virtual; abstract;
-      function BLOBFree(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBFree(aCursorID : TffCursorID; aBLOBNr : UInt64;
                         readOnly : boolean) : TffResult; virtual; abstract;
-      function BLOBGetLength(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBGetLength(aCursorID : TffCursorID; aBLOBNr : UInt64;
                          var aLength   : Longint) : TffResult; virtual; abstract;
-      function BLOBTruncate(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBTruncate(aCursorID : TffCursorID; aBLOBNr : UInt64;
                              aBLOBLength : Longint) : TffResult; virtual; abstract;
-      function BLOBWrite(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBWrite(aCursorID : TffCursorID; aBLOBNr : UInt64;
                           aOffset : Longint;
                           aLen    : Longint;
                       var aBLOB    ) : TffResult; virtual; abstract;
       function FileBLOBAdd(aCursorID : TffCursorID;
                      const aFileName : TffFullFileName;
-                       var aBLOBNr   : TffInt64) : TffResult; virtual; abstract;
+                       var aBLOBNr   : UInt64) : TffResult; virtual; abstract;
 
       {SQL Stuff }
       function SQLAlloc(aClientID : TffClientID;

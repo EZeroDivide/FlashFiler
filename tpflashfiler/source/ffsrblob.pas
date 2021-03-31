@@ -41,7 +41,7 @@ uses
 {---Blob retrieval & verification routines---}
 function ReadBLOBBlock(FI             : PffFileInfo;
                        TI             : PffTransInfo;
-                 const anOffset       : TffInt64;
+                 const anOffset       : UInt64;
                    var aOffsetInBlock : TffWord32;                     {!!.11}
                    var aReleaseMethod : TffReleaseMethod)
                                       : PffBlock;
@@ -52,7 +52,7 @@ function ReadBLOBBlock(FI             : PffFileInfo;
 function ReadVfyBlobBlock(FI             : PffFileInfo;
                           TI             : PffTransInfo;
                     const aMarkDirty     : Boolean;
-                    const anOffset       : TffInt64;
+                    const anOffset       : UInt64;
                       var aOffsetInBlock : TffWord32;                  {!!.11}
                       var aReleaseMethod : TffReleaseMethod)
                                          : PffBlock;
@@ -60,7 +60,7 @@ function ReadVfyBlobBlock(FI             : PffFileInfo;
 function ReadVfyBlobBlock2(FI             : PffFileInfo;
                            TI             : PffTransInfo;
                      const aMarkDirty     : Boolean;
-                     const anOffset       : TffInt64;
+                     const anOffset       : UInt64;
                        var aBlockNum      : TffWord32;
                        var aOffsetInBlock : TffWord32;                 {!!.11}
                        var aReleaseMethod : TffReleaseMethod)
@@ -69,13 +69,14 @@ function ReadVfyBlobBlock2(FI             : PffFileInfo;
 function ReadVfyBlobBlock3(FI             : PffFileInfo;
                            TI             : PffTransInfo;
                      const aMarkDirty     : Boolean;
-                     const anOffset       : TffInt64;
+                     const anOffset       : UInt64;
                        var aReleaseMethod : TffReleaseMethod)
                                           : PffBlock;
 
 implementation
 
 uses
+  SysUtils,
   ffconst,
   ffllexcp,
   fftbbase;
@@ -83,7 +84,7 @@ uses
 {== Block verification routines ======================================}
 function ReadBLOBBlock(FI             : PffFileInfo;
                        TI             : PffTransInfo;
-                 const anOffset       : TffInt64;
+                 const anOffset       : UInt64;
                    var aOffsetInBlock : TffWord32;                     {!!.11}
                    var aReleaseMethod : TffReleaseMethod)
                                       : PffBlock;
@@ -91,7 +92,7 @@ var
   BlockNumber : TffWord32;
   BLOBBlock   : PffBlock;
   BLOBBlockHdr: PffBlockHeaderBLOB absolute BLOBBlock;
-  TempI64     : TffInt64;
+  TempI64     : UInt64;
 begin
   { Assumptions: The block was previously read and successfully verified.
                  The block was previously locked and the lock is still in
@@ -99,11 +100,13 @@ begin
   with FI^ do begin
 
     { Get the BLOB block. }
-    ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
-    BlockNumber := TempI64.iLow;
+    //ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
+    TempI64 := anOffset shr fiLog2BlockSize;
+    BlockNumber := Int64Rec(TempI64).Lo;
 
-    ffI64MinusInt(anOffset, (BlockNumber shl fiLog2BlockSize), TempI64);
-    aOffsetInBlock := TempI64.iLow;
+    // ffI64MinusInt(anOffset, (BlockNumber shl fiLog2BlockSize), TempI64);
+    TempI64 := anOffset - (BlockNumber shl fiLog2BlockSize);
+    aOffsetInBlock := Int64Rec(TempI64).Lo;
     BLOBBlock := FI^.fiBufMgr.GetBlock(FI, BlockNumber, TI, false, aReleaseMethod);
   end;
   Result := BLOBBlock;
@@ -112,7 +115,7 @@ end;
 function ReadVfyBlobBlock(FI             : PffFileInfo;
                           TI             : PffTransInfo;
                     const aMarkDirty     : boolean;
-                    const anOffset       : TffInt64;
+                    const anOffset       : UInt64;
                       var aOffsetInBlock : TffWord32;                  {!!.11}
                       var aReleaseMethod : TffReleaseMethod)
                                          : PffBlock;
@@ -120,22 +123,25 @@ var
   BlockNumber : TffWord32;
   BLOBBlock   : PffBlock;
   BLOBBlockHdr: PffBlockHeaderBLOB absolute BLOBBlock;
-  TempI64     : TffInt64;
+  TempI64     : UInt64;
 begin
   with FI^ do begin
     {verify the BLOB number}
     if not FFVerifyBLOBNr(anOffset, fiLog2BlockSize) then
       FFRaiseException(EffServerException, ffStrResServer,
-                       fferrBadBLOBNr, [FI^.fiName^, anOffset.iLow,
-                                        anOffset.iHigh]);
+                       fferrBadBLOBNr, [FI^.fiName^,
+                                        Int64Rec(anOffset).Lo,
+                                        Int64Rec(anOffset).Hi]);
     {now get the BLOB block}
-    ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
-    BlockNumber := TempI64.iLow;
+    // ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
+    TempI64 := anOffset shr fiLog2BlockSize;
+    BlockNumber := Int64Rec(TempI64).Lo;
     if (BlockNumber <= 0) or (BlockNumber >= fiUsedBlocks) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBadBlockNr, [FI^.fiName^, BlockNumber]);
-    ffI64MinusInt(anOffset, (BlockNumber shl fiLog2BlockSize), TempI64);
-    aOffsetInBlock := TempI64.iLow;
+    // ffI64MinusInt(anOffset, (BlockNumber shl fiLog2BlockSize), TempI64);
+    TempI64 := anOffset - (BlockNumber shl fiLog2BlockSize);
+    aOffsetInBlock := Int64Rec(TempI64).Lo;
     BLOBBlock := FFBMGetBlock(FI, TI, BlockNumber, aMarkDirty, aReleaseMethod);
     { Verify that it's a BLOB header block. }
     with BLOBBlockHdr^ do
@@ -150,7 +156,7 @@ end;
 function ReadVfyBlobBlock2(FI             : PffFileInfo;
                            TI             : PffTransInfo;
                      const aMarkDirty     : boolean;
-                     const anOffset       : TffInt64;
+                     const anOffset       : UInt64;
                        var aBlockNum      : TffWord32;
                        var aOffsetInBlock : TffWord32;                 {!!.11}
                        var aReleaseMethod : TffReleaseMethod)
@@ -158,22 +164,25 @@ function ReadVfyBlobBlock2(FI             : PffFileInfo;
 var
   BLOBBlock   : PffBlock;
   BLOBBlockHdr: PffBlockHeaderBLOB absolute BLOBBlock;
-  TempI64     : TffInt64;
+  TempI64     : UInt64;
 begin
   with FI^ do begin
     {verify the BLOB number}
     if not FFVerifyBLOBNr(anOffset, fiLog2BlockSize) then
       FFRaiseException(EffServerException, ffStrResServer,
-                       fferrBadBLOBNr, [FI^.fiName^, anOffset.iLow,
-                                        anOffset.iHigh]);
+                       fferrBadBLOBNr, [FI^.fiName^,
+                                        Int64Rec(anOffset).Lo,
+                                        Int64Rec(anOffset).Hi]);
     {now get the BLOB block}
-    ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
-    aBlockNum := TempI64.iLow;
+    //ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
+    TempI64 := anOffset shr fiLog2BlockSize;
+    aBlockNum := Int64Rec(TempI64).Lo;
     if (aBlockNum <= 0) or (aBlockNum >= fiUsedBlocks) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBadBlockNr, [FI^.fiName^, aBlockNum]);
-    ffI64MinusInt(anOffset, (aBlockNum shl fiLog2BlockSize), TempI64);
-    aOffsetInBlock := TempI64.iLow;
+    // ffI64MinusInt(anOffset, (aBlockNum shl fiLog2BlockSize), TempI64);
+    TempI64 := anOffset - (aBlockNum shl fiLog2BlockSize);
+    aOffsetInBlock := Int64Rec(TempI64).Lo;
     BLOBBlock := FFBMGetBlock(FI, TI, aBlockNum, aMarkDirty, aReleaseMethod);
     {verify that it's a BLOB header block}
     with BLOBBlockHdr^ do
@@ -188,23 +197,24 @@ end;
 function ReadVfyBlobBlock3(FI         : PffFileInfo;
                            TI         : PffTransInfo;
                      const aMarkDirty : boolean;
-                     const anOffset   : TffInt64;
+                     const anOffset   : UInt64;
                        var aReleaseMethod : TffReleaseMethod) : PffBlock;
 var
   BlockNumber : TffWord32;
   BLOBBlock   : PffBlock;
   BLOBBlockHdr: PffBlockHeaderBLOB absolute BLOBBlock;
-  TempI64     : TffInt64;
+  TempI64     : UInt64;
 begin
   with FI^ do begin
     {verify the segment number}
     if not FFVerifyBLOBNr(anOffset, fiLog2BlockSize) then
       FFRaiseException(EffServerException, ffStrResServer,
-                       fferrBadBLOBSeg, [FI^.fiName^, anOffset.iLow,
-                       anOffset.iHigh, '']);
+                       fferrBadBLOBSeg, [FI^.fiName^, Int64Rec(anOffset).Lo,
+                       Int64Rec(anOffset).Hi, '']);
     {get the BLOB block}
-    ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
-    BlockNumber := TempI64.iLow;
+    // ffShiftI64R(anOffset, fiLog2BlockSize, TempI64);
+    TempI64 := anOffset shr fiLog2BlockSize;
+    BlockNumber := Int64Rec(TempI64).Lo;
     if (BlockNumber <= 0) or (BlockNumber >= fiUsedBlocks) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBadBlockNr, [FI^.fiName^, BlockNumber]);

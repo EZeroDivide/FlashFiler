@@ -53,13 +53,13 @@ uses
 {---BLOB Link method types---}
 type
   TffBLOBLinkGetLength = function(const aTableName : TffTableName;
-                                  const aBLOBNr    : TffInt64;
+                                  const aBLOBNr    : UInt64;
                                     var aLength    : Longint) : TffResult of object;
     { Declaration of method to be called when trying to find the length
       of a BLOB visible through a BLOB link. }
 
   TffBLOBLinkRead = function(const aTableName : TffTableName;
-                             const aBLOBNr    : TffInt64;
+                             const aBLOBNr    : UInt64;
                              const aOffset    : TffWord32;             {!!.06}
                              const aLen       : TffWord32;             {!!.06}
                                var aBLOB;
@@ -71,51 +71,51 @@ type
 {---BLOB maintenance---}
 procedure FFTblAddBLOB(aFI     : PffFileInfo;
                        aTI     : PffTransInfo;
-                   var aBLOBNr : TffInt64);
+                   var aBLOBNr : UInt64);
   {-add a new, empty (length 0) BLOB, return new BLOB number}
 
 procedure FFTblAddBLOBLink(aFI          : PffFileInfo;
                            aTI          : PffTransInfo;
                      const aTableName   : TffTableName;
-                     const aTableBLOBNr : TffInt64;
-                       var aBLOBNr      : TffInt64);
+                     const aTableBLOBNr : UInt64;
+                       var aBLOBNr      : UInt64);
   {-Add a new BLOB link, return new BLOB number. }
 
 procedure FFTblAddFileBLOB(aFI       : PffFileInfo;
                            aTI       : PffTransInfo;
                      const aFileName : TffFullFileName;
-                       var aBLOBNr   : TffInt64);
+                       var aBLOBNr   : UInt64);
   {-add a new file BLOB, return new BLOB number}
 
 procedure FFTblDeleteBLOB(aFI     : PffFileInfo;
                           aTI     : PffTransInfo;
-                    const aBLOBNr : TffInt64);
+                    const aBLOBNr : UInt64);
   {-delete a BLOB; BLOB number will no longer be valid after this}
 
 function FFTblFreeBLOB(aFI     : PffFileInfo;
                        aTI     : PffTransInfo;
-                       aBLOBNr : TffInt64) : boolean;
+                       aBLOBNr : UInt64) : boolean;
   {-if the BLOB length is zero, delete it; return true if deleted}
 
 function FFTblGetBLOBLength(aFI     : PffFileInfo;
                             aTI     : PffTransInfo;
-                            aBLOBNr : TffInt64;
+                            aBLOBNr : UInt64;
                             aLengthMethod : TffBLOBLinkGetLength;
                         var aFBError: TffResult) : Longint;
   {-return the length of the BLOB}
 
 function FFTblGetFileNameBLOB(aFI       : PffFileInfo;
                               aTI       : PffTransInfo;
-                              aBLOBNr   : TffInt64;
+                              aBLOBNr   : UInt64;
                           var aFileName : TffFullFileName ) : Boolean;
   {-return True if the given BLOB nr refers to a file BLOB, and the
     filename is returned in aFileName}
 
 function FFTblIsBLOBLink(aFI             : PffFileInfo;                {!!.11 - New}
                          aTI             : PffTransInfo;
-                         aBLOBNr         : TffInt64;
+                         aBLOBNr         : UInt64;
                      var aSrcTableName   : TffTableName;
-                     var aSrcTableBLOBNr : TffInt64)
+                     var aSrcTableBLOBNr : UInt64)
                                          : Boolean;
   { Checks to see if aBLOBNr is a BLOB Link. If it is, it returns the
     the offset of the source as aSrcTableBLOBNr in aSrcTableName
@@ -123,7 +123,7 @@ function FFTblIsBLOBLink(aFI             : PffFileInfo;                {!!.11 - 
 {Begin !!.03}
 procedure FFTblListBLOBSegments(aFI : PffFileInfo;
                                 aTI : PffTransInfo;
-                                aBLOBNr : TffInt64;
+                                aBLOBNr : UInt64;
                                 aStream : TStream);
   { List the segments comprising the BLOB. }
 {End !!.03}
@@ -132,16 +132,16 @@ procedure FFTblListBLOBSegments(aFI : PffFileInfo;
 type
   TffBaseBLOBEngine = class;  { foward declaration }
   TffBLOBEngineClass = class of TffBaseBLOBEngine;
-  
+
   TffBaseBLOBEngine = class(TffObject)
     { Base class representing an engine to read, write, & truncate BLOBs. }
   public
     class function GetEngine(aFI : PffFileInfo) : TffBaseBLOBEngine;
       { Returns the engine instance to be used for the specified file. }
-      
+
     procedure Read(aFI         : PffFileInfo;
                    aTI         : PffTransInfo;
-                   aBLOBNr     : TffInt64;
+                   aBLOBNr     : UInt64;
                    aOffset     : TffWord32;
                    aLen        : TffWord32;
                    aReadMethod : TffBLOBLinkRead;
@@ -152,14 +152,14 @@ type
 
     procedure Truncate(aFI     : PffFileInfo;
                        aTI     : PffTransInfo;
-                       aBLOBNr : TffInt64;
+                       aBLOBNr : UInt64;
                        aLen    : TffWord32); virtual; abstract;
       { Truncate the BLOB to the specified length. Does *not* delete BLOB if
         length 0. }
 
     procedure Write(aFI     : PffFileInfo;
                     aTI     : PffTransInfo;
-              const aBLOBNr : TffInt64;
+              const aBLOBNr : UInt64;
                     aOffset : TffWord32;
                     aLen    : TffWord32;
               const aBLOB); virtual; abstract;
@@ -177,7 +177,7 @@ type
   public
     procedure Read(aFI         : PffFileInfo;
                    aTI         : PffTransInfo;
-                   aBLOBNr     : TffInt64;
+                   aBLOBNr     : UInt64;
                    aOffset     : TffWord32;
                    aLen        : TffWord32;
                    aReadMethod : TffBLOBLinkRead;
@@ -188,14 +188,14 @@ type
 
     procedure Truncate(aFI     : PffFileInfo;
                        aTI     : PffTransInfo;
-                       aBLOBNr : TffInt64;
+                       aBLOBNr : UInt64;
                        aLen    : TffWord32); override;
       { Truncate the BLOB to the specified length. Does *not* delete BLOB if
         length 0. }
 
     procedure Write(aFI     : PffFileInfo;
                     aTI     : PffTransInfo;
-              const aBLOBNr : TffInt64;
+              const aBLOBNr : UInt64;
                     aOffset : TffWord32;
                     aLen    : TffWord32;
               const aBLOB); override;
@@ -208,7 +208,7 @@ type
   public
     procedure Read(aFI         : PffFileInfo;
                    aTI         : PffTransInfo;
-                   aBLOBNr     : TffInt64;
+                   aBLOBNr     : UInt64;
                    aOffset     : TffWord32;
                    aLen        : TffWord32;
                    aReadMethod : TffBLOBLinkRead;
@@ -219,14 +219,14 @@ type
 
     procedure Truncate(aFI     : PffFileInfo;
                        aTI     : PffTransInfo;
-                       aBLOBNr : TffInt64;
+                       aBLOBNr : UInt64;
                        aLen    : TffWord32); override;
       { Truncate the BLOB to the specified length. Does *not* delete BLOB if
         length 0. }
 
     procedure Write(aFI     : PffFileInfo;
                     aTI     : PffTransInfo;
-              const aBLOBNr : TffInt64;
+              const aBLOBNr : UInt64;
                     aOffset : TffWord32;
                     aLen    : TffWord32;
               const aBLOB); override;
@@ -237,8 +237,8 @@ function  FFTblRebuildLookupSegments(aFI           : PffFileInfo;
                                      aTI           : PffTransInfo;
                                      aNewBLOBSize  : TffWord32;
                                      aOldBLOBSize  : TffWord32;
-                               const aBLOBNr       : TffInt64)
-                                                   : TffInt64;
+                               const aBLOBNr       : UInt64)
+                                                   : UInt64;
   {-rebuilds all lookup segment(s) for a BLOB that is growing}
 
 {End !!.11}
@@ -322,7 +322,7 @@ function BLOBLinkGetLength(aBLOBHeader      : PffBLOBHeader;
                                             : TffResult;
 var
   BLOBData     : PffByteArray absolute aBLOBHeader;
-  BLOBNr       : TffInt64;
+  BLOBNr       : UInt64;
   TableName    : TffFullFileName;
   TableNameLen : Byte;
 begin
@@ -333,7 +333,7 @@ begin
   Move(BLOBData^[sizeof(TffBLOBHeader)], TableName, TableNameLen);
   { Get the table's BLOB number. }
   Move(BLOBData^[SizeOf(TffBLOBHeader) + TableNameLen], BlobNr,
-       SizeOf(TffInt64));
+       SizeOf(UInt64));
 
   Result := aGetLengthMethod(TableName, BlobNr, aLength);
 
@@ -342,7 +342,7 @@ end;
 procedure BLOBLinkGetTableNameAndRefNr(aBLOBBlock   : PffBlock;        {!!.11 - New}
                                        aBlockOffset : Integer;
                                    var aTableName   : TffTableName;
-                                   var aBLOBNr      : TffInt64);
+                                   var aBLOBNr      : UInt64);
 var
   TableNameLen : Byte;
 begin
@@ -355,12 +355,12 @@ begin
   { Get the table's BLOB number. }
   Move(aBLOBBlock^[aBlockOffset + TableNameLen],
        aBLOBNr,
-       SizeOf(TffInt64));
+       SizeOf(UInt64));
 end;
 {--------}
 function BLOBLinkRead(aFI         : PffFileInfo;
                       aTI         : PffTransInfo;
-                      aBLOBNr     : TffInt64;
+                      aBLOBNr     : UInt64;
                       aOffset     : Longint;
                       aLen        : Longint;
                       aReadMethod : TffBLOBLinkRead;
@@ -369,7 +369,7 @@ function BLOBLinkRead(aFI         : PffFileInfo;
                                   : TffResult;
 var
   BLOBBlock     : PffBlock;
-  BLOBNr        : TffInt64;
+  BLOBNr        : UInt64;
   OffsetInBlock : TffWord32;                                           {!!.11}
   {TableNameLen  : Byte;}                                              {!!.11}
   TableName     : TffTableName;
@@ -407,7 +407,7 @@ var
   BLOBData    : PffByteArray absolute aBLOBHeader;
   FileName    : TffFullFileName;
   FileNameLen : Byte;
-  TmpLen      : TffInt64;
+  TmpLen      : UInt64;
 begin
   Result := 0;
 
@@ -422,7 +422,7 @@ begin
       FFOpenFile(BLOBFile, omReadOnly, smShared, false, false);
       try
         TmpLen := FFPositionFileEOF(BLOBFile);
-        aLength := TmpLen.iLow;
+        aLength := Int64Rec(TmpLen).Lo;
       finally
         FFCloseFile(BLOBFile);
       end;{try..finally}
@@ -445,7 +445,7 @@ end;
 {--------}
 function FileBLOBRead(aFI        : PffFileInfo;
                       aTI        : PffTransInfo;
-                      aBLOBNr    : TffInt64;
+                      aBLOBNr    : UInt64;
                       aOffset    : Longint;
                       aLen       : Longint;
                   var aBLOB;
@@ -457,7 +457,7 @@ var
   OffsetInBlock : TffWord32;                                           {!!.11}
   FileNameLen   : Byte;
   FileName      : TffFullFileName;
-  TempI64       : TffInt64;
+  TempI64       : UInt64;
   aFHRelMethod  : TffReleaseMethod;
 begin
   Result := 0;
@@ -479,8 +479,8 @@ begin
       try
         FFOpenFile(BLOBFile, omReadOnly, smShared, false, false);
         try
-          TempI64.iLow  := aOffset;
-          TempI64.iHigh := 0;
+          Int64Rec(TempI64).Lo  := aOffset;
+          Int64Rec(TempI64).Hi := 0;
           FFPositionFile(BLOBFile, TempI64);
           aBytesRead := FFReadFile(BLOBFile, aLen, aBLOB);
         finally
@@ -510,7 +510,7 @@ end;
 {== BLOB maintenance =================================================}
 procedure FFTblAddBLOB(aFI     : PffFileInfo;
                        aTI     : PffTransInfo;
-                   var aBLOBNr : TffInt64);
+                   var aBLOBNr : UInt64);
 var
   FileHeader    : PffBlockHeaderFile;
   BLOBHeaderPtr : PffBLOBHeader;
@@ -551,7 +551,7 @@ begin
                           ffc_BLOBSegmentIncrement) * ffc_BLOBSegmentIncrement);
         bbhBLOBLength := 0;
         bbhSegCount := 0;
-        bbh1stLookupSeg.iLow := ffc_W32NoValue;                        {!!.11}
+        Int64Rec(bbh1stLookupSeg).Lo := ffc_W32NoValue;                        {!!.11}
       end;
       {we've got one more BLOB}
       inc(FileHeader^.bhfBLOBCount);
@@ -566,8 +566,8 @@ end;
 procedure FFTblAddBLOBLink(aFI          : PffFileInfo;
                            aTI          : PffTransInfo;
                      const aTableName   : TffTableName;
-                     const aTableBLOBNr : TffInt64;
-                       var aBLOBNr      : TffInt64);
+                     const aTableBLOBNr : UInt64;
+                       var aBLOBNr      : UInt64);
 var
   FileHeader    : PffBlockHeaderFile;
   BLOBBlock     : PffBlock;
@@ -595,7 +595,7 @@ begin
                                             aTI,
                                             SegSize,                   {!!.11}
                                             SegSize);                  {!!.11}
-    if (aBLOBNr.iLow <> ffc_W32NoValue) then begin
+    if (Int64Rec(aBLOBNr).Lo <> ffc_W32NoValue) then begin
       BLOBBlock := ReadVfyBlobBlock(aFI,
                                     aTI,
                                     ffc_MarkDirty,
@@ -603,8 +603,9 @@ begin
                                     OffsetInBlock,
                                     aBlkRelMethod);
       BLOBHeaderPtr := @BLOBBlock^[OffsetInBlock];
-    end else begin
-      aBLOBNr.iLow  := ffc_W32NoValue;
+    end else
+    begin
+      Int64Rec(aBLOBNr).Lo := ffc_W32NoValue;
       Exit;
     end;
     { Set up the new BLOB header. }
@@ -612,14 +613,14 @@ begin
       bbhSignature := ffc_SigBLOBSegHeader;
       bbhBLOBLength := 0;
       bbhSegCount := ffc_BLOBLink;
-      bbh1stLookupSeg.iLow := ffc_W32NoValue;
+      Int64Rec(bbh1stLookupSeg).Lo := ffc_W32NoValue;
     end;
     { Write aTableName & the table's BLOB number after BLOBHeader.  Note that
       length of String is automatically stored as the first byte of the string. }
     Move(aTableName, BLOBBlock^[(OffsetInBlock + sizeof(TffBLOBHeader))],
          NameLen);
     Move(aTableBLOBNr, BLOBBlock^[(OffsetInBlock + SizeOf(TffBLOBHeader) +
-                                   NameLen)], SizeOf(TffInt64));
+                                   NameLen)], SizeOf(UInt64));
     { We've got one more BLOB. }
     inc(FileHeader.bhfBLOBCount);
     aBlkRelMethod(BLOBBlock);
@@ -631,7 +632,7 @@ end;
 procedure FFTblAddFileBLOB(aFI       : PffFileInfo;
                            aTI       : PffTransInfo;
                      const aFileName : TffFullFileName;
-                       var aBLOBNr   : TffInt64);
+                       var aBLOBNr   : UInt64);
 var
   FileHeader    : PffBlockHeaderFile;
   BLOBBlock     : PffBlock;
@@ -657,7 +658,7 @@ begin
                                             aTI,
                                             SegSize,                   {!!.11}
                                             SegSize);                  {!!.11}
-    if (aBLOBNr.iLow <> ffc_W32NoValue) then begin
+    if (Int64Rec(aBLOBNr).Lo <> ffc_W32NoValue) then begin
       BLOBBlock := ReadVfyBlobBlock(aFI,
                                     aTI,
                                     ffc_MarkDirty,
@@ -666,7 +667,7 @@ begin
                                     aBlkRelMethod);
       BLOBHeaderPtr := @BLOBBlock^[OffsetInBlock];
     end else begin
-      aBLOBNr.iLow  := ffc_W32NoValue;
+      Int64Rec(aBLOBNr).Lo  := ffc_W32NoValue;
       exit;
     end;
     {set up the new BLOB header}
@@ -674,7 +675,7 @@ begin
       bbhSignature := ffc_SigBLOBSegHeader;
       bbhBLOBLength := 0;
       bbhSegCount := ffc_FileBLOB;
-      bbh1stLookupSeg.iLow := ffc_W32NoValue;
+      Int64Rec(bbh1stLookupSeg).Lo := ffc_W32NoValue;
     end;
     { Write aFileName after BLOBHeader.  Note that length of string is
       automatically stored as the first byte of the string. }
@@ -694,7 +695,7 @@ var
   OffsetInBlock : TffWord32;                                           {!!.11}
   LookupSegBlk  : PffBlock;
   LookupSegOfs,                                                        {!!.03}
-  TmpSegOfs     : TffInt64;                                            {!!.03}
+  TmpSegOfs     : UInt64;                                            {!!.03}
   LookupSegPtr  : PffBLOBSegmentHeader;
   LookupEntOfs  : integer;
   LookupEntPtr  : PffBLOBLookupEntry;
@@ -712,11 +713,9 @@ begin
   { Get the BLOB's first lookup segment. }
   LookupSegOfs := BLOBHeader^.bbh1stLookupSeg;
 
-{Begin !!.03}
   { BLOB truncated to length 0? }
-  if LookupSegOfs.iLow = ffc_W32NoValue then
+  if Int64Rec(LookupSegOfs).Lo = ffc_W32NoValue then
     Exit;
-{End !!.03}
 
   LookupSegBlk := ReadVfyBlobBlock(aFI,
                                    aTI,
@@ -732,7 +731,7 @@ begin
     LookupEntPtr := @LookupSegBlk^[LookupEntOfs];
 
     { Is this the only lookup segment? }
-    if LookupSegPtr^.bshNextSegment.iLow <> ffc_W32NoValue then
+    if Int64Rec(LookupSegPtr^.bshNextSegment).Lo <> ffc_W32NoValue then
       { No.  Figure out number of lookup entries based on segment size. }
       EntryCount := FFCalcMaxLookupEntries(LookupSegPtr)
     else
@@ -748,7 +747,7 @@ begin
       dec(EntryCount);
 
       { Need to move to another lookup segment? }
-      if ((EntryCount = 0) and (LookupSegPtr^.bshNextSegment.iLow <> ffc_W32NoValue)) then begin
+      if ((EntryCount = 0) and (Int64Rec(LookupSegPtr^.bshNextSegment).Lo <> ffc_W32NoValue)) then begin
         {Yes.  Get the location of the next lookup segment and delete the
          existing lookup segment. }
         TmpSegOfs := LookupSegPtr^.bshNextSegment;                     {!!.03}
@@ -788,7 +787,7 @@ end;
 {--------}
 procedure FFTblDeleteBLOB(aFI     : PffFileInfo;
                           aTI     : PffTransInfo;
-                    const aBLOBNr : TffInt64);
+                    const aBLOBNr : UInt64);
 var
   FileHeader    : PffBlockHeaderFile;
   BLOBBlock     : PffBlock;
@@ -818,7 +817,7 @@ begin
     if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBLOBDeleted,
-                       [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
 {End !!.01}
 
     try
@@ -839,7 +838,7 @@ end;
 {--------}
 function FFTblFreeBLOB(aFI     : PffFileInfo;
                        aTI     : PffTransInfo;
-                       aBLOBNr : TffInt64)
+                       aBLOBNr : UInt64)
                                : Boolean;
 var
   BLOBBlock    : PffBlock;
@@ -848,21 +847,22 @@ var
   BLOBHeader   : PffBLOBHeader;
   FileHeader   : PffBlockHeaderFile;
   OffsetInBlock: TffWord32;                                            {!!.11}
-  TempI64      : TffInt64;
+  TempI64      : UInt64;
   aBlkRelMethod,
   aFHRelMethod : TffReleaseMethod;
 begin
 {$IFDEF BLOBTrace}                                                     {!!.11}
   Logbt('FFTblFreeBLOB.Begin', []);
-  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.iLow, aBLOBNr.iHigh]);
+  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.Lo, aBLOBNr.Hi]);
 {$ENDIF}
   { Assume we won't delete. }
   Result := false;
   FileHeader := nil;
 
   {now get the BLOB block}
-  ffShiftI64R(aBLOBNr, aFI^.fiLog2BlockSize, TempI64);
-  BLOBBlockNum := TempI64.iLow;
+  // ffShiftI64R(aBLOBNr, aFI^.fiLog2BlockSize, TempI64);
+  TempI64 := aBLOBNr shr aFI^.fiLog2BlockSize;
+  BLOBBlockNum := Int64Rec(TempI64).Lo;
 
   { Read and verify the BLOB header block. }
   BLOBBlock := ReadVfyBlobBlock2(aFI,
@@ -878,7 +878,7 @@ begin
   if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
     FFRaiseException(EffServerException, ffStrResServer,
                      fferrBLOBDeleted,
-                     [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                     [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
 {End !!.01}
 
   try
@@ -908,7 +908,7 @@ end;
 {--------}
 function FFTblGetBLOBLength(aFI           : PffFileInfo;
                             aTI           : PffTransInfo;
-                            aBLOBNr       : TffInt64;
+                            aBLOBNr       : UInt64;
                             aLengthMethod : TffBLOBLinkGetLength;
                         var aFBError      : TffResult)
                                           : Longint;
@@ -922,7 +922,7 @@ var
 begin
 {$IFDEF BLOBTrace}                                                     {!!.11}
   Logbt('FFTblGetBLOBLength.Begin', []);
-  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.iLow, aBLOBNr.iHigh]);
+  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.Lo, aBLOBNr.Hi]);
 {$ENDIF}
   aFBError := DBIERR_NONE;
   { Read and verify the BLOB header block for this BLOB number. }
@@ -940,12 +940,12 @@ begin
     if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBLOBDeleted,
-                       [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
-{End !!.01}
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
+{End !!.01} // ToDo: Lo-Hi Reihenfolge
     { Verify this is a header segment. }
     if (BLOBHeader^.bbhSignature <> ffc_SigBLOBSegHeader) then
       FFRaiseException(EffServerException, ffStrResServer, fferrBadBLOBSeg,
-                       [aFI^.fiName^, aBLOBNr.iLow, aBLOBNr.iHigh,
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Lo, Int64Rec(aBLOBNr).Hi,
                         format(ffcBLOBSegExpected,
                                [ffcBLOBSegHeader,
                                 AnsiChar(BLOBHeader^.bbhSignature)])]);
@@ -968,7 +968,7 @@ end;
 {--------}
 function FFTblGetFileNameBLOB(aFI       : PffFileInfo;
                               aTI       : PffTransInfo;
-                              aBLOBNr   : TffInt64;
+                              aBLOBNr   : UInt64;
                           var aFileName : TffFullFileName )
                                         : Boolean;
 var
@@ -994,7 +994,7 @@ begin
   if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
     FFRaiseException(EffServerException, ffStrResServer,
                      fferrBLOBDeleted,
-                     [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                     [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
 {End !!.01}
   Result := BLOBHeader^.bbhSegCount = ffc_FileBLOB;
   if Result then begin
@@ -1010,9 +1010,9 @@ end;
 {--------}
 function FFTblIsBLOBLink(aFI             : PffFileInfo;                {!!.11 - Start}
                          aTI             : PffTransInfo;
-                         aBLOBNr         : TffInt64;
+                         aBLOBNr         : UInt64;
                      var aSrcTableName   : TffTableName;
-                     var aSrcTableBLOBNr : TffInt64)
+                     var aSrcTableBLOBNr : UInt64)
                                          : Boolean;
 var
   BLOBBlock     : PffBlock;
@@ -1053,7 +1053,7 @@ end;
 {--------}
 procedure FFTblListBLOBSegments(aFI     : PffFileInfo;
                                 aTI     : PffTransInfo;
-                                aBLOBNr : TffInt64;
+                                aBLOBNr : UInt64;
                                 aStream : TStream);
 var
   BLOBBlock     : PffBlock;
@@ -1066,7 +1066,7 @@ var
   ContentEntry : PffBLOBSegmentHeader;                                 {!!.11}
   LookupSegBlk, ContentSegBlk  : PffBlock;                             {!!.11}
   LookupSegPtr  : PffBLOBSegmentHeader;
-  NextSeg       : TffInt64;
+  NextSeg       : UInt64;
   OffsetInBlock, ContentOffsetInBlock : TffWord32;                     {!!.11}
   aLkpRelMethod,
   aContRelMethod,                                                      {!!.11}
@@ -1088,10 +1088,10 @@ begin
   if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
     FFRaiseException(EffServerException, ffStrResServer,
                      fferrBLOBDeleted,
-                     [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                     [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
 
   { BLOB truncated to length zero? }
-  if BLOBHeader^.bbh1stLookupSeg.iLow = ffc_W32NoValue then begin
+  if Int64Rec(BLOBHeader^.bbh1stLookupSeg).Lo = ffc_W32NoValue then begin
     WriteToStream('BLOB has been truncated to length zero.', aStream);
     WriteToStream(#0, aStream);
     Exit;
@@ -1122,7 +1122,7 @@ begin
 
     { Walk through the BLOB segment linked list. }
     WriteToStream(Format('Segment list for BLOB %d:%d '+ #13#10,
-                         [aBLOBNr.iHigh, aBLOBNr.iLow]), aStream);
+                         [Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]), aStream);
     EntryCount := 0;
     while True do begin
       inc(EntryCount);
@@ -1141,14 +1141,14 @@ begin
       else if ContentEntry^.bshSignature <> ffc_SigBLOBSegContent then
         raise Exception.CreateFmt
           ('Invalid signature for content segment, offset: %d,%d, signature: %s',
-           [LookupEntry^.bleSegmentOffset.iHigh,
-            LookupEntry^.bleSegmentOffset.iLow,
+           [Int64Rec(LookupEntry^.bleSegmentOffset).Hi,
+            Int64Rec(LookupEntry^.bleSegmentOffset).Lo,
             AnsiChar(ContentEntry^.bshSignature)])
       else begin
 
         WriteToStream(Format('Segment %d, %d:%d, Len %d' + #13#10,
-                             [EntryCount, LookupEntry^.bleSegmentOffset.iHigh,
-                              LookupEntry^.bleSegmentOffset.iLow,
+                             [EntryCount, Int64Rec(LookupEntry^.bleSegmentOffset).Hi,
+                              Int64Rec(LookupEntry^.bleSegmentOffset).Lo,
                               LookupEntry^.bleContentLength]), aStream);
 
         {see if we're at the end of the lookup segment}
@@ -1156,7 +1156,7 @@ begin
            (sizeof(TffBLOBSegmentHeader) +
            (succ(EntryCount) * sizeof(TffBLOBLookupEntry)))) then begin
           NextSeg := LookupSegPtr^.bshNextSegment;
-          if NextSeg.iLow <> ffc_W32NoValue then begin
+          if Int64Rec(NextSeg).Lo <> ffc_W32NoValue then begin
             aLkpRelMethod(LookupSegBlk);
             LookupSegBlk := ReadVfyBlobBlock2(aFI, aTI, ffc_ReadOnly,
                                               NextSeg,                   {!!.11}
@@ -1187,8 +1187,8 @@ function  FFTblRebuildLookupSegments(aFI            : PffFileInfo;
                                      aTI            : PffTransInfo;
                                      aNewBLOBSize   : TffWord32;
                                      aOldBLOBSize   : TffWord32;
-                               const aBLOBNr        : TffInt64)
-                                                    : TffInt64;
+                               const aBLOBNr        : UInt64)
+                                                    : UInt64;
 {This function takes an existing lookup segment chain & grows it to
  accomodate a larger BLOB. }
 var
@@ -1210,8 +1210,8 @@ var
   EntInOldSeg     : Longint;
   EntInNewSeg     : Longint;
   CurrentCount    : Longint;
-  OldHeaderOfs    : TffInt64;
-  TempI64         : TffInt64;
+  OldHeaderOfs    : UInt64;
+  TempI64         : UInt64;
   aRelMethod      : TffReleaseMethod;
   aRelList        : TffPointerList;
   SegSize       : TffWord32;                                         
@@ -1225,7 +1225,7 @@ begin
     { Get the old lookup header before we replace it with a new one. }
     OldBLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                      aBLOBNr, OldOfsInBlock, aRelMethod);
-    aRelList.Append(FFAllocReleaseInfo(OldBLOBBlock, TffInt64(aRelMethod)));
+    aRelList.Append(FFAllocReleaseInfo(OldBLOBBlock, TMethod(aRelMethod)));
     OldBLOBHeader := PffBLOBHeader(@OldBLOBBlock^[OldOfsInBlock]);
     OldHeaderOfs := OldBLOBHeader^.bbh1stLookupSeg;
 
@@ -1242,14 +1242,14 @@ begin
       Result := aFI^.fiBLOBrscMgr.NewSegment(aFI, aTI, SegSize, SegSize);
       NewBLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty, Result,
                                        NewOfsInBlock, aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TMethod(aRelMethod)));
       NewLookupHeader := @NewBLOBBlock^[NewOfsInBlock];
 
       { Setup our new lookup header. }
       with NewLookupHeader^ do begin
         bshSignature := ffc_SigBLOBSegLookup;
         bshParentBLOB := aBLOBNr;
-        bshNextSegment.iLow := ffc_W32NoValue;
+        Int64Rec(bshNextSegment).Lo := ffc_W32NoValue;
       end;
     end else begin
       { No.  We need a chain of lookup segments. }
@@ -1262,7 +1262,7 @@ begin
       dec(EntriesToGo, MaxEntries);
       NewBLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                        Result, NewOfsInBlock, aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TMethod(aRelMethod)));
       NewLookupHeader := @NewBLOBBlock^[NewOfsInBlock];
       NewLookupHeader^.bshSignature := ffc_SigBLOBSegHeader;
       NewLookupHeader^.bshParentBLOB := aBLOBNr;
@@ -1277,7 +1277,7 @@ begin
           NewBLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                            NewLookupHeader^.bshNextSegment,
                                            NewOfsInBlock, aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TMethod(aRelMethod)));
         end else begin
           { This is the last lookup segment needed. }
           SegSize := (EntriesToGo * ffc_BLOBLookupEntrySize) +
@@ -1288,14 +1288,14 @@ begin
           NewBLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                            NewLookupHeader^.bshNextSegment,
                                            NewOfsInBlock, aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TMethod(aRelMethod)));
         end; {if..else}
 
         { Initialize the segment. }
         NewLookupHeader := @NewBLOBBlock^[NewOfsInBlock];
         NewLookupHeader^.bshSignature := ffc_SigBLOBSegHeader;
         NewLookupHeader^.bshParentBLOB := aBLOBNr;
-        NewLookupHeader^.bshNextSegment.iLow := ffc_W32NoValue;
+        Int64Rec(NewLookupHeader^.bshNextSegment).Lo := ffc_W32NoValue;
 
       end; {while}
       {Reset the new lookup segment to the 1st one in the chain.}
@@ -1318,7 +1318,7 @@ begin
       OldLookupBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                        OldBLOBHeader^.bbh1stLookupSeg,
                                        OldLookupOfs, aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(OldLookupBlk, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(OldLookupBlk, TMethod(aRelMethod)));
       OldLookupHeader := @OldLookupBlk^[OldLookupOfs];
       OldLookupOfs := OldLookupOfs + sizeof(TffBLOBSegmentHeader);
       { Point to the 1st lookup entry. }
@@ -1327,11 +1327,11 @@ begin
       { Get the block offset to where the first new lookup entry goes. }
       NewBLOBBlock := ReadBLOBBlock(aFI, aTI, Result, NewOfsInBlock,
                                     aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TMethod(aRelMethod)));
       NewOfsInBlock := NewOfsInBlock + sizeof(TffBLOBSegmentHeader);
 
       { Is the old lookup segment followed by another lookup segment? }
-      if OldLookupHeader^.bshNextSegment.iLow <> ffc_W32NoValue then
+      if Int64Rec(OldLookupHeader^.bshNextSegment).Lo <> ffc_W32NoValue then
         { Yes.  It must have the maximum number of lookup entries so figure out
           how many that is. }
         EntInOldSeg := FFCalcMaxLookupEntries(OldLookupHeader)
@@ -1357,19 +1357,19 @@ begin
         TempI64 := OldHeaderOfs;
 
         { Is there a lookup segment after this one? }
-        if OldLookupHeader^.bshNextSegment.iLow <> ffc_W32NoValue then begin
+        if Int64Rec(OldLookupHeader^.bshNextSegment).Lo <> ffc_W32NoValue then begin
           { Yes.  Move to it. }
           OldHeaderOfs := OldLookupHeader^.bshNextSegment;
           OldBLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                            OldHeaderOfs, OldLookupOfs,
                                            aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(OldBLOBBlock, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(OldBLOBBlock, TMethod(aRelMethod)));
           OldLookupBlk :=
                  ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                   OldLookupHeader^.bshNextSegment,
                                   OldLookupOfs, aRelMethod);
           aRelList.Append(FFAllocReleaseInfo(OldLookupBlk,
-                                             TffInt64(aRelMethod)));
+                                             TMethod(aRelMethod)));
           OldLookupHeader := @OldLookupBlk^[OldLookupOfs];
           inc(OldLookupOfs, sizeof(TffBLOBSegmentHeader));
           OldLookupEntry := PffBLOBLookupEntry(@OldBLOBBlock^[OldLookupOfs]);
@@ -1385,14 +1385,14 @@ begin
 
         { Check if we've filled up our current (target) header}
         if (EntInNewSeg = 0) and
-           (NewLookupHeader^.bshNextSegment.iLow <> ffc_W32NoValue) then begin
+           (Int64Rec(NewLookupHeader^.bshNextSegment).Lo <> ffc_W32NoValue) then begin
           NewBLOBBlock := ReadBlobBlock(aFI,
                                         aTI,
                                         NewLookupHeader^.bshNextSegment,
                                         NewOfsInBlock,
                                         aRelMethod);
 
-          aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(NewBLOBBlock, TMethod(aRelMethod)));
           NewLookupHeader := @NewBLOBBlock^[NewOfsInBlock];
           NewOfsInBlock :=
             NewOfsInBlock + sizeof(TffBLOBSegmentHeader);           
@@ -1423,7 +1423,7 @@ end;
 {===TffBLOBEngine====================================================}
 procedure TffBLOBEngine.Read(aFI         : PffFileInfo;
                                 aTI         : PffTransInfo;
-                                aBLOBNr     : TffInt64;
+                                aBLOBNr     : UInt64;
                                 aOffset     : TffWord32;
                                 aLen        : TffWord32;
                                 aReadMethod : TffBLOBLinkRead;
@@ -1443,7 +1443,7 @@ var
   ContentBlock,
   LookupSegOfs     : TffWord32;
   ContentSegBlk    : PffBlock;
-  ContentSegOfs    : TffInt64;
+  ContentSegOfs    : UInt64;
   DestOffset       : TffWord32;
   MaxLookupEntries : Integer;
   LookupBlock      : TffWord32;
@@ -1457,11 +1457,11 @@ var
 {$IFDEF BLOBTrace}
   LookupSegCount   : Integer;
 {$ENDIF}
-  NextSeg          : TffInt64;                                         {!!.11}
+  NextSeg          : UInt64;                                         {!!.11}
 begin
 {$IFDEF BLOBTrace}
   Logbt('FFTblReadBLOB.Begin', []);
-  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.iLow, aBLOBNr.iHigh]);
+  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.Lo, aBLOBNr.Hi]);
   Logbt('  aOffset = %d', [aOffset]);
   Logbt('  aLen    = %d', [aLen]);
   try
@@ -1490,8 +1490,8 @@ begin
   {$IFDEF BLOBTrace}
     Logbt('  BLOB.Length: %d, 1st lookup segment: %d:%d',
           [BLOBHeader^.bbhBLOBLength,
-           BLOBHeader^.bbh1stLookupSeg.iLow,
-           BLOBHeader^.bbh1stLookupSeg.iHigh]);
+           BLOBHeader^.bbh1stLookupSeg.Lo,
+           BLOBHeader^.bbh1stLookupSeg.Hi]);
   {$ENDIF}
 
   { Verify the BLOB has not been deleted. }
@@ -1500,8 +1500,8 @@ begin
                      ffStrResServer,
                      fferrBLOBDeleted,
                      [aFI^.fiName^,
-                      aBLOBNr.iHigh,
-                      aBLOBNr.iLow]);
+                      Int64Rec(aBLOBNr).Hi,
+                      Int64Rec(aBLOBNr).Lo]);
 
   try
     { Are we dealing with a file BLOB or a BLOB link? }
@@ -1568,8 +1568,8 @@ begin
         Logbt('  Lookup entry %d points to ' +
               'segment %d:%d with %d bytes',
               [CurrLookupEntry,
-               LookupEntry^.bleSegmentOffset.iHigh,
-               LookupEntry^.bleSegmentOffset.iLow,
+               LookupEntry^.bleSegmentOffset.Hi,
+               LookupEntry^.bleSegmentOffset.Lo,
                LookupEntry^.bleContentLength]);
       {$ENDIF}
       { Does this entry point to the segment where we should start
@@ -1626,8 +1626,8 @@ begin
       {$IFDEF BLOBTrace}
         Logbt('  Lookup entry %d points to segment %d:%d with %d bytes',
               [CurrLookupEntry,
-               LookupEntry^.bleSegmentOffset.iHigh,
-               LookupEntry^.bleSegmentOffset.iLow,
+               LookupEntry^.bleSegmentOffset.Hi,
+               LookupEntry^.bleSegmentOffset.Lo,
                LookupEntry^.bleContentLength]);
       {$ENDIF}
       ContentSegBlk := ReadVfyBlobBlock2(aFI,
@@ -1718,27 +1718,27 @@ const
   ciEmptyVal2 = 1179010630;
     { Another value that indicates an empty lookup entry. }
 begin
-  Result := (Entry^.bleSegmentOffset.iLow = ffc_W32NoValue) or
-            ((Entry^.bleSegmentOffset.iLow = 0) and
-             (Entry^.bleSegmentOffset.iHigh = 0)) or
-            ((Entry^.bleSegmentOffset.iLow = ciEmptyVal1) and
-             (Entry^.bleSegmentOffset.iHigh = ciEmptyVal1) and
+  Result := (Int64Rec(Entry^.bleSegmentOffset).Lo = ffc_W32NoValue) or
+            ((Int64Rec(Entry^.bleSegmentOffset).Lo = 0) and
+             (Int64Rec(Entry^.bleSegmentOffset).Hi = 0)) or
+            ((Int64Rec(Entry^.bleSegmentOffset).Lo = ciEmptyVal1) and
+             (Int64Rec(Entry^.bleSegmentOffset).Hi = ciEmptyVal1) and
              (Entry^.bleContentLength = ciEmptyVal1)) or
-            ((Entry^.bleSegmentOffset.iLow = ciEmptyVal2) and
-             (Entry^.bleSegmentOffset.iHigh = ciEmptyVal2) and
+            ((Int64Rec(Entry^.bleSegmentOffset).Lo = ciEmptyVal2) and
+             (Int64Rec(Entry^.bleSegmentOffset).Hi = ciEmptyVal2) and
              (Entry^.bleContentLength = ciEmptyVal2));
 end;
 {--------}
 procedure TffBLOBEngine.Truncate(aFI     : PffFileInfo;
                                  aTI     : PffTransInfo;
-                                 aBLOBNr : TffInt64;
+                                 aBLOBNr : UInt64;
                                  aLen    : TffWord32);
 {Updated !!.12}
 var
   aRelList         : TffPointerList;
 //  aLkpRelMethod,                                                     {Deleted !!.13}
   aRelMethod       : TffReleaseMethod;
-  NextLookupSeg    : TffInt64;
+  NextLookupSeg    : UInt64;
   ContOffset,                                                          {!!.13}
   BLOBPos,
   CurrLookupEntry,
@@ -1753,7 +1753,7 @@ var
   BLOBBlockHdr     : PffBlockHeaderBLOB absolute BLOBBlock;
   BLOBHeader       : PffBLOBHeader;
 {Begin !!.13}
-  ContentSegOfs     : TffInt64;
+  ContentSegOfs     : UInt64;
   ContentSegPtr,
 {End !!.13}
   LookupSegPtr     : PffBLOBSegmentHeader;
@@ -1764,7 +1764,7 @@ var
 begin
 {$IFDEF BLOBTrace}
   Logbt('Entering FFTblTruncateBLOB', []);
-  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.iLow, aBLOBNr.iHigh]);
+  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.Lo, aBLOBNr.Hi]);
   Logbt('  aLen    = %d', [aLen]);
   LookupSegCount := 1;
 {$ENDIF}
@@ -1784,7 +1784,7 @@ begin
                                   aBLOBNr,
                                   OffsetInBlock,
                                   aRelMethod);
-    aRelList.Append(FFAllocReleaseInfo(BLOBBlock,TffInt64(aRelMethod)));
+    aRelList.Append(FFAllocReleaseInfo(BLOBBlock,TMethod(aRelMethod)));
 
     BLOBHeader := @BLOBBlock^[OffsetInBlock];
 
@@ -1797,7 +1797,7 @@ begin
     if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBLOBDeleted,
-                       [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
 
     { Verify this is a header segment. }
     if (BLOBHeader^.bbhSignature <> ffc_SigBLOBSegHeader) then
@@ -1805,8 +1805,8 @@ begin
                        ffStrResServer,
                        fferrBadBLOBSeg,
                        [aFI^.fiName^,
-                        aBLOBNr.iLow,
-                        aBLOBNr.iHigh,
+                        Int64Rec(aBLOBNr).Lo,
+                        Int64Rec(aBLOBNr).Hi,
                         Format(ffcBLOBSegExpected,
                                [ffcBLOBSegHeader,
                                 AnsiChar(BLOBHeader^.bbhSignature)])]);
@@ -1817,8 +1817,8 @@ begin
                        ffStrResServer,
                        fferrFileBLOBWrite,
                        [aFI^.fiName^,
-                        aBLOBNr.iLow,
-                        aBLOBNr.iHigh]);
+                        Int64Rec(aBLOBNr).Lo,
+                        Int64Rec(aBLOBNr).Hi]);
 
     { Make sure the truncated length <= current BLOB length. }
     if (aLen > BLOBHeader^.bbhBLOBLength) then
@@ -1826,8 +1826,8 @@ begin
                        ffStrResServer,
                        fferrLenMismatch,
                        [aFI^.fiName^,
-                        aBLOBNr.iLow,
-                        aBLOBNr.iHigh,
+                        Int64Rec(aBLOBNr).Lo,
+                        Int64Rec(aBLOBNr).Hi,
                         aLen,
                         BLOBHeader^.bbhBLOBLength]);
 
@@ -1845,7 +1845,7 @@ begin
                                         LookupBlock,
                                         OffsetInBlock,
                                         aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TMethod(aRelMethod)));
       LookupSegPtr := PffBLOBSegmentHeader(@LookupSegBlk^[OffsetInBlock]);
       MaxLookupEntries := FFCalcMaxLookupEntries(LookupSegPtr);
 
@@ -1889,7 +1889,7 @@ begin
                                             LookupBlock,
                                             OffsetInBlock,
                                             aRelMethod);               {!!.13}
-          aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TffInt64(aRelMethod))); {!!.13}
+          aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TMethod(aRelMethod))); {!!.13}
           LookupSegPtr := @LookupSegBlk^[OffsetInBlock];
           OffsetInBlock := OffsetInBlock + ffc_BLOBSegmentHeaderSize;
 
@@ -1923,9 +1923,9 @@ begin
                                         ContentSegOfs,
                                         ContOffset,
                                         aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(ContentSegBlk,TffInt64(aRelMethod)));  {!!.13}
+      aRelList.Append(FFAllocReleaseInfo(ContentSegBlk,TMethod(aRelMethod)));  {!!.13}
       ContentSegPtr := @ContentSegBlk^[ContOffset];
-      ContentSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+      Int64Rec(ContentSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
 {End !!.13}
 
       { Delete the content & lookup segments that are no longer needed.
@@ -1937,7 +1937,7 @@ begin
         LookupEntry := @LookupSegBlk^[OffsetInBlock];
         { Have we reached the end of this lookup segment? }
         if (CurrLookupEntry > MaxLookupEntries) then begin
-            if LookupSegPtr^.bshNextSegment.iLow = ffc_W32NoValue then
+            if Int64Rec(LookupSegPtr^.bshNextSegment).Lo = ffc_W32NoValue then
               Break
             else begin
             { Get the lookup segment block and set up offset for 1st
@@ -1952,8 +1952,8 @@ begin
                                               LookupBlock,
                                               OffsetInBlock,
                                               aRelMethod);             {!!.13}
-            aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TffInt64(aRelMethod))); {!!.13}
-            LookupSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+            aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TMethod(aRelMethod))); {!!.13}
+            Int64Rec(LookupSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
             LookupSegPtr := @LookupSegBlk^[OffsetInBlock];
             { Move ahead to first lookup entry. }
             OffsetInBlock := OffSetInBlock + ffc_BLOBSegmentHeaderSize;
@@ -1988,7 +1988,7 @@ begin
         FillChar(LookupEntry^, ffc_BLOBLookupEntrySize, 0);            {!!.13}
 
       end;  { while }
-      LookupSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+      Int64Rec(LookupSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
     end else begin
       { We are truncating to length of 0. }
       FFTblDeleteBLOBPrim(aFI, aTI, BLOBHeader);
@@ -1996,7 +1996,7 @@ begin
       { Reset the lookup segment field and the segment count.
         FFTblFreeBLOB will get rid of the BLOB header if the BLOB is
         still at length 0. }
-      BLOBHeader^.bbh1stLookupSeg.iLow := ffc_W32NoValue;
+      Int64Rec(BLOBHeader^.bbh1stLookupSeg).Lo := ffc_W32NoValue;
     end;
     { Set the new BLOB length and segment count in the BLOB header. }
     BLOBHeader^.bbhBLOBLength := aLen;
@@ -2012,7 +2012,7 @@ end;
 {--------}
 procedure TffBLOBEngine.Write(aFI     : PffFileInfo;
                               aTI     : PffTransInfo;
-                        const aBLOBNr : TffInt64;
+                        const aBLOBNr : UInt64;
                               aOffset : TffWord32;   {offset in blob to start writing}
                               aLen    : TffWord32;   {bytes from aOffset to stop writing}
                         const aBLOB);
@@ -2020,7 +2020,7 @@ var
   aLkpRelMethod,
   aRelMethod        : TffReleaseMethod;
   aRelList          : TffPointerList;
-  ContentSegOfs     : TffInt64;
+  ContentSegOfs     : UInt64;
   BLOBPos,
   BytesCopied,
   BytesToCopy,
@@ -2054,18 +2054,18 @@ var
 {$IFDEF BLOBTrace}
   LookupSegCount    : Integer;
 {$ENDIF}
-  NextSeg           : TffInt64;                                        {!!.11}
+  NextSeg           : UInt64;                                        {!!.11}
 begin
 {$IFDEF BLOBTrace}
   Logbt('Entering FFTblWriteBLOB', []);
-  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.iLow, aBLOBNr.iHigh]);
+  Logbt('  aBLOBNr = %d:%d', [aBLOBNr.Lo, aBLOBNr.Hi]);
   Logbt('  aOffset = %d', [aOffset]);
   Logbt('  aLen    = %d', [aLen]);
   try
 {$ENDIF}
 
   BLOBAsBytes := @aBLOB;
-  ContentSegOfs.iLow := ffc_W32NoValue;
+  Int64Rec(ContentSegOfs).Lo := ffc_W32NoValue;
   LookupSegBlk := nil;
 
   { We use the following list to track the RAM pages we've accessed and
@@ -2081,7 +2081,7 @@ begin
                                   aBLOBNr,
                                   OffsetInBlock,
                                   aRelMethod);
-    aRelList.Append(FFAllocReleaseInfo(BLOBBlock, TffInt64(aRelMethod)));
+    aRelList.Append(FFAllocReleaseInfo(BLOBBlock, TMethod(aRelMethod)));
     BLOBHeader := @BLOBBlock^[OffsetInBlock];
 
     { Verify the new length (aLen + aOffset) doesn't exceed max. }
@@ -2098,8 +2098,8 @@ begin
                        ffStrResServer,
                        fferrBLOBDeleted,
                        [aFI^.fiName^,
-                        aBLOBNr.iHigh,
-                        aBLOBNr.iLow]);
+                        Int64Rec(aBLOBNr).Hi,
+                        Int64Rec(aBLOBNr).Lo]);
 
     { For a file BLOB raise an error. }
     if (BLOBHeader^.bbhSegCount = -1) then
@@ -2107,8 +2107,8 @@ begin
                        ffStrResServer,
                        fferrFileBLOBWrite,
                        [aFI^.fiName^,
-                        aBLOBNr.iLow,
-                        aBLOBNr.iHigh]);
+                        Int64Rec(aBLOBNr).Lo,
+                        Int64Rec(aBLOBNr).Hi]);
 
     { Verify the offset is within, or at the end of, the BLOB. }
     if (aOffset > BLOBHeader^.bbhBLOBLength) then
@@ -2116,13 +2116,13 @@ begin
                        ffStrResServer,
                        fferrOfsNotInBlob,
                        [aFI^.fiName^,
-                        aBLOBNr.iLow,
-                        aBLOBNr.iHigh,
+                        Int64Rec(aBLOBNr).Lo,
+                        Int64Rec(aBLOBNr).Hi,
                         aOffset,
                         BLOBHeader^.bbhBLOBLength]);
 
     { If there's not one, we'll need a lookup segment. }
-    if (BLOBHeader^.bbh1stLookupSeg.iLow = ffc_W32NoValue) then begin
+    if (Int64Rec(BLOBHeader^.bbh1stLookupSeg).Lo = ffc_W32NoValue) then begin
       NewSegment := True;
       TempWord := EstimateSegmentCount(NewSize, aFI^.fiMaxSegSize);
       TempWord := (TempWord * ffc_BLOBLookupEntrySize) + ffc_BLOBSegmentHeaderSize;
@@ -2133,15 +2133,15 @@ begin
                                                                   (TempWord div 2));
       {$IFDEF BLOBTrace}
         Logbt('  Built first lookup segment: %d:%d',
-              [BLOBHeader^.bbh1stLookupSeg.iLow,
-               BLOBHeader^.bbh1stLookupSeg.iHigh]);
+              [BLOBHeader^.bbh1stLookupSeg.Lo,
+               BLOBHeader^.bbh1stLookupSeg.Hi]);
       {$ENDIF}
     end else begin
       NewSegment := False;
       {$IFDEF BLOBTrace}
         Logbt('  First lookup segment established: %d:%d',
-              [BLOBHeader^.bbh1stLookupSeg.iLow,
-               BLOBHeader^.bbh1stLookupSeg.iHigh]);
+              [BLOBHeader^.bbh1stLookupSeg.Lo,
+               BLOBHeader^.bbh1stLookupSeg.Hi]);
       {$ENDIF}
     end;
 
@@ -2156,7 +2156,7 @@ begin
     if (NewSegment) then begin
       LookupSegPtr^.bshParentBLOB := aBLOBNr;
       LookupSegPtr^.bshSignature := ffc_SigBLOBSegLookup;
-      LookupSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+      Int64Rec(LookupSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
     end;
     MaxLookupEntries := FFCalcMaxLookupEntries(LookupSegPtr);
 
@@ -2231,7 +2231,7 @@ begin
     end;
 
     ContentSegPtr := nil;
-    if (ContentSegOfs.iLow <> ffc_W32NoValue) then begin
+    if (Int64Rec(ContentSegOfs).Lo <> ffc_W32NoValue) then begin
       { Get the previous content segment. }
       ContentSegOfs := LookupEntry^.bleSegmentOffset;
       ContentSegBlk := ReadVfyBlobBlock(aFI,
@@ -2241,11 +2241,11 @@ begin
                                         OffsetInBlock,
                                         aRelMethod);
       aRelList.Append(FFAllocReleaseInfo(ContentSegBlk,
-                                         TffInt64(aRelMethod)));
+                                         TMethod(aRelMethod)));
       ContentSegPtr := @ContentSegBlk^[OffsetInBlock];
       {$IFDEF BLOBTrace}
         Logbt('  Initialized 1st content segment to write to: %d:%d',
-              [ContentSegOfs.iLow, ContentSegOfs.iHigh]);
+              [ContentSegOfs.Lo, ContentSegOfs.Hi]);
         Logbt('  Total segment length: %d',
               [ContentSegPtr^.bshSegmentLen]);
         Logbt('  Bytes to keep: %d',
@@ -2263,13 +2263,13 @@ begin
     BytesToGo := aLen;
     while (BytesToGo > 0) do begin
       { Are we overwriting an existing segment? }
-      if (ContentSegOfs.iLow <> ffc_W32NoValue) then begin
+      if (Int64Rec(ContentSegOfs).Lo <> ffc_W32NoValue) then begin
         { Yes. Get the location of the existing segment so we can
           update it. }
         BytesToCopy := BytesToGo;
         {$IFDEF BLOBTrace}
           Logbt('  Updating existing segment: %d:%d.',
-                [ContentSegOfs.iLow, ContentSegOfs.iHigh]);
+                [ContentSegOfs.Lo, ContentSegOfs.Hi]);
         {$ENDIF}
       end else begin
         { Nope. We'll have to intialize a new lookup entry and get a
@@ -2302,7 +2302,7 @@ begin
         end;
         {$IFDEF BLOBTrace}
           Logbt('  Created new segment: %d:%d.',
-                [ContentSegOfs.iLow, ContentSegOfs.iHigh]);
+                [ContentSegOfs.Lo, ContentSegOfs.Hi]);
         {$ENDIF}
       end;
 
@@ -2314,12 +2314,12 @@ begin
                                         OffsetInBlock,
                                         aRelMethod);
       aRelList.Append(FFAllocReleaseInfo(ContentSegBlk,
-                                         TffInt64(aRelMethod)));
+                                         TMethod(aRelMethod)));
       ContentSegPtr := @ContentSegBlk^[OffsetInBlock];
       if (NewSegment) then begin
         ContentSegPtr^.bshSignature := ffc_SigBLOBSegContent;
         ContentSegPtr^.bshParentBLOB := aBLOBNr;
-        ContentSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+        Int64Rec(ContentSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
         NewSegment := False;
       end;
 
@@ -2344,7 +2344,7 @@ begin
               [BytesToCopy,
                LookupSegCount,
                CurrLookupEntry,
-               ContentSegOfs.iLow, ContentSegOfs.iHigh]);
+               ContentSegOfs.Lo, ContentSegOfs.Hi]);
       {$ENDIF}
 
       StartBytesUsed := StartBytesUsed - ffc_BLOBSegmentHeaderSize;
@@ -2374,7 +2374,7 @@ begin
       if ((BytesToGo > 0) and
           (CurrLookupEntry > MaxLookupEntries)) then begin
         { Is there another lookup segment in this chain? }
-        if (LookupSegPtr^.bshNextSegment.iLow = ffc_W32NoValue) then begin
+        if (Int64Rec(LookupSegPtr^.bshNextSegment).Lo = ffc_W32NoValue) then begin
           { No. We'll have to get a new one and add it to the chain. }
           TempWord := EstimateSegmentCount(BytesToGo, aFI^.fiMaxSegSize);
           TempWord := (TempWord * ffc_BLOBLookupEntrySize) + ffc_BLOBSegmentHeaderSize;
@@ -2388,14 +2388,14 @@ begin
                                                         TempWord);
           {$IFDEF BLOBTrace}
             Logbt('  Creating new lookup segment: %d:%d.',
-                  [ContentSegOfs.iLow, ContentSegOfs.iHigh]);
+                  [ContentSegOfs.Lo, ContentSegOfs.Hi]);
           {$ENDIF}
         end else begin
           { Yes. Assign it to our temp variable. }
           ContentSegOfs := LookupSegPtr^.bshNextSegment;
           {$IFDEF BLOBTrace}
             Logbt('  Moving to next lookup segment.',
-                  [ContentSegOfs.iLow, ContentSegOfs.iHigh]);
+                  [ContentSegOfs.Lo, ContentSegOfs.Hi]);
           {$ENDIF}
         end;
 
@@ -2412,7 +2412,7 @@ begin
 
         { Intialize the segment on if it's new. }
         if ((LookupSegPtr <> nil) and
-            (LookupSegPtr^.bshNextSegment.iLow <> ffc_W32NoValue)) then begin
+            (Int64Rec(LookupSegPtr^.bshNextSegment).Lo <> ffc_W32NoValue)) then begin
           LookupSegPtr := @LookupSegBlk^[LookupSegOfs];
           LookupEntOfs := LookupSegOfs + ffc_BLOBSegmentHeaderSize;
           LookupEntry := @LookupSegBlk^[LookupEntOfs];
@@ -2424,11 +2424,11 @@ begin
           LookupSegPtr := @LookupSegBlk^[LookupSegOfs];
           LookupSegPtr^.bshParentBLOB := aBLOBNr;
           LookupSegPtr^.bshSignature := ffc_SigBLOBSegLookup;
-          LookupSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+          Int64Rec(LookupSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
 
           LookupEntOfs := LookupSegOfs + ffc_BLOBSegmentHeaderSize;
           LookupEntry := @LookupSegBlk^[LookupEntOfs];
-          ContentSegOfs.iLow := ffc_W32NoValue;
+          Int64Rec(ContentSegOfs).Lo := ffc_W32NoValue;
         end;
 
         { How many entries are in the current lookup segment? }
@@ -2473,7 +2473,7 @@ end;
 {===Tff210BLOBEngine=================================================}
 procedure Tff210BLOBEngine.Read(aFI         : PffFileInfo;
                                    aTI         : PffTransInfo;
-                                   aBLOBNr     : TffInt64;
+                                   aBLOBNr     : UInt64;
                                    aOffset     : TffWord32;
                                    aLen        : TffWord32;                     
                                    aReadMethod : TffBLOBLinkRead;
@@ -2499,7 +2499,7 @@ var
   LookupEntry    : PffBLOBLookupEntry;
   LookupSegBlk   : PffBlock;
   LookupSegPtr   : PffBLOBSegmentHeader;
-  NextSeg        : TffInt64;
+  NextSeg        : UInt64;
   OffsetInBlock  : TffWord32;
   SegInx         : Integer;
   StartBytesUsed : TffWord32;
@@ -2527,7 +2527,7 @@ begin
   if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
     FFRaiseException(EffServerException, ffStrResServer,
                      fferrBLOBDeleted,
-                     [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                     [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
 
   try
     { Are we dealing with a file BLOB or a BLOB link? }
@@ -2641,7 +2641,7 @@ end;
 {--------}
 procedure Tff210BLOBEngine.Truncate(aFI     : PffFileInfo;
                                        aTI     : PffTransInfo;
-                                       aBLOBNr : TffInt64;
+                                       aBLOBNr : UInt64;
                                        aLen    : TffWord32);                    
 var
   BLOBBlock      : PffBlock;
@@ -2655,7 +2655,7 @@ var
   IsNewTailSeg   : Boolean;
   LookupBlock    : TffWord32;
   LookupSegBlk   : PffBlock;
-  LookupSegOfs   : TffInt64;
+  LookupSegOfs   : UInt64;
   LookupSegPtr   : PffBLOBSegmentHeader;
   LookupEntOfs   : TffWord32;
   LookupEntPtr   : PffBLOBLookupEntry;
@@ -2667,8 +2667,8 @@ var
   NewContSegOfs  : TffWord32;
   NewContSegBlk  : PffBlock;
   NewContSegPtr  : PffBLOBSegmentHeader;
-  NextLookupSeg  : TffInt64;
-  UpdatedContSeg : TffInt64;
+  NextLookupSeg  : UInt64;
+  UpdatedContSeg : UInt64;
   SegEntries     : TffWord32;
   TailEntry      : TffWord32;
   TotEntries     : TffWord32;
@@ -2686,7 +2686,7 @@ begin
     { Read and verify the BLOB header block for this BLOB number. }
     BLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty, aBLOBNr,
                                   OffsetInBlock, aRelMethod);
-    aRelList.Append(FFAllocReleaseInfo(BLOBBlock,TffInt64(aRelMethod)));
+    aRelList.Append(FFAllocReleaseInfo(BLOBBlock,TMethod(aRelMethod)));
 
     BLOBHeader := @BLOBBlock^[OffsetInBlock];
 
@@ -2701,11 +2701,11 @@ begin
     if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBLOBDeleted,
-                       [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
     { Verify this is a header segment. }
     if (BLOBHeader^.bbhSignature <> ffc_SigBLOBSegHeader) then
       FFRaiseException(EffServerException, ffStrResServer, fferrBadBLOBSeg,
-                       [aFI^.fiName^, aBLOBNr.iLow, aBLOBNr.iHigh,
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Lo, Int64Rec(aBLOBNr).Hi,
                         format(ffcBLOBSegExpected,
                                [ffcBLOBSegHeader,
                                 AnsiChar(BLOBHeader^.bbhSignature)])]);
@@ -2713,13 +2713,14 @@ begin
     { We can't write to a file BLOB. }
     if (BLOBHeader^.bbhSegCount = -1) then
       FFRaiseException(EffServerException, ffStrResServer,
-                       fferrFileBLOBWrite, [aFI^.fiName^, aBLOBNr.iLow,
-                                            aBLOBNr.iHigh]);
+                       fferrFileBLOBWrite, [aFI^.fiName^,
+                                            Int64Rec(aBLOBNr).Lo,
+                                            Int64Rec(aBLOBNr).Hi]);
 
     { Make sure the truncated length <= current BLOB length. }
     if (aLen > BLOBHeader^.bbhBLOBLength) then
       FFRaiseException(EffServerException, ffStrResServer, fferrLenMismatch,
-                       [aFI^.fiName^, aBLOBNr.iLow, aBLOBNr.iHigh, aLen,
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Lo, Int64Rec(aBLOBNr).Hi, aLen,
                         BLOBHeader^.bbhBLOBLength]);
 
     { If the new length is greater than 0, we will lop off some content
@@ -2737,7 +2738,7 @@ begin
       LookupSegBlk := ReadVfyBlobBlock2(aFI, aTI, ffc_MarkDirty,       {!!.12}
                                         NextLookupSeg, LookupBlock,
                                         OffsetInBlock, aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TMethod(aRelMethod)));
       LookupSegPtr := PffBLOBSegmentHeader(@LookupSegBlk^[OffsetInBlock]);
 
       TotEntries := 0;
@@ -2758,7 +2759,7 @@ begin
                                           NextLookupSeg,               {!!.12}
                                           LookupBlock, OffsetInBlock,
                                           aRelMethod);
-        aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TffInt64(aRelMethod)));
+        aRelList.Append(FFAllocReleaseInfo(LookupSegBlk,TMethod(aRelMethod)));
         LookupSegPtr := PffBLOBSegmentHeader(@LookupSegBlk^[OffsetInBlock]);
         SegEntries := FFCalcMaxLookupEntries(LookupSegPtr);
       end;
@@ -2784,11 +2785,11 @@ begin
       NewContSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                         LookupEntPtr^.bleSegmentOffset,
                                         NewContSegOfs, aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(NewContSegBlk, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(NewContSegBlk, TMethod(aRelMethod)));
       NewContSegPtr := PffBLOBSegmentHeader(@NewContSegBlk^[NewContSegOfs]);
       NewContSegPtr^.bshSignature := ffc_SigBLOBSegContent;
       NewContSegPtr^.bshParentBLOB := aBLOBNr;
-      NewContSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+      Int64Rec(NewContSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
 
       { If there is more than one content segment in the truncated BLOB,
         make sure the next to last content segment points to the new tail
@@ -2799,7 +2800,7 @@ begin
         OldContSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                           LookupEntPtr^.bleSegmentOffset,
                                           OldContSegOfs, aRelMethod);
-        aRelList.Append(FFAllocReleaseInfo(OldContSegBlk, TffInt64(aRelMethod)));
+        aRelList.Append(FFAllocReleaseInfo(OldContSegBlk, TMethod(aRelMethod)));
         OldContSegPtr := PffBLOBSegmentHeader(@OldContSegBlk^[OldContSegOfs]);
 
         { Restore LookupEntPtr. }
@@ -2812,7 +2813,7 @@ begin
       OldContSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                         UpdatedContSeg, OldContSegOfs,
                                         aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(OldContSegBlk, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(OldContSegBlk, TMethod(aRelMethod)));
       Move(OldContSegBlk^[OldContSegofs + sizeof(TffBLOBSegmentHeader)],
            NewContSegBlk^[NewContSegOfs + sizeof(TffBLOBSegmentHeader)],
            NewUsedSpace);
@@ -2843,7 +2844,7 @@ begin
         dec(EntryCount);
 
         { Need to move to another lookup segment? }
-        if ((EntryCount = 0) and (LookupSegPtr^.bshNextSegment.iLow <> ffc_W32NoValue)) then begin
+        if ((EntryCount = 0) and (Int64Rec(LookupSegPtr^.bshNextSegment).Lo <> ffc_W32NoValue)) then begin
           {Yes.  Get the location of the next lookup segment. }
           NextLookupSeg := LookupSegPtr^.bshNextSegment;
 
@@ -2858,7 +2859,7 @@ begin
           LookupSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                            NextLookupSeg, OffsetInBlock,
                                            aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TMethod(aRelMethod)));
           LookupSegPtr := @LookupSegBlk^[OffsetInBlock];
           LookupEntOfs := OffsetInBlock + sizeof(TffBLOBSegmentHeader);
           LookupSegOfs := NextLookupSeg;
@@ -2890,7 +2891,7 @@ begin
       { Reset the lookup segment field and the segment count.
         FFTblFreeBLOB will get rid of the BLOB header if the BLOB is
         still at length 0. }
-      BLOBHeader^.bbh1stLookupSeg.iLow := ffc_W32NoValue;
+      Int64Rec(BLOBHeader^.bbh1stLookupSeg).Lo := ffc_W32NoValue;
       BLOBHeader^.bbhSegCount := 0;
       BLOBHeader^.bbhBLOBLength := 0;
     end;
@@ -2905,7 +2906,7 @@ end;
 {--------}
 procedure Tff210BLOBEngine.Write(aFI     : PffFileInfo;
                                     aTI     : PffTransInfo;
-                              const aBLOBNr : TffInt64;
+                              const aBLOBNr : UInt64;
                                     aOffset : TffWord32;   {offset in blob to start writing}
                                     aLen    : TffWord32;   {bytes from aOffset to stop writing}
                               const aBLOB);
@@ -2928,7 +2929,7 @@ var
   LookupSegOfs      : TffWord32;
   LookupSegPtr      : PffBLOBSegmentHeader;
   LookupSegBlk      : PffBlock;
-  ContentSegOfs     : TffInt64;
+  ContentSegOfs     : UInt64;
   ContentSegBlk     : PffBlock;
   ContentSegPtr     : PffBLOBSegmentHeader;
   PrevContentSegPtr : PffBLOBSegmentHeader;
@@ -2938,7 +2939,7 @@ var
   SegBytesLeft      : TffWord32;
   SegEntNumber      : TffWord32;         { index into the lookup segment }
   TargetOffset      : TffWord32;
-  TempSegOfs        : TffInt64;
+  TempSegOfs        : UInt64;
   TempSegBlk        : PffBlock;
   TempSegPtr        : PffBLOBSegmentHeader;
   TempOfsInBlk      : TffWord32;
@@ -2967,28 +2968,29 @@ begin
     { Read and verify the BLOB header block for this BLOB number. }
     BLOBBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty, aBLOBNr,
                                   OffsetInBlock, aRelMethod);
-    aRelList.Append(FFAllocReleaseInfo(BLOBBlock, TffInt64(aRelMethod)));
+    aRelList.Append(FFAllocReleaseInfo(BLOBBlock, TMethod(aRelMethod)));
     BLOBHeader := @BLOBBlock^[OffsetInBlock];
 
     { Verify the BLOB has not been deleted. }
     if (BLOBHeader^.bbhSignature = ffc_SigBLOBSegDeleted) then
       FFRaiseException(EffServerException, ffStrResServer,
                        fferrBLOBDeleted,
-                       [aFI^.fiName^, aBLOBNr.iHigh, aBLOBNr.iLow]);
+                       [aFI^.fiName^, Int64Rec(aBLOBNr).Hi, Int64Rec(aBLOBNr).Lo]);
 
     NewSize := FFMaxL(aOffset + aLen, BLOBHeader^.bbhBLOBLength);     
 
     { For a file BLOB raise an error. }
     if (BLOBHeader^.bbhSegCount = -1) then
       FFRaiseException(EffServerException, ffStrResServer,
-                       fferrFileBLOBWrite, [aFI^.fiName^, aBLOBNr.iLow,
-                                            aBLOBNr.iHigh]);
+                       fferrFileBLOBWrite, [aFI^.fiName^,
+                                            Int64Rec(aBLOBNr).Lo,
+                                            Int64Rec(aBLOBNr).Hi]);
 
     { Verify the offset is within, or at the end of, the BLOB. }
     if (aOffset > BLOBHeader^.bbhBLOBLength) then
       FFRaiseException(EffServerException, ffStrResServer,
-                       fferrOfsNotInBlob, [aFI^.fiName^, aBLOBNr.iLow,
-                                           aBLOBNr.iHigh, aOffset,
+                       fferrOfsNotInBlob, [aFI^.fiName^, Int64Rec(aBLOBNr).Lo,
+                                           Int64Rec(aBLOBNr).Hi, aOffset,
                                            BLOBHeader^.bbhBLOBLength]);
 
     { If the BLOB is growing we need to rebuild the lookup segment(s). }
@@ -3003,7 +3005,7 @@ begin
     LookupSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                      BLOBHeader^.bbh1stLookupSeg,
                                      LookupSegOfs, aRelMethod);
-    aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TffInt64(aRelMethod)));
+    aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TMethod(aRelMethod)));
     LookupSegPtr := @LookupSegBlk^[LookupSegOfs];
     EntryCount := FFCalcMaxLookupEntries(LookupSegPtr);
     { Calculate the last segment in which we will write data. }
@@ -3046,7 +3048,7 @@ begin
         ContentSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                           LookupEntPtr^.bleSegmentOffset,
                                           OffsetInBlock, aRelMethod);
-        aRelList.Append(FFAllocReleaseInfo(ContentSegBlk, TffInt64(aRelMethod)));
+        aRelList.Append(FFAllocReleaseInfo(ContentSegBlk, TMethod(aRelMethod)));
         ContentSegPtr := @ContentSegBlk^[OffsetInBlock];
 
         SegBytesLeft := ContentSegPtr^.bshSegmentLen - ffc_BLOBSegmentHeaderSize;
@@ -3082,7 +3084,7 @@ begin
           TempSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                          TempSegOfs, TempOfsInBlk,
                                          aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(TempSegBlk, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(TempSegBlk, TMethod(aRelMethod)));
           TempSegPtr := @TempSegBlk^[TempOfsInBlk];
           TempSegPtr^.bshSignature := ffc_SigBLOBSegContent;
           TempSegPtr^.bshParentBLOB := aBLOBNr;
@@ -3145,7 +3147,7 @@ begin
           LookupSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                            LookupSegPtr^.bshNextSegment,
                                            LookupSegOfs, aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TMethod(aRelMethod)));
           LookupSegPtr := @LookupSegBlk^[LookupSegOfs];
           EntryCount := FFCalcMaxLookupEntries(LookupSegPtr);
           LookupEntOfs := LookupSegOfs + sizeof(TffBLOBSegmentHeader);
@@ -3181,11 +3183,11 @@ begin
         ContentSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                           ContentSegOfs, OffsetInBlock,
                                           aRelMethod);
-        aRelList.Append(FFAllocReleaseInfo(ContentSegBlk, TffInt64(aRelMethod)));
+        aRelList.Append(FFAllocReleaseInfo(ContentSegBlk, TMethod(aRelMethod)));
         ContentSegPtr := @ContentSegBlk^[OffsetInBlock];
         ContentSegPtr^.bshSignature := ffc_sigBLOBSegContent;
         ContentSegPtr^.bshParentBLOB := aBLOBNr;
-        ContentSegPtr^.bshNextSegment.iLow := ffc_W32NoValue;
+        Int64Rec(ContentSegPtr^.bshNextSegment).Lo := ffc_W32NoValue;
 
         { Get a new lookup entry. }
         LookupEntOfs := LookupSegOfs + sizeof(TffBLOBSegmentHeader) +
@@ -3210,7 +3212,7 @@ begin
             LookupSegBlk := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                              LookupSegPtr^.bshNextSegment,
                                              LookupSegOfs, aRelMethod);
-            aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TffInt64(aRelMethod)));
+            aRelList.Append(FFAllocReleaseInfo(LookupSegBlk, TMethod(aRelMethod)));
             LookupSegPtr := @LookupSegBlk^[LookupSegOfs];
             EntryCount := FFCalcMaxLookupEntries(LookupSegPtr);
             OffsetInBlock := LookupSegOfs + sizeof(TffBLOBSegmentHeader);

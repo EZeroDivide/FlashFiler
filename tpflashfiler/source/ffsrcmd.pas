@@ -419,7 +419,7 @@ begin
     Error := FServerEngine.FileBLOBAdd(CursorID, FileName, Reply.BLOBNr);
     if FLogEnabled then begin
       if (Error = 0) then
-        ichLogFmt(csBLOBNr, [Reply.BLOBNr.iHigh, Reply.BLOBNr.iLow]);  {!!.03}
+        ichLogFmt(csBLOBNr, [Int64Rec(Reply.BLOBNr).Hi, Int64Rec(Reply.BLOBNr).Lo]);  {!!.03}
       ichLogFmt(csErr, [Error]);
     end;
     TffBaseTransport.Reply(ffnmAddFileBLOB, Error, @Reply, sizeof(Reply));
@@ -553,7 +553,7 @@ begin
     Error := FServerEngine.BLOBCreate(CursorID, Reply.BLOBNr);
     if FLogEnabled then begin
       if (Error = 0) then
-        ichLogFmt(csBLOBNr, [Reply.BLOBNr.iHigh, Reply.BLOBNr.iLow]);  {!!.03}
+        ichLogFmt(csBLOBNr, [Int64Rec(Reply.BLOBNr).Hi, Int64Rec(Reply.BLOBNr).Lo]);  {!!.03}
       ichLogFmt(csErr, [Error]);
     end;
     TffBaseTransport.Reply(ffnmCreateBLOB, Error, @Reply, sizeof(Reply));
@@ -1578,7 +1578,7 @@ begin
       ichLogAll(['DeleteBLOB',
                  format(csClientID, [dmClientID]),
                  format(csCursorID, [CursorID]),
-                 format(csBLOBNr, [BLOBNr.iHigh, BLOBNr.iLow])]);      {!!.03}
+                 format(csBLOBNr, [Int64Rec(BLOBNr).Hi, Int64Rec(BLOBNr).Lo])]);      {!!.03}
 
     Error := FServerEngine.BLOBDelete(CursorID, BLOBNr);
 
@@ -1690,7 +1690,7 @@ begin
       ichLogAll(['FreeBLOB',
                  format(csClientID, [dmClientID]),
                  format(csCursorID, [CursorID]),
-                 format(csBlobNr, [BLOBNr.iHigh, BLOBNr.iLow]),        {!!.03}
+                 format(csBlobNr, [Int64Rec(BLOBNr).Hi, Int64Rec(BLOBNr).Lo]),        {!!.03}
                  format('  Read-Only %d', [byte(readOnly)])]);
 
     Error := FServerEngine.BLOBFree(CursorID, BLOBNr, readOnly);
@@ -1733,7 +1733,7 @@ begin
       ichLogAll(['GetBLOBLength',
                  format(csClientID, [dmClientID]),
                  format(csCursorID, [CursorID]),
-                 format(csBLOBNr, [BLOBNr.iHigh, BLOBNr.iLow])]);      {!!.03}
+                 format(csBLOBNr, [Int64Rec(BLOBNr).Hi, Int64Rec(BLOBNr).Lo])]);      {!!.03}
 
     Error := FServerEngine.BLOBGetLength(CursorID, BLOBNr, Reply.BLOBLength);
 
@@ -2012,7 +2012,7 @@ begin
       ichLogAll(['ListBLOBSegments',
                  format(csClientID, [dmClientID]),
                  format(csCursorID, [CursorID]),
-                 format(csBLOBNr,   [BLOBNr.iHigh, BLOBNr.iLow])]);
+                 format(csBLOBNr,   [Int64Rec(BLOBNr).Hi, Int64Rec(BLOBNr).Lo])]);
 
     aStream := TMemoryStream.Create;
     try
@@ -2141,7 +2141,7 @@ begin
       ichLogAll(['ReadBLOB',
                  format(csClientID, [dmClientID]),
                  format(csCursorID, [CursorID]),
-                 format(csBlobNr, [BLOBNr.iLow, BLOBNr.iHigh]),
+                 format(csBlobNr, [Int64Rec(BLOBNr).Lo, Int64Rec(BLOBNr).Hi]),
                  format('  Offset %d', [Offset]),
                  format('  Len %d', [Len])]);
 
@@ -3716,7 +3716,7 @@ begin
       ichLogAll(['TruncateBLOB',
                  format(csClientID, [dmClientID]),
                  format(csCursorID, [CursorID]),
-                 format(csBlobNr, [BLOBNr.iLow, BLOBNr.iHigh]),
+                 format(csBlobNr, [Int64Rec(BLOBNr).Lo, Int64Rec(BLOBNr).Hi]),
                  format('  BLOBLen  %d', [BLOBLength])]);
 
     Error := FServerEngine.BLOBTruncate(CursorID, BLOBNr, BLOBLength);
@@ -3736,7 +3736,7 @@ begin
       ichLogAll(['WriteBLOB',
                  format(csClientID, [dmClientID]),
                  format(csCursorID, [CursorID]),
-                 format(csBlobNr, [BLOBNr.iLow, BLOBNr.iHigh]),
+                 format(csBlobNr, [Int64Rec(BLOBNr).Lo, Int64Rec(BLOBNr).Hi]),
                  format('  Offset %d', [Offset]),
                  format('  Len %d', [Len])]);
       ichLogBlock('  BLOB', @BLOB, Len);

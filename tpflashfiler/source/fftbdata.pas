@@ -61,12 +61,12 @@ var
 {---Record maintenance and access---}
 procedure FFTblAddRecord(aFI      : PffFileInfo;
                          aTI      : PffTransInfo;
-                     var aRefNr   : TffInt64;
+                     var aRefNr   : UInt64;
                          aRecData : PffByteArray);
   {-Add a record to the table}
 procedure FFTblDeleteRecord(aFI    : PffFileInfo;
                             aTI    : PffTransInfo;
-                      const aRefNr : TffInt64);
+                      const aRefNr : UInt64);
   {-Delete a record from the table}
 procedure FFTblReadNextRecord(aFI        : PffFileInfo;
                               aTI        : PffTransInfo;
@@ -127,29 +127,31 @@ end;
 {===Verification routines============================================}
 function ReadVfyRefNrDataBlock(FI             : PffFileInfo;
                                TI             : PffTransInfo;
-                         const aRefNr         : TffInt64;
+                         const aRefNr         : UInt64;
                          const aMarkDirty     : boolean;
                            var aOffsetInBlock : Longint;
                            var aReleaseMethod : TffReleaseMethod) : PffBlock;
 var
   BlockNumber : TffWord32;
   RecordBlock : PffBlock;
-  TempI64     : TffInt64;
+  TempI64     : UInt64;
   RecBlockHdr : PffBlockHeaderData absolute RecordBlock;
 begin
   with FI^ do begin
     {verify the reference number}
     if not FFVerifyRefNr(aRefNr, fiLog2BlockSize, fiRecLenPlusTrailer) then
       FFRaiseException(EffServerException, ffStrResServer, fferrBadRefNr,
-                       [FI^.fiName^, aRefNr.iLow, aRefNr.iHigh]);
+                       [FI^.fiName^, Int64Rec(aRefNr).Lo, Int64Rec(aRefNr).Hi]);
     {now get the record block}
-    ffShiftI64R(aRefNr, fiLog2BlockSize, TempI64);
-    BlockNumber := TempI64.iLow;
+    // ffShiftI64R(aRefNr, fiLog2BlockSize, TempI64);
+    TempI64 := aRefNr shr fiLog2BlockSize;
+    BlockNumber := Int64Rec(TempI64).Lo;
     if (BlockNumber <= 0) or (BlockNumber >= fiUsedBlocks) then
       FFRaiseException(EffServerException, ffStrResServer, fferrBadBlockNr,
                        [FI^.fiName^, BlockNumber]);
-    ffI64MinusInt(aRefNr, (BlockNumber shl fiLog2BlockSize), TempI64);
-    aOffsetInBlock := TempI64.iLow;
+    // ffI64MinusInt(aRefNr, (BlockNumber shl fiLog2BlockSize), TempI64);
+    TempI64 := aRefNr - (BlockNumber shl fiLog2BlockSize);
+    aOffsetInBlock := Int64Rec(TempI64).Lo;
     RecordBlock := FFBMGetBlock(FI, TI, BlockNumber, aMarkDirty, aReleaseMethod);
 
     {verify that it's a data block}
@@ -196,7 +198,7 @@ function AddNewDataBlock(FI             : PffFileInfo;
                      var aReleaseMethod : TffReleaseMethod) : PffBlock;
 var
   i               : integer;
-  BlockOffset     : TffInt64;
+  BlockOffset     : UInt64;
   ThisBlock       : TffWord32;
   ThisLink        : TffWord32;
   NextLink        : TffWord32;
@@ -204,7 +206,7 @@ var
   RecBlockHdr     : PffBlockHeaderData absolute RecordBlock;
   PrevRecBlock    : PffBlock;
   PrevRecBlockHdr : PffBlockHeaderData absolute PrevRecBlock;
-  TempI64         : TffInt64;
+  TempI64         : UInt64;
   aChainRelMethod : TffReleaseMethod;
 begin
   { Assumption: File header block obtained for write access. }
@@ -218,9 +220,9 @@ begin
     { Set up the data block header information. }
     with RecBlockHdr^ do begin
       ThisBlock := bhdThisBlock;
-      TempI64.iLow := ThisBlock;
-      TempI64.iHigh := 0;
-      ffShiftI64L(TempI64, FI^.fiLog2BlockSize, BlockOffset);
+      TempI64 := ThisBlock;
+      // ffShiftI64L(TempI64, FI^.fiLog2BlockSize, BlockOffset);
+      BlockOffset := TempI64 shl FI^.fiLog2BlockSize;
       bhdSignature := ffc_SigDataBlock;
       bhdNextBlock := $FFFFFFFF;
       bhdLSN := 0;
@@ -235,7 +237,8 @@ begin
     ThisLink := ffc_BlockHeaderSizeData;
     NextLink := ffc_BlockHeaderSizeData + FI^.fiRecLenPlusTrailer;
     for i := 1 to pred(bhfRecsPerBlock) do begin
-      ffI64AddInt(BlockOffset, NextLink, TempI64);
+      // ffI64AddInt(BlockOffset, NextLink, TempI64);
+      TempI64 := BlockOffset + NextLink;
       PByte(@RecordBlock^[ThisLink])^ := $FF;
       PffInt64(@RecordBlock^[ThisLink + 1])^ := TempI64;
       ThisLink := NextLink;
@@ -246,7 +249,8 @@ begin
     PffWord32(@RecordBlock^[ThisLink + 5])^ := $FFFFFFFF;
 
     { Attach this chain of deleted records. }
-    ffI64AddInt(BlockOffset, ffc_BlockHeaderSizeData, bhf1stDelRec);
+    //ffI64AddInt(BlockOffset, ffc_BlockHeaderSizeData, bhf1stDelRec);
+    bhf1stDelRec := BlockOffset + ffc_BlockHeaderSizeData;
     bhfDelRecCount := bhfRecsPerBlock;
     assert(bhfDelRecCount > 0);
 
@@ -269,7 +273,7 @@ end;
 {===Record maintenance===============================================}
 procedure FFTblAddRecord(aFI      : PffFileInfo;
                          aTI      : PffTransInfo;
-                     var aRefNr   : TffInt64;
+                     var aRefNr   : UInt64;
                          aRecData : PffByteArray);
 var
   OffsetInBlock : Longint;
@@ -314,7 +318,7 @@ end;
 {--------}
 procedure FFTblDeleteRecord(aFI    : PffFileInfo;
                             aTI    : PffTransInfo;
-                      const aRefNr : TffInt64);
+                      const aRefNr : UInt64);
 var
   FileHeader     : PffBlockHeaderFile;
   OffsetInBlock  : Longint;
@@ -322,12 +326,11 @@ var
   RecBlockHdr    : PffBlockHeaderData absolute RecordBlock;
   DelLink        : PByte;
   DeletedRecOfs  : PffInt64;
-  TempI64        : TffInt64;
+  TempI64        : UInt64;
   aFHRelMethod,
   aBlkRelMethod  : TffReleaseMethod;
 begin
-  TempI64.iLow := 0;
-  TempI64.iHigh := 0;
+  TempI64 := 0;
 
   { Get an exclusive lock on the file header. }
   FileHeader := PffBlockHeaderFile(FFBMGetBlock(aFI, aTI, 0, ffc_MarkDirty,
@@ -342,7 +345,7 @@ begin
         DelLink := @RecordBlock^[OffsetInBlock];
         if (DelLink^ = $FF) then
           FFRaiseException(EffServerException, ffStrResServer, fferrRecDeleted,
-                           [aFI^.fiName^, aRefNr.iLow, aRefNr.iHigh]);
+                           [aFI^.fiName^, Int64Rec(aRefNr).Lo, Int64Rec(aRefNr).Hi]);
 
         {mark this record as the start of the chain}
         DelLink^ := $FF;
@@ -351,8 +354,8 @@ begin
         DeletedRecOfs^ := bhf1stDelRec;
 
         { Zero out the remainder of the record. }
-        Inc(DelLink, sizeOf(TffInt64));
-        FillChar(DelLink^, aFI^.fiRecordLength - sizeOf(TffInt64), 0);
+        Inc(DelLink, sizeOf(UInt64));
+        FillChar(DelLink^, aFI^.fiRecordLength - sizeOf(UInt64), 0);
 
         {update the 1st deleted record reference}
         bhf1stDelRec := aRefNr;
@@ -472,7 +475,7 @@ var
   PrevBlock     : TffWord32;
   RecordBlock   : PffBlock;
   RecBlockHdr   : PffBlockHeaderData absolute RecordBlock;
-  TempI64       : TffInt64;
+  TempI64       : UInt64;
   aBlkRelMethod,
   aFHRelMethod : TffReleaseMethod;
 begin
@@ -487,8 +490,7 @@ begin
         Exit;
       end;
       {read and verify the record's block, if reference is not zero}
-      TempI64.iLow := 0;
-      TempI64.iHigh := 0;
+      TempI64 := 0;
       if (ffCmpI64(aFromRefNr, TempI64) <> 0) then
         RecordBlock := ReadVfyRefNrDataBlock(aFI, aTI, aFromRefNr, ffc_ReadOnly,
                                              OffsetInBlock, aBlkRelMethod)
@@ -529,8 +531,8 @@ begin
           aRefNr := 0;
         end else
         begin
-          TempI64.iLow := OffsetInBlock;
-          TempI64.iHigh := 0;
+          Int64Rec(TempI64).Lo := OffsetInBlock;
+          Int64Rec(TempI64).Hi := 0;
           aRefNr := TempI64;
           aRefNr := (RecBlockHdr^.bhdThisBlock shl aFI^.fiLog2BlockSize) + aRefNr;
           Move(RecordBlock^[OffsetInBlock+sizeof(byte)], aRecData^,
@@ -564,7 +566,7 @@ begin
       DelLink := @RecordBlock^[OffsetInBlock];
       if (DelLink^ <> 0) then
         FFRaiseException(EffServerException, ffStrResServer, fferrRecDeleted,
-                         [aFI^.fiName^, TffInt64(aRefNr).iLow, TffInt64(aRefNr).iHigh]);
+                         [aFI^.fiName^, Int64Rec(aRefNr).Lo, Int64Rec(aRefNr).Hi]);
       {copy the record from the block}
       Move(RecordBlock^[OffsetInBlock+sizeof(byte)], aRecData^, fiRecordLength);
     finally
@@ -592,7 +594,7 @@ begin
     DelLink := @RecordBlock^[OffsetInBlock];
     if (DelLink^ <> 0) then
       FFRaiseException(EffServerException, ffStrResServer, fferrRecDeleted,
-                      [aFI^.fiName^, TffInt64(aRefNr).iLow, TffInt64(aRefNr).iHigh]);
+                      [aFI^.fiName^, Int64Rec(aRefNr).Lo, Int64Rec(aRefNr).Hi]);
     {copy the record into the block}
     Move(aRecData^, RecordBlock^[OffsetInBlock+sizeof(Byte)], aFI^.fiRecordLength);
   finally

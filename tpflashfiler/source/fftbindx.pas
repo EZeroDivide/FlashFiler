@@ -1636,7 +1636,7 @@ begin
         SiblingPage := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                        ffc_InxBlockTypeBtreePage, Sibling,
                                        aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(SiblingPage, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(SiblingPage, TMethod(aRelMethod)));
       {check for at least one spare key}
       if (SiblingPageHdr^.bhiKeyCount > (SiblingPageHdr^.bhiMaxKeyCount div 2)) then begin
         { Mark the sibling as dirty. }
@@ -1663,7 +1663,7 @@ begin
         SiblingPage := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                        ffc_InxBlockTypeBtreePage, Sibling,
                                        aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(SiblingPage, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(SiblingPage, TMethod(aRelMethod)));
       { Check for at least one spare key. }
       if (SiblingPageHdr^.bhiKeyCount > (SiblingPageHdr^.bhiMaxKeyCount div 2)) then begin
         { Obtain an Exclusive lock on the sibling. }
@@ -1836,7 +1836,7 @@ begin
               then recursively delete from returned child. }
             Page := BtreeDeleteSwapKey(aIndexData, aTI, Page, M, aKey, aRelMethod);
             aBtreeChanged := True;                                     {!!.05}
-            aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+            aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
           end
           {otherwise the key was not found...}
           else begin
@@ -1849,7 +1849,7 @@ begin
               ChildPage := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                            ffc_InxBlockTypeBtreePage, Child,
                                            aRelMethod);
-            aRelList.Append(FFAllocReleaseInfo(ChildPage, TffInt64(aRelMethod)));
+            aRelList.Append(FFAllocReleaseInfo(ChildPage, TMethod(aRelMethod)));
             {check whether the child has enough keys, if so recurse}
             if (ChildPageHdr^.bhiKeyCount > (ChildPageHdr^.bhiMaxKeyCount div 2)) then
               Page := ChildPage
@@ -2090,7 +2090,7 @@ begin
         Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                 ffc_InxBlockTypeBtreePage,
                                 kpPath[pred(kpCount)].kpePage, aRelMethod);
-      aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+      aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
       {if we're on a crack, just return the key pointed to by the path}
       if (kpPos = kppOnCrackBefore) and                                {!!.03 - Start}
          (kpPath[pred(kpCount)].kpeItem <= pred(PageHdr^.bhiKeyCount)) then {!!.03 - End}
@@ -2126,7 +2126,7 @@ begin
           Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                   ffc_InxBlockTypeBtreePage, PageNum,
                                   aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
         end;
         while not PageHdr^.bhiIsLeafPage do begin
           with kpPath[kpCount] do begin
@@ -2138,7 +2138,7 @@ begin
             Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                     ffc_InxBlockTypeBtreePage,
                                     PageHdr^.bhiPrevPageRef, aRelMethod);
-            aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+            aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
           end;
         end;
         with kpPath[kpCount], PageHdr^ do begin
@@ -2188,7 +2188,7 @@ begin
                                     ffc_InxBlockTypeBtreePage,
                                     kpPath[pred(kpCount)].kpePage,
                                     aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
           {if the current item is not the final key, just return the next}
           if (kpPath[pred(kpCount)].kpeItem < pred(PageHdr^.bhiKeyCount)) then begin
             with kpPath[pred(kpCount)], PageHdr^ do begin
@@ -2249,7 +2249,7 @@ begin
           Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                   ffc_InxBlockTypeBtreePage, kpePage,
                                   aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
           kpeItem := PageHdr^.bhiKeyCount;
         end;
         kpCount := 1;
@@ -2260,7 +2260,7 @@ begin
           Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                   ffc_InxBlockTypeBtreePage,
                                   kpPath[pred(kpCount)].kpePage, aRelMethod);
-          aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+          aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
         {if we're on a crack, just return the key pointed to by the path}
         if (kpPos = kppOnCrackAfter) then
           with kpPath[pred(kpCount)], PageHdr^ do begin
@@ -2298,7 +2298,7 @@ begin
           Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                   ffc_InxBlockTypeBtreePage, PageNum,
                                   aRelMethod);
-        aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+        aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
         while not PageHdr^.bhiIsLeafPage do begin
           with kpPath[kpCount], PageHdr^ do begin
             kpePage := bhiThisBlock;
@@ -2311,7 +2311,7 @@ begin
             Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                     ffc_InxBlockTypeBtreePage,
                                     PageNum, aRelMethod);
-            aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+            aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
           end;
         end;
         with kpPath[kpCount], PageHdr^ do begin
@@ -2361,7 +2361,7 @@ begin
             Page := ReadVfyInxBlock(kidFI, aTI, kidFileHeader, ffc_ReadOnly,
                                     ffc_InxBlockTypeBtreePage, PageNum,
                                     aRelMethod);
-            aRelList.Append(FFAllocReleaseInfo(Page, TffInt64(aRelMethod)));
+            aRelList.Append(FFAllocReleaseInfo(Page, TMethod(aRelMethod)));
           end;
           {if the current item is not -1, just return it}
           if (kpPath[pred(kpCount)].kpeItem >= 0) then begin

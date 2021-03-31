@@ -332,8 +332,8 @@ var
   function CopyBLOBs(var BLOBBytesCopied : Integer): TffResult;        {!!.03}
   var
     I: Integer;
-    SourceBLOBNr: TffInt64;
-    TargetBLOBNr: TffInt64;
+    SourceBLOBNr: UInt64;
+    TargetBLOBNr: UInt64;
     IsNull: Boolean;
   begin
     Result := DBIERR_NONE;
@@ -352,10 +352,8 @@ var
             else begin
               AllocateBLOBTransferBuffer;
 
-{Begin !!.03}
               inc(BLOBBytesCopied, rpCursor.BLOBGetLength(SourceBLOBNr, Result));
               if Result <> DBIERR_NONE then Abort;
-{End !!.03}
 
               Result := rpTargetCursor.bcBLOBCopy
                           (rpCursor, SourceBLOBNr, TargetBLOBNr);
@@ -375,8 +373,8 @@ var
   var
     I: Integer;
     IsNull: Boolean;
-    BLOBNr: TffInt64;
-    SourceBLOBNr: TffInt64;                                            {!!.03}
+    BLOBNr: UInt64;
+    SourceBLOBNr: UInt64;
   begin
     { The FieldMap has already been validated so we can assume all the
       fieldnames and datatype matches are legal. }

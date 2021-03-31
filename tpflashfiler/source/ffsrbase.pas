@@ -311,10 +311,10 @@ type
   PffReleaseInfo = ^TffReleaseInfo;
   TffReleaseInfo = packed record
     BlockPtr : PffBlock;
-    MethodVar : TffInt64;
+    MethodVar : TMethod;
   end;
     { TffReleaseInfo is used in complicated routines to track which RAM pages
-      should be released. MethodVar is declared as a TffInt64 because
+      should be released. MethodVar is declared as a UInt64 because
       it is an easy way to store a method variable, where the first 4 bytes
       are a pointer to the method code and the second 4 bytes are a pointer
       to the object instance (i.e., RAM page) to which the method belongs. }
@@ -730,8 +730,8 @@ type
                                          to data structures. }
 {End !!.02}
       bmMaxRAM          : Longint;  { Max number of megabytes for cache. }
-      bmMaxRAMDetail    : TffInt64; { Max number of bytes for cache.  For comparisons. }
-      bmRAMDetail       : TffInt64; { Number of bytes used.  For comparisons. }
+      bmMaxRAMDetail    : UInt64; { Max number of bytes for cache.  For comparisons. }
+      bmRAMDetail       : UInt64; { Number of bytes used.  For comparisons. }
       bmRAMUsed         : Longint;  { Number of megabytes used.  For status. }
       bmLRUValue        : TffWord32; { The latest LRU value.  Indicator for
                                        when the block was last used. }
@@ -956,7 +956,7 @@ type
     {-to close a file}
   TffFlushFilePrim = procedure (aFI : PffFileInfo);
     {-to flush a file}
-  TffGetPositionFilePrim = function (aFI : PffFileInfo) : TffInt64;
+  TffGetPositionFilePrim = function (aFI : PffFileInfo) : UInt64;
     {-to return the position of the file cursor}
   TffOpenFilePrim = function (aName       : PAnsiChar;
                               aOpenMode   : TffOpenMode;
@@ -964,13 +964,13 @@ type
                               aWriteThru  : boolean;
                               aCreateFile : boolean) : THandle;
     {-to open/create file}
-  TffPositionFilePrim = procedure (aFI : PffFileInfo; const aOffset : TffInt64);
+  TffPositionFilePrim = procedure (aFI : PffFileInfo; const aOffset : UInt64);
     {-to position file cursor}
-  TffPositionFileEOFPrim = function (aFI : PffFileInfo) : TffInt64;
+  TffPositionFileEOFPrim = function (aFI : PffFileInfo) : UInt64;
     {-to position file cursor at EOF, returning file size}
   TffReadFilePrim = function (aFI : PffFileInfo; aToRead : TffWord32; var aBuffer) : TffWord32;
     {-to read from file, returning bytes read}
-  TffSetEOFPrim = procedure (aFI : PffFileInfo; const aOffset : TffInt64);
+  TffSetEOFPrim = procedure (aFI : PffFileInfo; const aOffset : UInt64);
     {-to truncate/extend file}
   TffSleepPrim = procedure (MilliSecs : Longint);
     {-to sleep/delay a period of time}
@@ -997,15 +997,15 @@ type
     bhf1stFreeBlock : TffWord32;      {number of first free block, or -1}
     bhfRecordCount  : Longint;        {number of records in file}
     bhfDelRecCount  : Longint;        {number of deleted records in file}
-    bhf1stDelRec    : TffInt64;       {offset of 1st deleted record, or -1}
+    bhf1stDelRec    : UInt64;       {offset of 1st deleted record, or -1}
     bhfRecordLength : Longint;        {record length}
     bhfRecLenPlusTrailer : Longint;   {record length plus deletion link}
     bhfRecsPerBlock : Longint;        {number of records per block}
     bhf1stDataBlock : TffWord32;      {first data block, or -1}
     bhfLastDataBlock: TffWord32;      {last data block, or -1}
     bhfBLOBCount    : TffWord32;      {number of BLOBs in file}
-    bhfDelBLOBHead  : TffInt64;       {file-relative offset of deleted BLOB chain head}
-    bhfDelBLOBTail  : TffInt64;       {file-relative offset of deleted BLOB chain tail}
+    bhfDelBLOBHead  : UInt64;       {file-relative offset of deleted BLOB chain head}
+    bhfDelBLOBTail  : UInt64;       {file-relative offset of deleted BLOB chain tail}
     bhfAutoIncValue : TffWord32;      {Last used autoinc value}
     bhfIndexCount   : Longint;        {number of indexes}
     bhfHasSeqIndex  : Longint;        {0-no seq access index; 1-has seq access index}
@@ -1080,7 +1080,7 @@ type
     bbhBLOBLength   : TffWord32; {..length of BLOB in bytes}           {!!.06}
     bbhSegCount     : Longint;   {..number of segments,
                                     -1 for file BLOBs, -2 for BLOB links }
-    bbh1stLookupSeg : TffInt64;  {..file-relative offset of 1st lookup segment,
+    bbh1stLookupSeg : UInt64;  {..file-relative offset of 1st lookup segment,
                                     -1 for file BLOBs}
   end;
 
@@ -1100,7 +1100,7 @@ type
 
   PffBLOBLookupEntry = ^TffBLOBLookupEntry;
   TffBLOBLookupEntry = packed record     {Lookup entry for BLOB}
-    bleSegmentOffset : TffInt64;         {File-relative offset of segment}
+    bleSegmentOffset : UInt64;           {File-relative offset of segment}
     bleContentLength : TffWord32;        {Length of the content, may be < length}  {!!.11}
                                          {of segment}
   end;
@@ -1111,9 +1111,9 @@ type
                                           'L' for lookup segments}
     bshFiller        : byte;             {aligns bytes in memory}
     bshSegmentLen    : word;             {Length of this segment}
-    bshParentBLOB    : TffInt64;         {File-relative offset of header
+    bshParentBLOB    : UInt64;         {File-relative offset of header
                                           segment, or -1}
-    bshNextSegment   : TffInt64;         {File-relative offset of next segment,
+    bshNextSegment   : UInt64;         {File-relative offset of next segment,
                                           or -1}
   end;
 
@@ -1122,9 +1122,9 @@ type
     bshSignature     : byte;             {'D' for deleted}
     bshFiller        : byte;             {aligns bytes in memory}
     bshSegmentLen    : word;             {Length of this segment}
-    bshNextSegment   : TffInt64;         {File-relative offset of next segment,
+    bshNextSegment   : UInt64;         {File-relative offset of next segment,
                                           or -1}
-    bshPrevSegment   : TffInt64;         {File-relative offset of prev segment,
+    bshPrevSegment   : UInt64;         {File-relative offset of prev segment,
                                           or -1}
   end;
 
@@ -1135,7 +1135,7 @@ type
   TffBLOBSegListItem = class(TffListItem)
   protected
     FSize   : Longint;
-    FOffset : TffInt64;
+    FOffset : UInt64;
 {Begin !!.03}
     FPendingAction : TffBLOBSegAction;
       { Identifies the action to be taken upon the list item pending the
@@ -1155,7 +1155,7 @@ type
     property Size : Longint read fSize write fSize;
       { The total size of the segment including header information. }
 
-    property Offset : TffInt64 read fOffset write fOffset;
+    property Offset : UInt64 read fOffset write fOffset;
       { The offset of the segment within the file. }
   end;
 
@@ -1185,14 +1185,14 @@ type
     procedure bsmRemoveFromTranList(aSegItem : TffBlobSegListItem);
     procedure bsmSliceSegment(aFI         : PffFileInfo;
                               aTI         : PffTransInfo;
-                              aSegOfs     : TffInt64;
+                              aSegOfs     : UInt64;
                               aSegSize    : TffWord32;
                         const aNewSize    : TffWord32;
                               aInDelChain : Boolean);
     {makes two smaller deleted segments from a larger one}
     procedure bsmRemoveFromDeletedChain(aFI     : PffFileInfo;
                                         aTI     : PffTransInfo;
-                                        aSegOfs : TffInt64);
+                                        aSegOfs : UInt64);
     {removes segment from deleted chain and updates file header}
   public
     constructor Create(aFI : PffFileInfo; aTI : PffTransInfo);
@@ -1201,15 +1201,15 @@ type
     procedure Commit; virtual;
     procedure DeleteSegment(aFI        : PffFileInfo;
                             aTI        : PffTransInfo;
-                      const aSegOffset : TffInt64); virtual;
+                      const aSegOffset : UInt64); virtual;
     function  GetNewSeg(aFI   : PffFileInfo;
                         aTI   : PffTransInfo;
-                  const aSize : TffWord32) : TffInt64; virtual;
+                  const aSize : TffWord32) : UInt64; virtual;
     function  GetRecycledSeg(aFI             : PffFileInfo;
                              aTI             : PffTransInfo;
                          var aSizeNeeded     : Longint;
                        const aMinSizeAllowed : Longint)
-                                             : TffInt64; virtual; abstract;
+                                             : UInt64; virtual; abstract;
     procedure ListFreeSpace(aFI : PffFileInfo; aTI : PffTransInfo;
                       const aInMemory : Boolean;
                             aStream : TStream); virtual;
@@ -1225,7 +1225,7 @@ type
                              aTI             : PffTransInfo;
                          var aSizeNeeded     : Longint;
                        const aMinSizeAllowed : Longint)
-                                             : TffInt64; override;
+                                             : UInt64; override;
   end;
 
   Tff210BLOBSegmentMgr = class(TffBaseBLOBSegmentMgr)
@@ -1236,7 +1236,7 @@ type
                              aTI             : PffTransInfo;
                          var aSizeNeeded     : Longint;
                        const aMinSizeAllowed : Longint)
-                                             : TffInt64; override;
+                                             : UInt64; override;
   end;
 
   TffBLOBSegmentMgrClass = class of TffBaseBLOBSegmentMgr;
@@ -1268,7 +1268,7 @@ type
     procedure Commit; virtual;
     procedure DeleteSegment(aFI        : PffFileInfo;
                             aTI        : PffTransInfo;
-                      const aSegOffset : TffInt64); virtual;
+                      const aSegOffset : UInt64); virtual;
      { Use this method to delete an existing segment once it is no longer needed.
        This class will zero out the segment and place it in the recycle list.
        @param aFI The file containing the segment.
@@ -1277,7 +1277,7 @@ type
     function  NewSegment(aFI             : PffFileInfo;
                          aTI             : PffTransInfo;
                      var aSizeNeeded     : TffWord32;
-                   const aMinSizeAllowed : TffWord32) : TffInt64; virtual; abstract;
+                   const aMinSizeAllowed : TffWord32) : UInt64; virtual; abstract;
       { Use this method to obtain a new segment of the specified size.
         You may ask for any size segment.  However, this class will not allocate
         a segment larger than the specified file's block size. Parameters:
@@ -1306,7 +1306,7 @@ type
                          aTI             : PffTransInfo;
                      var aSizeNeeded     : TffWord32;
                    const aMinSizeAllowed : TffWord32)
-                                         : TffInt64; override;
+                                         : UInt64; override;
   end;
 
   Tff210BLOBResourceMgr = class(TffBaseBLOBResourceMgr)
@@ -1319,7 +1319,7 @@ type
                          aTI             : PffTransInfo;
                      var aSizeNeeded     : TffWord32;
                    const aMinSizeAllowed : TffWord32)
-                                         : TffInt64; override;
+                                         : UInt64; override;
   end;
 {End !!.11}
 
@@ -1413,12 +1413,12 @@ type
 
 
 {---Verification routines---}
-function FFVerifyBLOBNr(const aBLOBNr : TffInt64;
+function FFVerifyBLOBNr(const aBLOBNr : UInt64;
                         aLog2BlockSize: Longint) : boolean;
   {-Verify a BLOB number to be valid}
 function FFVerifyIndexCount(IndexCount : Longint) : boolean;
   {-Verify number of indexes to be between 0 and 255}
-function FFVerifyRefNr(const aRefNr             : TffInt64;
+function FFVerifyRefNr(const aRefNr             : UInt64;
                              aLog2BlockSize     : Longint;
                              aRecLenPlusTrailer : TffWord32) : boolean;
   {-Verify a record's RefNr to be valid}
@@ -1455,10 +1455,10 @@ procedure FFFlushFile(aFI : PffFileInfo);
 procedure FFForceFlushFile(aFI : PffFileInfo);
   {-Flushes file aFI by closing and reopening it}
   { Exception raised if anything fails}
-function FFGetPositionFile(aFI : PffFileInfo) : TffInt64;
+function FFGetPositionFile(aFI : PffFileInfo) : UInt64;
   {-Get position (offset from start) of file pointer of file aFI}
   { Exception raised if seek call fails}
-function FFGetFileSize(aFI : PffFileInfo) : TffInt64;
+function FFGetFileSize(aFI : PffFileInfo) : UInt64;
   {-Get size of file aFI}
   { Exception raised if seek call fails}
 procedure FFOpenFile(aFI         : PffFileInfo;
@@ -1469,10 +1469,10 @@ procedure FFOpenFile(aFI         : PffFileInfo;
   {-Allocate new file aFI, open it}
   { Exception raised if open call fails, if out of memory}
 procedure FFPositionFile(    aFI : PffFileInfo;
-                   const aOffset : TffInt64);
+                   const aOffset : UInt64);
   {-Position file pointer of file aFI at aOffset}
   { Exception raised if seek call fails}
-function FFPositionFileEOF(aFI : PffFileInfo) : TffInt64;
+function FFPositionFileEOF(aFI : PffFileInfo) : UInt64;
   {-Position file pointer of file aFI at EOF, return file length}
   { Exception raised if seek call fails}
 function FFReadFile(aFI : PffFileInfo;
@@ -1486,12 +1486,12 @@ procedure FFReadFileExact(aFI : PffFileInfo;
   {-Read exactly aToRead bytes from file aFI into aBuffer}
   { Exception raised if not exactly aToRead bytes read}
 procedure FFReadFileExactAt(aFI : PffFileInfo;
-                            const aOffset : TffInt64;
+                            const aOffset : UInt64;
                             aToRead : TffWord32;
                         var aBuffer);
   {-Read exactly aToRead bytes from file aFI at position aOffset into aBuffer}
 procedure FFSetEOF(aFI : PffFileInfo;
-                   const aOffset : TffInt64);
+                   const aOffset : UInt64);
   {-Truncates/extends file aFI to position aOffset}
 function FFWriteFile(aFI : PffFileInfo;
                      aToWrite : TffWord32;
@@ -1504,11 +1504,11 @@ procedure FFWriteFileExact(aFI : PffFileInfo;
   {-Write exactly aToWrite bytes to file aFI from aBuffer}
   { Exception raised if not exactly aToWrite bytes written}
 procedure FFWriteFileExactAt(aFI : PffFileInfo;
-                             const aOffset  : TffInt64;
+                             const aOffset  : UInt64;
                              aToWrite : TffWord32;
                        const aBuffer);
   {-Write exactly aToWrite bytes to file aFI at position aOffset from aBuffer}
-function  FFCalcMaxFileSize(aFI : PffFileInfo) : TffInt64;
+function  FFCalcMaxFileSize(aFI : PffFileInfo) : UInt64;
   {-Calculate maximum file size for a table}
 function  FFCalcMaxBLOBSegSize(aFI : PffFileInfo) : TffWord32;
   {-Calculate maximum BLOB segment size}
@@ -1520,7 +1520,7 @@ procedure FFReadDecryptFileExact(aFI     : PffFileInfo;
   {-Read/decrypt exactly aToRead bytes from file aFI into aBuffer}
   { Exception raised if not exactly aToRead bytes read}
 procedure FFReadDecryptFileExactAt(aFI     : PffFileInfo;
-                             const aOffset : TffInt64;
+                             const aOffset : UInt64;
                                    aToRead : TffWord32;
                                var aBuffer);
   {-Read/decrypt exactly aToRead bytes from file aFI at position
@@ -1531,7 +1531,7 @@ procedure FFWriteEncryptFileExact(aFI      : PffFileInfo;
   {-Write/encrypt exactly aToWrite bytes to file aFI from aBuffer}
   { Exception raised if not exactly aToWrite bytes written}
 procedure FFWriteEncryptFileExactAt(aFI      : PffFileInfo;
-                              const aOffset  : TffInt64;
+                              const aOffset  : UInt64;
                                     aToWrite : TffWord32;
                                 var aBuffer);
   {-Write/encrypt exactly aToWrite bytes to file aFI at position
@@ -1561,9 +1561,9 @@ procedure FFSetRetry(const aTimeout : DWORD);
 function FFCalcLog2BlockSize(const BlockSize : Longint) : TffWord32;
 function FFCalcMaxLookupEntries(LookupSegPtr : PffBLOBSegmentHeader) : TffWord32; {!!.11}
 function FFGetBlockNum(aFI      : PffFileInfo;
-                 const anOffset : TffInt64) : TffWord32;
+                 const anOffset : UInt64) : TffWord32;
 function FFAllocReleaseInfo(aBlock : PffBlock;
-                            aMethod : TffInt64) : PffReleaseInfo;
+                            aMethod : TMethod) : PffReleaseInfo;
 procedure FFDeallocReleaseInfo(aReleaseInfo : PffReleaseInfo);
 
 implementation
@@ -1702,17 +1702,18 @@ begin
 end;
 {--------}
 function FFGetBlockNum(aFI      : PffFileInfo;
-                 const anOffset : TffInt64) : TffWord32;
+                 const anOffset : UInt64) : TffWord32;
   { Returns the block number for the specified file offset. }
 var
-  TempI64 : TffInt64;
+  TempI64 : UInt64;
 begin
-  ffShiftI64R(anOffset, aFI^.fiLog2BlockSize, TempI64);
-  Result := TempI64.iLow;
+  // ffShiftI64R(anOffset, aFI^.fiLog2BlockSize, TempI64);
+  TempI64 := anOffset shr aFI^.fiLog2BlockSize;
+  Result := Int64Rec(TempI64).Lo;
 end;
 {--------}
 function FFAllocReleaseInfo(aBlock : PffBlock;
-                            aMethod : TffInt64) : PffReleaseInfo;
+                            aMethod : TMethod) : PffReleaseInfo;
 begin
   FFGetMem(Result, SizeOf(TffReleaseInfo));
   Result^.BlockPtr := aBlock;
@@ -1727,28 +1728,39 @@ end;
 {====================================================================}
 
 {===Verification routines for BLOB segments==========================}
-function FFVerifyBLOBNr(const aBLOBNr : TffInt64;
+function FFVerifyBLOBNr(const aBLOBNr : UInt64;
                         aLog2BlockSize: Longint) : boolean;
 {Note: a BLOB number is a file-offset to a BLOB header}
 var
-  Offset : TffInt64;
-  TempI64 : TffInt64;
+  Offset : UInt64;
+  TempI64 : UInt64;
 begin
   Result := false;
-  TempI64.iLow := 0;
-  TempI64.iHigh := 0;
+  TempI64 := 0;
   {BLOB Number can't be = 0}
-  if (ffCmpI64(aBLOBNr, TempI64) <> 0) then begin
-    ffShiftI64R(aBLOBNr, aLog2BlockSize, Offset);
-    ffShiftI64L(Offset, aLog2BlockSize, Offset);
-    ffI64AddInt(Offset, ffc_BlockHeaderSizeBLOB, Offset);
-    ffI64MinusI64(aBLOBNr, Offset, Offset);
-    if (ffCmpI64(Offset, TempI64) = 0) then
+  //if (ffCmpI64(aBLOBNr, TempI64) <> 0) then begin
+  if (aBLOBNr <> TempI64) then
+  begin
+    // ffShiftI64R(aBLOBNr, aLog2BlockSize, Offset);
+    Offset := aBLOBNr shr aLog2BlockSize;
+    // ffShiftI64L(Offset, aLog2BlockSize, Offset);
+    Offset := Offset shl aLog2BlockSize;
+    // ffI64AddInt(Offset, ffc_BlockHeaderSizeBLOB, Offset);
+    Offset := Offset + ffc_BlockHeaderSizeBLOB;
+    // ffI64MinusI64(aBLOBNr, Offset, Offset);
+    Offset := aBLOBNr - Offset;
+    //if (ffCmpI64(Offset, TempI64) = 0) then
+    if (Offset = TempI64) then
       Result := true
-    else if (ffCmpI64(Offset, TempI64) > 0) then begin
-      ffI64DivInt(Offset, ffc_BLOBSegmentIncrement, TempI64);
-      ffI64MultInt(TempI64, ffc_BLOBSegmentIncrement, TempI64);
-      if ffCmpI64(Offset, TempI64) = 0 then
+    //else if (ffCmpI64(Offset, TempI64) > 0) then begin
+    else if (Offset > TempI64) then
+    begin
+      //ffI64DivInt(Offset, ffc_BLOBSegmentIncrement, TempI64);
+      TempI64 := Offset div ffc_BLOBSegmentIncrement;
+      // ffI64MultInt(TempI64, ffc_BLOBSegmentIncrement, TempI64);
+      TempI64 := TempI64 * ffc_BLOBSegmentIncrement;
+      //if ffCmpI64(Offset, TempI64) = 0 then
+      if Offset = TempI64 then
         Result := true;
     end; {if..else}
   end;
@@ -1759,25 +1771,30 @@ begin
   Result := (IndexCount and $FFFFFF00) = 0;
 end;
 {--------}
-function FFVerifyRefNr(const aRefNr             : TffInt64;
+function FFVerifyRefNr(const aRefNr             : UInt64;
                              aLog2BlockSize     : Longint;
                              aRecLenPlusTrailer : TffWord32) : boolean;
 var
-  Offset  : TffInt64;
-  TempI64 : TffInt64;
+  Offset  : UInt64;
+  TempI64 : UInt64;
 begin
   Result := false;
-  TempI64.iLow := 0;
-  TempI64.iHigh := 0;
-  if (ffCmpI64(aRefNr, TempI64) <> 0) then begin
-    ffShiftI64R(aRefNr, aLog2BlockSize, TempI64);
-    ffShiftI64L(TempI64, aLog2BlockSize, Offset);
-    ffI64MinusInt(aRefNr, Offset.iLow, TempI64);
-    ffI64MinusInt(TempI64, ffc_BlockHeaderSizeData, Offset);
-    if (Offset.iLow = 0) then
+  TempI64 := 0;
+
+  if (ffCmpI64(aRefNr, TempI64) <> 0) then
+  begin
+    // ffShiftI64R(aRefNr, aLog2BlockSize, TempI64);
+    TempI64 := aRefNr shr aLog2BlockSize;
+    // ffShiftI64L(TempI64, aLog2BlockSize, Offset);
+    Offset := TempI64 shl aLog2BlockSize;
+    // ffI64MinusInt(aRefNr, Offset.iLow, TempI64);
+    TempI64 := aRefNr - Int64Rec(Offset).Lo;
+    //ffI64MinusInt(TempI64, ffc_BlockHeaderSizeData, Offset);
+    Offset := TempI64 - ffc_BlockHeaderSizeData;
+    if (Int64Rec(Offset).Lo = 0) then
       Result := true
-    else if (Offset.iLow > 0) then
-      if (((Offset.iLow div aRecLenPlusTrailer) * aRecLenPlusTrailer) = Offset.iLow) then
+    else if (Int64Rec(Offset).Lo > 0) then
+      if (((Int64Rec(Offset).Lo div aRecLenPlusTrailer) * aRecLenPlusTrailer) = Int64Rec(Offset).Lo) then
         Result := true;
   end;
 end;
@@ -1920,15 +1937,15 @@ begin
   end;
 end;
 {--------}
-function FFGetPositionFile(aFI : PffFileInfo) : TffInt64;
+function FFGetPositionFile(aFI : PffFileInfo) : UInt64;
 begin
   FFVerifyFileInfo(aFI, true);
   Result := FFGetPositionFilePrim(aFI);
 end;
 {--------}
-function FFGetFileSize(aFI : PffFileInfo) : TffInt64;
+function FFGetFileSize(aFI : PffFileInfo) : UInt64;
 var
-  CurPos : TffInt64;
+  CurPos : UInt64;
 begin
   FFVerifyFileInfo(aFI, true);
   CurPos := FFGetPositionFilePrim(aFI);
@@ -1976,13 +1993,13 @@ begin
 end;
 {--------}
 procedure FFPositionFile(aFI : PffFileInfo;
-                   const aOffset : TffInt64);
+                   const aOffset : UInt64);
   begin
     FFVerifyFileInfo(aFI, true);
     FFPositionFilePrim(aFI, aOffset);
   end;
 {--------}
-function FFPositionFileEOF(aFI : PffFileInfo) : TffInt64;
+function FFPositionFileEOF(aFI : PffFileInfo) : UInt64;
   begin
     FFVerifyFileInfo(aFI, true);
     Result := FFPositionFileEOFPrim(aFI);
@@ -2007,7 +2024,7 @@ begin
 end;
 {--------}
 procedure FFReadFileExactAt(aFI : PffFileInfo;
-                            const aOffset : TffInt64;
+                            const aOffset : UInt64;
                             aToRead : TffWord32;
                         var aBuffer);
 begin
@@ -2022,7 +2039,7 @@ begin
 end;
 {--------}
 procedure FFSetEOF(aFI : PffFileInfo;
-                   const aOffset : TffInt64);
+                   const aOffset : UInt64);
 begin
   FFVerifyFileInfo(aFI, true);
   FFSetEOFPrim(aFI, aOffset);
@@ -2047,7 +2064,7 @@ begin
 end;
 {--------}
 procedure FFWriteFileExactAt(aFI      : PffFileInfo;
-                       const aOffset  : TffInt64;
+                       const aOffset  : UInt64;
                              aToWrite : TffWord32;
                        const aBuffer);
 begin
@@ -2061,7 +2078,7 @@ begin
   end;
 end;
 {--------}
-function  FFCalcMaxFileSize(aFI : PffFileInfo) : TffInt64;
+function  FFCalcMaxFileSize(aFI : PffFileInfo) : UInt64;
 var
   MaxFileNameLen   : DWord;
   FileSysFlags     : Dword;
@@ -2093,45 +2110,45 @@ begin
     if FileSysName = 'FAT32' then begin
       if OSNumber = 5 then begin
         {Win2K max FAT32 partition = 8TB, but only 4GB files}
-        Result.iLow  := ffcl_FourGigabytes;
-        Result.iHigh := 0;
+        Int64Rec(Result).Lo  := ffcl_FourGigabytes;
+        Int64Rec(Result).Hi := 0;
       end else begin
         {Win95/98 max FAT32 partition size = (4GB - 2 bytes)}
-        Result.iLow  := ffcl_FourGigabytes;
-        Result.iHigh := 0;
+        Int64Rec(Result).Lo  := ffcl_FourGigabytes;
+        Int64Rec(Result).Hi := 0;
       end;
     end else if FileSysName = 'NTFS' then begin
       {NTFS max file size is 2^64}
-      Result.iLow := ffc_W32NoValue;
-      Result.iHigh := ffc_W32NoValue;
+      Int64Rec(Result).Lo := ffc_W32NoValue;
+      Int64Rec(Result).Hi := ffc_W32NoValue;
     end else if FileSysName = 'FAT16' then begin
       if OSNumber >= 4 then begin
         {NT max FAT16 partition = 4GB; Max File Size = 2GB }
-        Result.iLow  := ffcl_TwoGigabytes;
-        Result.iHigh := 0;
+        Int64Rec(Result).Lo  := ffcl_TwoGigabytes;
+        Int64Rec(Result).Hi := 0;
       end else begin
         {Win95/98 max FAT16 partition = 2GB}
-        Result.iLow  := ffcl_TwoGigabytes;
-        Result.iHigh := 0;
+        Int64Rec(Result).Lo  := ffcl_TwoGigabytes;
+        Int64Rec(Result).Hi := 0;
       end;
     end else if FileSysName = 'CDFS' then begin
       {Can't write to a CD-ROM drive}
-      Result.iLow  := 0;
-      Result.iHigh := 0;
+      Int64Rec(Result).Lo  := 0;
+      Int64Rec(Result).Hi := 0;
     end else if FileSysName = 'FAT' then begin
       if FileDrive = 'A:\' then begin
         {1.44 floppy}
-        Result.iLow  := ffcl_MaxHDFloppy;
-        Result.iHigh := 0;
+        Int64Rec(Result).Lo  := ffcl_MaxHDFloppy;
+        Int64Rec(Result).Hi := 0;
       end else begin
         {Any other FAT drive}
-        Result.iLow  := ffcl_TwoGigabytes;
-        Result.iHigh := 0;
+        Int64Rec(Result).Lo  := ffcl_TwoGigabytes;
+        Int64Rec(Result).Hi := 0;
       end;
     end;
   end else begin
-    Result.iLow  := 0;
-    Result.iHigh := 0;
+    Int64Rec(Result).Lo  := 0;
+    Int64Rec(Result).Hi := 0;
   end;
 end;
 {--------}
@@ -2160,7 +2177,7 @@ begin
 end;
 {--------}
 procedure FFReadDecryptFileExactAt(aFI : PffFileInfo;
-                                   const aOffset : TffInt64;
+                                   const aOffset : UInt64;
                                    aToRead : TffWord32;
                                var aBuffer);
 {$IFDEF SecureServer}                                                 {!!.01}
@@ -2170,8 +2187,8 @@ var
 begin
   FFReadFileExactAt(aFI, aOffset, aToRead, aBuffer);
   {$IFDEF SecureServer}
-  tmpOffset := aOffset.iLow;
-  if ((aOffset.iHigh <> 0) or (tmpOffset <> 0)) and aFI^.fiEncrypted then
+  tmpOffset := Int64Rec(aOffset).Lo;
+  if ((Int64Rec(aOffset).Hi <> 0) or (tmpOffset <> 0)) and aFI^.fiEncrypted then
     if aFI^.fiForServer then
       FFDecodeBlockServer(@aBuffer, aToRead, tmpOffset)
     else
@@ -2204,7 +2221,7 @@ begin
 end;
 {--------}
 procedure FFWriteEncryptFileExactAt(aFI : PffFileInfo;
-                              const aOffset  : TffInt64;
+                              const aOffset  : UInt64;
                                     aToWrite : TffWord32;
                                 var aBuffer);
 {$IFDEF SecureServer}
@@ -2214,11 +2231,11 @@ var
 begin
   FFVerifyFileInfo(aFI, true);
   {$IFDEF SecureServer}
-  tmpOffset := aOffset.iLow;
+  tmpOffset := Int64Rec(aOffset).Lo;
   if (EncryptBuffer = nil) then
     GetMem(EncryptBuffer, 64*1024);
   Move(aBuffer, EncryptBuffer^, aToWrite);
-  if ((aOffset.iHigh <> 0) or (tmpOffset <> 0))and aFI^.fiEncrypted then
+  if ((Int64Rec(aOffset).Hi <> 0) or (tmpOffset <> 0))and aFI^.fiEncrypted then
     if aFI^.fiForServer then
       FFCodeBlockServer(EncryptBuffer, aToWrite, tmpOffset)
     else
@@ -2673,7 +2690,7 @@ function TffbmRAMPage.Commit(forceWrite : boolean) : boolean;
 var
   anItem    : TffbmModifiedBlock;
   aPrevItem : TffbmModifiedBlock;
-  TempI64   : TffInt64;
+  TempI64   : UInt64;
   {$IFDEF RAMPageCheck}
   PStr, PStr2 : array[0..8] of AnsiChar;
   {$ENDIF}
@@ -2705,10 +2722,12 @@ begin
     rpBlockListTail.Block := nil;
 
     { If this is not a temporary file then write to disk. }
-    if not (fffaTemporary in rpFI^.fiAttributes) then begin
-      TempI64.iLow := BlockNumber;
-      TempI64.iHigh := 0;
-      FFI64MultInt(TempI64, BlockSize, TempI64);
+    if not (fffaTemporary in rpFI^.fiAttributes) then
+    begin
+      Int64Rec(TempI64).Lo := BlockNumber;
+      Int64Rec(TempI64).Hi := 0;
+      // FFI64MultInt(TempI64, BlockSize, TempI64);
+      TempI64 := BlockSize * TempI64;
       FFWriteEncryptFileExactAt(FileInfo, TempI64, rpBlockSize, rpBlock^);
     end;
 
@@ -2765,9 +2784,10 @@ begin
 
           { If this is not a temporary file then write to disk. }
           if not (fffaTemporary in rpFI^.fiAttributes) then begin
-            TempI64.iLow := BlockNumber;
-            TempI64.iHigh := 0;
-            FFI64MultInt(TempI64, BlockSize, TempI64);
+            Int64Rec(TempI64).Lo := BlockNumber;
+            Int64Rec(TempI64).Hi := 0;
+            // FFI64MultInt(TempI64, BlockSize, TempI64);
+            TempI64 := BlockSize * TempI64;
             FFWriteEncryptFileExactAt(FileInfo, TempI64, rpBlockSize, rpBlock^);
           end;
 
@@ -3622,9 +3642,10 @@ begin
   bmInUseListTail := nil;
   bmPortal := TffPadlock.Create;                                       {!!.02}
   bmMaxRAM := 10;
-  bmMaxRAMDetail.iLow := bmMaxRAM;
-  bmMaxRAMDetail.iHigh := 0;
-  ffI64MultInt(bmMaxRAMDetail, ffcl_1MB, bmMaxRAMDetail);
+  Int64Rec(bmMaxRAMDetail).Lo := bmMaxRAM;
+  Int64Rec(bmMaxRAMDetail).Hi := 0;
+  // ffI64MultInt(bmMaxRAMDetail, ffcl_1MB, bmMaxRAMDetail);
+  bmMaxRAMDetail := bmMaxRAMDetail * ffcl_1MB;
   bmRAMDetail := 0;
   bmRAMUsed := 0;
   bmTempStore := ffcTempStorageClass.Create(bmConfigDir,
@@ -4311,23 +4332,27 @@ end;
 {--------}
 procedure TffBufferManager.bmDecreaseRAMDetail(const numberBytes : Longint);
 var
-  tmpI64 : TffInt64;
+  tmpI64 : UInt64;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}                    {!!.03}
-  ffI64MinusInt(bmRAMDetail, numberBytes, bmRAMDetail);
-  ffI64DivInt(bmRAMDetail, ffcl_1MB, tmpI64);
-  bmRAMUsed := ffI64ToInt(tmpI64);
+  // ffI64MinusInt(bmRAMDetail, numberBytes, bmRAMDetail);
+  bmRAMDetail := bmRAMDetail - numberBytes;
+  // ffI64DivInt(bmRAMDetail, ffcl_1MB, tmpI64);
+  tmpI64 := bmRAMDetail div ffcl_1MB;
+  bmRAMUsed := Int64Rec(tmpI64).Lo;
   {$IFDEF FF_DEBUG_THREADS}finally ThreadExit; end;{$ENDIF}            {!!.03}
 end;
 {--------}
 procedure TffBufferManager.bmIncreaseRAMDetail(const numberBytes : Longint);
 var
-  tmpI64 : TffInt64;
+  tmpI64 : UInt64;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}                    {!!.03}
-  ffI64AddInt(bmRAMDetail, numberBytes, bmRAMDetail);
-  ffI64DivInt(bmRAMDetail, ffcl_1MB, tmpI64);
-  bmRAMUsed := ffI64ToInt(tmpI64);
+  // ffI64AddInt(bmRAMDetail, numberBytes, bmRAMDetail);
+  bmRAMDetail := bmRAMDetail + numberBytes;
+  // ffI64DivInt(bmRAMDetail, ffcl_1MB, tmpI64);
+  tmpI64 := bmRAMDetail div ffcl_1MB;
+  bmRAMUsed := Int64Rec(tmpI64).Lo;
   {$IFDEF FF_DEBUG_THREADS}finally ThreadExit; end;{$ENDIF}            {!!.03}
 end;
 {--------}
@@ -4372,7 +4397,7 @@ end;
 {--------}
 function TffBufferManager.bmOverRAMLimit(sizeOfNewBlock : Longint) : boolean;
 var
-  tmpI64 : TffInt64;
+  tmpI64 : UInt64;
 begin
   {$IFDEF RAMPageCheck}
   Log('OverRamLimit?',[]);
@@ -4383,11 +4408,13 @@ begin
 
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}                    {!!.03}
   { Are we already at the limit? }
-  Result := (FFCmpI64(bmRAMDetail, bmMaxRAMDetail) = 0);
+  Result := (bmRAMDetail = bmMaxRAMDetail);
   { If not then see if this would push us over the limit? }
-  if not Result then begin
-    ffI64AddInt(bmRamDetail, sizeOfNewBlock, tmpI64);
-    Result := (FFCmpI64(tmpI64, bmMaxRAMDetail) > 0);
+  if not Result then
+  begin
+    // ffI64AddInt(bmRamDetail, sizeOfNewBlock, tmpI64);
+    tmpI64 := bmRamDetail + sizeOfNewBlock;
+    Result := (tmpI64 > bmMaxRAMDetail);
   end;
   {$IFDEF FF_DEBUG_THREADS}finally ThreadExit; end;{$ENDIF}            {!!.03}
 end;
@@ -4399,16 +4426,16 @@ var
   aBlock     : PffBlock;
   aReleaseMethod : TffReleaseMethod;
   Header     : TffBlockHeaderFile;
-  MaxBlocks  : TffInt64;
-  TempI64    : TffInt64;
+  MaxBlocks  : UInt64;
+  TempI64    : UInt64;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}                    {!!.03}
    { Note: aBlockNumber = ffc_W32NoValue forces verification of the header, and
      for a header record, we need to calculate the block size first; header
      records are never encrypted. }
   if (aBlockNumber = ffc_W32NoValue) then begin
-    TempI64.iLow := 0;
-    TempI64.iHigh := 0;
+    Int64Rec(TempI64).Lo := 0;
+    Int64Rec(TempI64).Hi := 0;
     FFReadFileExactAt(aFI, TempI64, sizeof(Header), Header);
     ffVerifyFileHeaderSignature(aFI, Header.bhfSignature);
     with Header do
@@ -4443,11 +4470,12 @@ begin
 
     { Calculate the maximum number of blocks the file may contain.
       D3 max num blocks is 2^31; 2^32 for D4 and 5. }
-    ffI64DivInt(FFCalcMaxFileSize(aFI), TffWord32(aFI^.fiBlockSize), MaxBlocks);
-    if (ffCmpDW(MaxBlocks.iLow,ffcl_MaxBlocks)) > 0 then
+    // ffI64DivInt(FFCalcMaxFileSize(aFI), TffWord32(aFI^.fiBlockSize), MaxBlocks);
+    MaxBlocks := FFCalcMaxFileSize(aFI) div TffWord32(aFI^.fiBlockSize);
+    if (Int64Rec(MaxBlocks).Lo > ffcl_MaxBlocks) then
       aFI^.fiMaxBlocks := ffcl_MaxBlocks
     else
-      aFI^.fiMaxBlocks := MaxBlocks.iLow;
+      aFI^.fiMaxBlocks := Int64Rec(MaxBlocks).Lo;
 
     aFI^.fiMaxSegSize := FFCalcMaxBLOBSegSize(aFI);
     aRAMPage.BlockSize := Header.bhfBlockSize;
@@ -4455,9 +4483,10 @@ begin
   end;
   { Read the requested block in its entirety. }
   with aRAMPage do begin
-    TempI64.iLow := aBlockNumber;
-    TempI64.iHigh := 0;
-    ffI64MultInt(TempI64, BlockSize, TempI64);
+    Int64Rec(TempI64).Lo := aBlockNumber;
+    Int64Rec(TempI64).Hi := 0;
+    // ffI64MultInt(TempI64, BlockSize, TempI64);
+    TempI64 := TempI64 * BlockSize;
     { Read the file into the read-only slot. }
     aBlock := Block(nil, aReleaseMethod);
     try
@@ -4695,8 +4724,10 @@ begin
   try
     if (aNumber <> MaxRAM) then begin
       bmMaxRAM := aNumber;
-      ffIntToI64(aNumber, bmMaxRAMDetail);
-      ffI64MultInt(bmMaxRAMDetail, ffcl_1MB, bmMaxRAMDetail);
+      // ffIntToI64(aNumber, bmMaxRAMDetail);
+      Int64Rec(bmMaxRAMDetail).Lo := aNumber;
+      // ffI64MultInt(bmMaxRAMDetail, ffcl_1MB, bmMaxRAMDetail);
+      bmMaxRAMDetail := bmMaxRAMDetail * ffcl_1MB;
     end;
   finally
     bmPortal.Unlock;                                                   {!!.02}
@@ -4767,13 +4798,13 @@ end;
 procedure TffBufferManager.bmWriteCompleteJnlHeader(aJnlFile : PffFileInfo);
 var
   Hdr     : TffJournalFileHeader;
-  TempI64 : TffInt64;
+  TempI64 : UInt64;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}                    {!!.03}
   Hdr.jfhSignature := ffc_SigJnlHeader;
   Hdr.jfhState := 1;
-  TempI64.iLow := 0;
-  TempI64.iHigh := 0;
+  Int64Rec(TempI64).Lo := 0;
+  Int64Rec(TempI64).Hi := 0;
   FFWriteFileExactAt(aJnlFile, TempI64, sizeof(Hdr), Hdr);
   FFCloseFile(aJnlFile);
   {$IFDEF FF_DEBUG_THREADS}finally ThreadExit; end;{$ENDIF}            {!!.03}
@@ -4782,13 +4813,13 @@ end;
 procedure TffBufferManager.bmWriteIncompleteJnlHeader(aJnlFile : PffFileInfo);
 var
   Hdr     : TffJournalFileHeader;
-  TempI64 : TffInt64;
+  TempI64 : UInt64;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}                    {!!.03}
   Hdr.jfhSignature := ffc_SigJnlHeader;
   Hdr.jfhState := 0;
-  TempI64.iLow := 0;
-  TempI64.iHigh := 0;
+  Int64Rec(TempI64).Lo := 0;
+  Int64Rec(TempI64).Hi := 0;
   FFWriteFileExactAt(aJnlFile, TempI64, sizeof(Hdr), Hdr);
   FFFlushFile(aJnlFile);
   {$IFDEF FF_DEBUG_THREADS}finally ThreadExit; end;{$ENDIF}            {!!.03}
@@ -4844,7 +4875,7 @@ end;
 {--------}
 procedure TffBaseBLOBResourceMgr.DeleteSegment(aFI        : PffFileInfo;
                                                aTI        : PffTransInfo;
-                                         const aSegOffset : TffInt64);
+                                         const aSegOffset : UInt64);
 begin
   {segment manager must be loaded before deleting a segment}
   if not brmSegMgrLoaded then
@@ -4904,7 +4935,7 @@ function  TffBLOBResourceMgr.NewSegment(aFI             : PffFileInfo;
                                         aTI             : PffTransInfo;
                                     var aSizeNeeded     : TffWord32;
                                   const aMinSizeAllowed : TffWord32)
-                                                        : TffInt64;
+                                                        : UInt64;
 var
   NewSize,
   NewMinSize : Longint;
@@ -4927,7 +4958,7 @@ begin
     {look for segment in deleted chain 1st}
     Result := brmSegmentMgr.GetRecycledSeg(aFI, aTI, NewSize, NewMinSize);
     {if aSize segment not available, create a new segment}
-    if Result.iLow  = ffc_W32NoValue then
+    if Int64Rec(Result).Lo  = ffc_W32NoValue then
       Result := brmSegmentMgr.GetNewSeg(aFI, aTI, NewSize);
     { Set the final size allocated in the aSizeNeeded parameter. }
     aSizeNeeded := NewSize;
@@ -4948,7 +4979,7 @@ function  Tff210BLOBResourceMgr.NewSegment(aFI             : PffFileInfo;
                                            aTI             : PffTransInfo;
                                        var aSizeNeeded     : TffWord32;
                                      const aMinSizeAllowed : TffWord32)
-                                           : TffInt64;
+                                           : UInt64;
 var
   NewSize,
   MinSize : Longint;
@@ -4966,7 +4997,7 @@ begin
     { First, look for segment in deleted chain . }
     Result := brmSegmentMgr.GetRecycledSeg(aFI, aTI, NewSize, MinSize);
     { If aSize segment not available, create a new segment. }
-    if Result.iLow  = ffc_W32NoValue then
+    if Int64Rec(Result).Lo  = ffc_W32NoValue then
       Result := brmSegmentMgr.GetNewSeg(aFI, aTI, NewSize);
   {$IFDEF FF_DEBUG_THREADS}finally ThreadExit; end;{$ENDIF}          
   finally
@@ -4982,7 +5013,7 @@ var
   aFHRelMethod  : TffReleaseMethod;
   aSegRelMethod : TffReleaseMethod;
   FileHeader    : PffBlockHeaderFile;
-  SegmentOfs    : TffInt64;
+  SegmentOfs    : UInt64;
   SegmentBlk    : PffBlock;
   SegmentPtr    : PffBLOBSegmentHeaderDel;
   OffsetInBlock : TffWord32;                                         
@@ -5001,11 +5032,11 @@ begin
                                                 ffc_ReadOnly,
                                                 aFHRelMethod));
   try
-    if (FileHeader^.bhfDelBLOBHead.iLow <> ffc_W32NoValue) then begin
+    if (Int64Rec(FileHeader^.bhfDelBLOBHead).Lo <> ffc_W32NoValue) then begin
       SegmentOfs := FileHeader^.bhfDelBLOBHead;
       bsmDelChain.Sorted := True;
 
-      while (SegmentOfs.iLow <> ffc_W32NoValue) do begin
+      while (Int64Rec(SegmentOfs).Lo <> ffc_W32NoValue) do begin
         SegmentBlk := ReadVfyBlobBlock(aFI,
                                        aTI,
                                        ffc_ReadOnly,
@@ -5114,7 +5145,7 @@ end;
 {--------}
 procedure TffBaseBLOBSegmentMgr.DeleteSegment(aFI        : PffFileInfo;
                                               aTI        : PffTransInfo;
-                                        const aSegOffset : TffInt64);
+                                        const aSegOffset : UInt64);
 var
   aBLOBRelMethod : TffReleaseMethod;
   aFHRelMethod   : TffReleaseMethod;
@@ -5159,7 +5190,7 @@ begin
     { Assumption: Deleted list is already in memory and contains the entire
       list of deleted BLOB segments. }
     { Is there anything in the deleted list? }
-    if (FileHeader^.bhfDelBLOBTail.iLow <> ffc_W32NoValue) then begin
+    if (Int64Rec(FileHeader^.bhfDelBLOBTail).Lo <> ffc_W32NoValue) then begin
 
       { Update the segments in the file. }
       bsmAddToDeletedSegChain(aFI,
@@ -5173,10 +5204,10 @@ begin
       with FileHeader^ do begin
         bhfDelBLOBHead := aSegOffset;
         bhfDelBLOBTail := aSegOffset;
-        PffBLOBSegmentHeaderDel(DelSegPtr)^.bshPrevSegment.iLow := ffc_W32NoValue;
-        PffBLOBSegmentHeaderDel(DelSegPtr)^.bshPrevSegment.iHigh := ffc_W32NoValue;
-        PffBLOBSegmentHeaderDel(DelSegPtr)^.bshNextSegment.iLow := ffc_W32NoValue;
-        PffBLOBSegmentHeaderDel(DelSegPtr)^.bshNextSegment.iHigh := ffc_W32NoValue;
+        Int64Rec(PffBLOBSegmentHeaderDel(DelSegPtr)^.bshPrevSegment).Lo := ffc_W32NoValue;
+        Int64Rec(PffBLOBSegmentHeaderDel(DelSegPtr)^.bshPrevSegment).Hi := ffc_W32NoValue;
+        Int64Rec(PffBLOBSegmentHeaderDel(DelSegPtr)^.bshNextSegment).Lo := ffc_W32NoValue;
+        Int64Rec(PffBLOBSegmentHeaderDel(DelSegPtr)^.bshNextSegment).Hi := ffc_W32NoValue;
       end;
     end;
 
@@ -5222,8 +5253,8 @@ begin
 
   { Point the last segment to the new deleted segment & vice versa. }
   PrevSegment^.bshNextSegment := aDelSeg.Offset;
-  aSegment^.bshNextSegment.iLow := ffc_W32NoValue;
-  aSegment^.bshNextSegment.iHigh := ffc_W32NoValue;
+  Int64Rec(aSegment^.bshNextSegment).Lo := ffc_W32NoValue;
+  Int64Rec(aSegment^.bshNextSegment).Hi := ffc_W32NoValue;
   aSegment^.bshPrevSegment := aFileHeader^.bhfDelBLOBTail;
   aRelMethod(BLOBBlock);
 
@@ -5235,11 +5266,11 @@ end;
 {--------}
 function  TffBaseBLOBSegmentMgr.GetNewSeg(aFI   : PffFileInfo;
                                           aTI   : PffTransInfo;
-                                    const aSize : TffWord32) : TffInt64;
+                                    const aSize : TffWord32) : UInt64;
 var
   BLOBBlock    : PffBlock;
   DelSegHeader : PffBLOBSegmentHeaderDel;
-  TempI64      : TffInt64;
+  TempI64      : UInt64;
   NewSegHeader : PffBLOBSegmentHeader;
   aRelMethod   : TffReleaseMethod;
 begin
@@ -5252,11 +5283,13 @@ begin
     PffBlockHeaderBLOB(BLOBBlock)^.bhbLSN := 0;
 
     { Make a new aSize segment in the block and return its file offset. }
-    TempI64.iLow := PffBlockHeaderBLOB(BLOBBlock)^.bhbThisBlock;
-    TempI64.iHigh := 0;
+    Int64Rec(TempI64).Lo := PffBlockHeaderBLOB(BLOBBlock)^.bhbThisBlock;
+    Int64Rec(TempI64).Hi := 0;
     { Set TempI64 to file offset of new segment. }
-    ffI64MultInt(TempI64, aFI^.fiBlockSize, TempI64);
-    ffI64AddInt(TempI64, sizeof(TffBlockHeaderBLOB), Result);
+    // ffI64MultInt(TempI64, aFI^.fiBlockSize, TempI64);
+    TempI64 := TempI64 * aFI^.fiBlockSize;
+    //ffI64AddInt(TempI64, sizeof(TffBlockHeaderBLOB), Result);
+    Result := TempI64 + sizeof(TffBlockHeaderBLOB);
     NewSegHeader := PffBLOBSegmentHeader(@BLOBBlock^[sizeof(TffBlockHeaderBLOB)]);
     NewSegHeader^.bshSegmentLen := aSize;
 
@@ -5269,7 +5302,8 @@ begin
       DelSegHeader^.bshSegmentLen := aFI^.fiMaxSegSize - aSize;
       { Set TempI64 to file offset of deleted segment and add it to deleted
         chain. }
-      ffI64AddInt(Result, aSize, TempI64);
+      //ffI64AddInt(Result, aSize, TempI64);
+      TempI64 := Result + aSize;
       DeleteSegment(aFI, aTI, TempI64);
     end else
     {block only has 1 segment if the new segment was max seg size}
@@ -5282,7 +5316,7 @@ end;
 {--------}
 procedure TffBaseBLOBSegmentMgr.bsmSliceSegment(aFI         : PffFileInfo;
                                                 aTI         : PffTransInfo;
-                                                aSegOfs     : TffInt64;
+                                                aSegOfs     : UInt64;
                                                 aSegSize    : TffWord32;
                                           const aNewSize    : TffWord32;
                                                 aInDelChain : Boolean);  
@@ -5291,8 +5325,8 @@ var
   BlockNum      : TffWord32;
   DelSegHeader  : PffBLOBSegmentHeaderDel;
   OffsetInBlock : TffWord32;
-  TempI64       : TffInt64;
-  TempI64b      : TffInt64;
+  TempI64       : UInt64;
+  TempI64b      : UInt64;
   ThisSeg       : PffBLOBSegmentHeaderDel;
   aRelMethod    : TffReleaseMethod;
 begin
@@ -5323,23 +5357,27 @@ begin
 
     { Get the offset for the remainder of the segment that will become a deleted
       segment. }
-    ffI64AddInt(aSegOfs, aNewSize, TempI64);
+    // ffI64AddInt(aSegOfs, aNewSize, TempI64);
+    TempI64 := aSegOfs + aNewSize;
     BlockNum := FFGetBlockNum(aFI, TempI64);
-    ffI64MinusInt(TempI64, (BlockNum shl aFI^.fiLog2BlockSize), TempI64);
-    DelSegHeader := @BLOBBlock^[TempI64.iLow];
+    // ffI64MinusInt(TempI64, (BlockNum shl aFI^.fiLog2BlockSize), TempI64);
+    TempI64 := TempI64 - (BlockNum shl aFI^.fiLog2BlockSize);
+    DelSegHeader := @BLOBBlock^[Int64Rec(TempI64).Lo];
 
     { Initialize the deleted segment. }
     DelSegHeader^.bshSegmentLen := (aSegSize - aNewSize);
-    DelSegHeader^.bshPrevSegment.iLow := ffc_W32NoValue;
-    DelSegHeader^.bshPrevSegment.iHigh := ffc_W32NoValue;
-    DelSegHeader^.bshNextSegment.iLow := ffc_W32NoValue;
-    DelSegHeader^.bshNextSegment.iHigh := ffc_W32NoValue;
+    Int64Rec(DelSegHeader^.bshPrevSegment).Lo := ffc_W32NoValue;
+    Int64Rec(DelSegHeader^.bshPrevSegment).Hi := ffc_W32NoValue;
+    Int64Rec(DelSegHeader^.bshNextSegment).Lo := ffc_W32NoValue;
+    Int64Rec(DelSegHeader^.bshNextSegment).Hi := ffc_W32NoValue;
 
     { Put the new unused segment back in the chain. }
-    TempI64b.iLow := BlockNum;
-    TempI64b.iHigh := 0;
-    ffShiftI64L(TempI64b, aFI^.fiLog2BlockSize, TempI64b);
-    ffI64AddInt(TempI64b, TempI64.iLow, TempI64);
+    Int64Rec(TempI64b).Lo := BlockNum;
+    Int64Rec(TempI64b).Hi := 0;
+    // ffShiftI64L(TempI64b, aFI^.fiLog2BlockSize, TempI64b);
+    TempI64b := TempI64b shl aFI^.fiLog2BlockSize;
+    // ffI64AddInt(TempI64b, Int64Rec(TempI64).Lo, TempI64);
+    TempI64 := TempI64b + Int64Rec(TempI64).Lo;
     DeleteSegment(aFI, aTI, TempI64);                           
   finally
     aRelMethod(BLOBBlock);
@@ -5349,7 +5387,7 @@ end;
 {--------}
 procedure TffBaseBLOBSegmentMgr.bsmRemoveFromDeletedChain(aFI     : PffFileInfo;
                                                           aTI     : PffTransInfo;
-                                                          aSegOfs : TffInt64);
+                                                          aSegOfs : UInt64);
 var
   aFileHeader : PffBlockHeaderFile;
   OffsetInBlock    : TffWord32;                                      
@@ -5382,7 +5420,7 @@ begin
       ThisSeg := @ThisSegBlock^[OffsetInBlock];
 
       { Is there a segment before this segment? }
-      if ThisSeg^.bshPrevSegment.iLow <> ffc_W32NoValue then begin
+      if Int64Rec(ThisSeg^.bshPrevSegment).Lo <> ffc_W32NoValue then begin
         { Yes.  Point the prior segment to the next segment. }
         PrevSegBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                          ThisSeg^.bshPrevSegment, OffsetInBlock,
@@ -5392,7 +5430,7 @@ begin
 
         { If the removed segment was the tail then update the tail on the
           file header. }
-        if PrevSeg^.bshNextSegment.iLow = ffc_W32NoValue then
+        if Int64Rec(PrevSeg^.bshNextSegment).Lo = ffc_W32NoValue then
           aFileHeader^.bhfDelBLOBTail := ThisSeg^.bshPrevSegment;
 
         aSegRelMethod2(PrevSegBlock);
@@ -5402,7 +5440,7 @@ begin
         aFileHeader^.bhfDelBLOBHead := ThisSeg^.bshNextSegment;
 
       { Is there a segment after this segment? }
-      if ThisSeg^.bshNextSegment.iLow <> ffc_W32NoValue then begin
+      if Int64Rec(ThisSeg^.bshNextSegment).Lo <> ffc_W32NoValue then begin
         { Yes.  Point the next segment back to the prior segment. }
         NextSegBlock := ReadVfyBlobBlock(aFI, aTI, ffc_MarkDirty,
                                          ThisSeg^.bshNextSegment, OffsetInBlock,
@@ -5412,7 +5450,7 @@ begin
 
         { If the removed segment was the head of the chain then update the head
           in the file header. }
-        if NextSeg^.bshPrevSegment.iLow = ffc_W32NoValue then
+        if Int64Rec(NextSeg^.bshPrevSegment).Lo = ffc_W32NoValue then
           aFileHeader^.bhfDelBLOBHead := ThisSeg^.bshNextSegment;
 
         aSegRelMethod2(NextSegBlock);
@@ -5443,7 +5481,7 @@ var
   aFHRelMethod   : TffReleaseMethod;
   anInx          : Longint;
   aSegItem       : TffBLOBSegListItem;
-  aSegment       : TffInt64;
+  aSegment       : UInt64;
   aStr           : AnsiString;
   BLOBBlock      : PffBlock;
   DelSegment     : PffBLOBSegmentHeaderDel;
@@ -5460,8 +5498,8 @@ begin
     for anInx := 0 to Pred(bsmDelChain.Count) do begin
       aSegItem := TffBLOBSegListItem(bsmDelChain[anInx]);
       aStr := IntToStr(anInx) + ': Size ' + IntToStr(aSegItem.Size) +
-              ', Offset ' + IntToStr(aSegItem.Offset.iHigh) +
-              ':' + IntToStr(aSegItem.Offset.iLow);
+              ', Offset ' + IntToStr(Int64Rec(aSegItem.Offset).Hi) +
+              ':' + IntToStr(Int64Rec(aSegItem.Offset).Lo);
       case aSegItem.FPendingAction of
         bsaAddToList : aStr := aStr + ', add';
         bsaDeleteFromList : aStr := aStr + ', del';
@@ -5476,8 +5514,8 @@ begin
       anInx := 0;
       while aSegItem <> nil do begin
         aStr := Format('%d : Size %d, Offset %d:%d',
-                       [anInx, aSegItem.Size, aSegItem.Offset.iHigh,
-                        aSegItem.Offset.iLow]);
+                       [anInx, aSegItem.Size, Int64Rec(aSegItem.Offset).Hi,
+                        Int64Rec(aSegItem.Offset).Lo]);
         aStr := aStr + ', Pending: ';
         case aSegItem.FPendingAction of
           bsaNone : aStr := aStr + 'N/A';
@@ -5504,7 +5542,7 @@ begin
                                                   aFHRelMethod));
     try
       { BLOB deleted chain is empty? }
-      if FileHeader^.bhfDelBLOBHead.iLow = ffc_W32NoValue then begin
+      if Int64Rec(FileHeader^.bhfDelBLOBHead).Lo = ffc_W32NoValue then begin
         { Yes. Write blurb & exit. }
         WriteToStream('BLOB deleted chain is empty.', aStream);
         WriteToStream(#0, aStream);
@@ -5514,7 +5552,7 @@ begin
       { Not empty. Walk through the chain. }
       anInx := 0;
       aSegment := FileHeader^.bhfDelBLOBHead;
-      while (aSegment.iLow <> ffc_W32NoValue) do begin
+      while (Int64Rec(aSegment).Lo <> ffc_W32NoValue) do begin
         { Get the block containing the segment. }
         BLOBBlock := ReadVfyBlobBlock(aFI,
                                       aTI,
@@ -5525,8 +5563,8 @@ begin
         { Get the segment & write pertinent info to the stream. }
         DelSegment := @BLOBBlock^[OffsetInBlock];
         WriteToStream(Format('%d : Size %d, Offset %d:%d' + #13#10,
-                      [anInx, DelSegment^.bshSegmentLen, aSegment.iHigh,
-                       aSegment.iLow]), aStream);
+                      [anInx, DelSegment^.bshSegmentLen, Int64Rec(aSegment).Hi,
+                       Int64Rec(aSegment).Lo]), aStream);
         aSegment := DelSegment^.bshNextSegment;
         aRelMethod(BLOBBlock);
         inc(anInx);
@@ -5573,8 +5611,7 @@ constructor TffBLOBSegListItem.Create;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}
   inherited Create;
-  fOffset.iLow  := 0;
-  fOffset.iHigh := 0;
+  fOffset := 0;
   fSize := 0;
   MaintainLinks := False;
   FPendingAction := bsaNone;
@@ -5600,7 +5637,7 @@ function TffBLOBSegmentMgr.GetRecycledSeg(aFI             : PffFileInfo;
                                           aTI             : PffTransInfo;
                                       var aSizeNeeded     : Longint;
                                     const aMinSizeAllowed : Longint)
-                                                          : TffInt64;
+                                                          : UInt64;
 var
 //  BLOBBlock    : PffBlock;                                           {Deleted !!.13}
   L, R, M      : Integer;
@@ -5611,9 +5648,9 @@ var
   aSegItem     : TffBLOBSegListItem;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}
-  { Max TffInt64 returned if segment of aSize not available. }
-  Result.iLow := ffc_W32NoValue;
-  Result.iHigh := ffc_W32NoValue;
+  { Max UInt64 returned if segment of aSize not available. }
+  Int64Rec(Result).Lo := ffc_W32NoValue;
+  Int64Rec(Result).Hi := ffc_W32NoValue;
 
   { Is there a segment in the segment manager's transaction list? }
   if (bsmUseTranList) then begin
@@ -5735,7 +5772,7 @@ function Tff210BLOBSegmentMgr.GetRecycledSeg(aFI             : PffFileInfo;
                                              aTI             : PffTransInfo;
                                          var aSizeNeeded     : Longint;
                                        const aMinSizeAllowed : Longint)
-                                                             : TffInt64;
+                                                             : UInt64;
 var
 //  BLOBBlock  : PffBlock;                                             {Deleted !!.13}
   L, R, M    : Integer;
@@ -5744,9 +5781,9 @@ var
   aSegItem   : TffBLOBSegListItem;
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}
-  { Max TffInt64 returned if segment of aSize not available. }
-  Result.iLow := ffc_W32NoValue;
-  Result.iHigh := ffc_W32NoValue;
+  { Max UInt64 returned if segment of aSize not available. }
+  Int64Rec(Result).Lo := ffc_W32NoValue;
+  Int64Rec(Result).Hi := ffc_W32NoValue;
 
   { Is there a segment in the segment manager's transaction list? }   
   if (bsmUseTranList) then begin
@@ -5835,23 +5872,6 @@ end;
 {End !!.11}
 
 {===Initialization/Finalization======================================}
-procedure FinalizeUnit;
-begin
-  Pool4k.Free;
-  Pool8k.Free;
-  Pool16k.Free;
-  Pool32k.Free;
-  Pool64k.Free;
-  ffStrResServer.Free;
-  if (EncryptBuffer <> nil) then
-    FreeMem(EncryptBuffer, 64*1024);
-
-  {$IFDEF RAMPageCheck}
-  aLog.Flush;
-  aLog.Free;
-  {$ENDIF}
-end;
-{--------}
 procedure InitializeUnit;
 begin
   Pool4k := nil;
@@ -5867,6 +5887,23 @@ begin
   aLog := TffEventLog.Create(nil);
   aLog.FileName := 'RAMPage.log';
   aLog.Enabled := True;
+  {$ENDIF}
+end;
+{--------}
+procedure FinalizeUnit;
+begin
+  Pool4k.Free;
+  Pool8k.Free;
+  Pool16k.Free;
+  Pool32k.Free;
+  Pool64k.Free;
+  ffStrResServer.Free;
+  if (EncryptBuffer <> nil) then
+    FreeMem(EncryptBuffer, 64*1024);
+
+  {$IFDEF RAMPageCheck}
+  aLog.Flush;
+  aLog.Free;
   {$ENDIF}
 end;
 {--------}

@@ -507,25 +507,25 @@ type
           SQL statement. }
 
       destructor Destroy; override;
-      function BlobCreate(var aBlobNr : TFFInt64) : TFFResult;
-      function BLOBDelete(aBlobNr : TFFInt64) : TffResult;
-      function BLOBFree(aBlobNr   : TffInt64;
+      function BlobCreate(var aBlobNr : UInt64) : TFFResult;
+      function BLOBDelete(aBlobNr : UInt64) : TffResult;
+      function BLOBFree(aBlobNr   : UInt64;
                         aReadOnly : Boolean) : TFFResult;
-      function BLOBGetLength(aBlobNr : TffInt64;
+      function BLOBGetLength(aBlobNr : UInt64;
                          var aLength : Longint) : TffResult;
 {Begin !!.03}
-      function BLOBListSegments(aBLOBNr : TffInt64;
+      function BLOBListSegments(aBLOBNr : UInt64;
                                 aStream : TStream) : TffResult;
 {End !!.03}
-      function BLOBRead(aBlobNr    : TffInt64;
+      function BLOBRead(aBlobNr    : UInt64;
                         aOffset    : TffWord32;                        {!!.06}
                         aLen       : TffWord32;                        {!!.06}
                     var aBLOB;
                     var aBytesRead : TffWord32)                        {!!.06}
                                    : TffResult;
-      function BLOBTruncate(aBlobNr     : TffInt64;
+      function BLOBTruncate(aBlobNr     : UInt64;
                             aBLOBLength : Longint) : TffResult;
-      function BLOBWrite(aBlobNr : TffInt64;
+      function BLOBWrite(aBlobNr : UInt64;
                          aOffset : Longint;
                          aLen    : Longint;
                      var aBLOB) : TFFResult;
@@ -572,7 +572,7 @@ type
                              aIndexID   : Longint;
                              aPosnOnRec : Boolean) : TffResult;
       function FileBLOBAdd(const aFileName : TffFullFileName;
-                             var aBlobNr   : TffInt64) : TffResult;
+                             var aBlobNr   : UInt64) : TffResult;
       function RecordDelete(aData : PffByteArray) : TffResult;
       function RecordDeleteBatch(aBMCount  : Longint;
                                  aBMLen    : Longint;
@@ -1109,34 +1109,34 @@ type
 
       {BLOB stuff}
       function BLOBCreate(aCursorID : TffCursorID;
-                      var aBlobNr   : TffInt64) : TffResult; override;
+                      var aBlobNr   : UInt64) : TffResult; override;
       function BLOBDelete(aCursorID : TffCursorID;
-                          aBlobNr   : TffInt64) : TffResult; override;
+                          aBlobNr   : UInt64) : TffResult; override;
 {Begin !!.03}
       function BLOBListSegments(aCursorID : TffCursorID;
-                                aBLOBNr : TffInt64;
+                                aBLOBNr : UInt64;
                                 aStream : TStream) : TffResult; override;
 {End !!.03}
       function BLOBRead(aCursorID  : TffCursorID;
-                        aBlobNr    : TffInt64;
+                        aBlobNr    : UInt64;
                         aOffset    : TffWord32;                        {!!.06}
                         aLen       : TffWord32;                        {!!.06}
                     var aBLOB;
                     var aBytesRead : TffWord32)                        {!!.06}
                                    : TffResult; override;
-      function BLOBFree(aCursorID : TffCursorID; aBlobNr : TffInt64;
+      function BLOBFree(aCursorID : TffCursorID; aBlobNr : UInt64;
                         readOnly  : Boolean) : TffResult; override;
-      function BLOBGetLength(aCursorID : TffCursorID; aBlobNr : TffInt64;
+      function BLOBGetLength(aCursorID : TffCursorID; aBlobNr : UInt64;
                          var aLength   : longint) : TffResult; override;
-      function BLOBTruncate(aCursorID    : TffCursorID; aBlobNr : TffInt64;
+      function BLOBTruncate(aCursorID    : TffCursorID; aBlobNr : UInt64;
                              aBLOBLength : longint) : TffResult; override;
-      function BLOBWrite(aCursorID : TffCursorID; aBlobNr : TffInt64;
+      function BLOBWrite(aCursorID : TffCursorID; aBlobNr : UInt64;
                           aOffset  : longint;
                           aLen     : longint;
                       var aBLOB) : TffResult; override;
       function FileBLOBAdd(aCursorID : TffCursorID;
                      const aFileName : TffFullFileName;
-                       var aBlobNr   : TffInt64) : TffResult; override;
+                       var aBlobNr   : UInt64) : TffResult; override;
 
       {query stuff}
       function SQLAlloc(aClientID   : TffClientID;
@@ -3118,7 +3118,7 @@ end;
 
 
 {-TFFProxyCursor---------------------------------------------------------------}
-function TFFProxyCursor.BlobCreate(var aBlobNr : TFFInt64) : TffResult;
+function TFFProxyCursor.BlobCreate(var aBlobNr : UInt64) : TffResult;
 var
   Request  : TffnmCreateBLOBReq;
   Reply    : PffnmCreateBLOBRpy;
@@ -3144,7 +3144,7 @@ begin
     FFFreeMem(Reply, ReplyLen);
 end;
 {----------}
-function TFFProxyCursor.BLOBDelete(aBlobNr : TFFInt64) : TffResult;
+function TFFProxyCursor.BLOBDelete(aBlobNr : UInt64) : TffResult;
 var
   Request  : TffnmDeleteBLOBReq;
   Reply    : Pointer;
@@ -3167,7 +3167,7 @@ begin
     FFFreeMem(Reply, ReplyLen);
 end;
 {----------}
-function TFFProxyCursor.BLOBFree(aBlobNr   : TffInt64;
+function TFFProxyCursor.BLOBFree(aBlobNr   : UInt64;
                                  aReadOnly : Boolean) : TffResult;
 var
   Request  : TffnmFreeBLOBReq;
@@ -3192,7 +3192,7 @@ begin
     FFFreeMem(Reply, ReplyLen);
 end;
 {----------}
-function TFFProxyCursor.BLOBGetLength(aBlobNr : TffInt64;
+function TFFProxyCursor.BLOBGetLength(aBlobNr : UInt64;
                                   var aLength : Longint) : TffResult;
 var
   Request  : TffnmGetBLOBLengthReq;
@@ -3220,7 +3220,7 @@ begin
 end;
 {Begin !!.03}
 {----------}
-function TffProxyCursor.BLOBListSegments(aBLOBNr : TffInt64;
+function TffProxyCursor.BLOBListSegments(aBLOBNr : UInt64;
                                          aStream : TStream) : TffResult;
 var
   Request : TffnmListBLOBSegmentsReq;
@@ -3242,7 +3242,7 @@ begin
 end;
 {End !!.03}
 {----------}
-function TFFProxyCursor.BLOBRead(aBlobNr    : TffInt64;
+function TFFProxyCursor.BLOBRead(aBlobNr    : UInt64;
                                  aOffset    : TffWord32;               {!!.06}
                                  aLen       : TffWord32;               {!!.06}
                              var aBLOB;
@@ -3278,7 +3278,7 @@ begin
     FFFreeMem(Reply, ReplyLen);
 end;
 {----------}
-function TFFProxyCursor.BLOBTruncate(aBlobNr     : TffInt64;
+function TFFProxyCursor.BLOBTruncate(aBlobNr     : UInt64;
                                      aBLOBLength : Longint) : TffResult;
 var
   Request  : TffnmTruncateBLOBReq;
@@ -3304,7 +3304,7 @@ begin
     FFFreeMem(Reply, ReplyLen);
 end;
 {----------}
-function TFFProxyCursor.BLOBWrite(aBlobNr : TffInt64;
+function TFFProxyCursor.BLOBWrite(aBlobNr : UInt64;
                                   aOffset : Longint;
                                   aLen    : Longint;
                               var aBLOB) : TffResult;
@@ -3556,7 +3556,7 @@ begin
 end;
 {----------}
 function TFFProxyCursor.FileBLOBAdd(const aFileName : TffFullFileName;
-                                      var aBlobNr   : TffInt64) : TffResult;
+                                      var aBlobNr   : UInt64) : TffResult;
 var
   Request  : TffnmAddFileBLOBReq;
   Reply    : PffnmAddFileBLOBRpy;
@@ -4958,7 +4958,7 @@ end;
 
 {-TFFRemoteServerEngine--------------------------------------------------------}
 function TFFRemoteServerEngine.BLOBCreate(aCursorID : TffCursorID;
-                                      var aBlobNr   : TffInt64) : TffResult;
+                                      var aBlobNr   : UInt64) : TffResult;
 var
   Cursor : TFFProxyCursor;
 begin
@@ -4968,7 +4968,7 @@ begin
 end;
 {----------}
 function TFFRemoteServerEngine.BLOBDelete(aCursorID : TffCursorID;
-                                           aBlobNr  : TffInt64) : TffResult;
+                                           aBlobNr  : UInt64) : TffResult;
 var
   Cursor : TFFProxyCursor;
 begin
@@ -4978,7 +4978,7 @@ begin
 end;
 {----------}
 function TFFRemoteServerEngine.BLOBFree(aCursorID : TffCursorID;
-                                         aBlobNr  : TffInt64;
+                                         aBlobNr  : UInt64;
                                          readOnly : Boolean) : TffResult;
 var
   Cursor : TFFProxyCursor;
@@ -4990,7 +4990,7 @@ begin
 end;
 {----------}
 function TFFRemoteServerEngine.BLOBGetLength(aCursorID : TffCursorID;
-                                             aBlobNr   : TffInt64;
+                                             aBlobNr   : UInt64;
                                          var aLength   : Longint) : TffResult;
 var
   Cursor : TFFProxyCursor;
@@ -5003,7 +5003,7 @@ end;
 {Begin !!.03}
 {----------}
 function TffRemoteServerEngine.BLOBListSegments(aCursorID : TffCursorID;
-                                                aBLOBNr : TffInt64;
+                                                aBLOBNr : UInt64;
                                                 aStream : TStream) : TffResult;
 var
   Cursor : TffProxyCursor;
@@ -5015,7 +5015,7 @@ end;
 {End !!.03}
 {----------}
 function TFFRemoteServerEngine.BLOBRead(aCursorID  : TffCursorID;
-                                        aBlobNr    : TffInt64;
+                                        aBlobNr    : UInt64;
                                         aOffset    : TffWord32;        {!!.06}
                                         aLen       : TffWord32;        {!!.06}
                                     var aBLOB;
@@ -5034,7 +5034,7 @@ begin
 end;
 {----------}
 function TFFRemoteServerEngine.BLOBTruncate(aCursorID   : TffCursorID;
-                                            aBlobNr     : TffInt64;
+                                            aBlobNr     : UInt64;
                                             aBLOBLength : Longint) : TffResult;
 var
   Cursor : TFFProxyCursor;
@@ -5046,7 +5046,7 @@ begin
 end;
 {----------}
 function TFFRemoteServerEngine.BLOBWrite(aCursorID : TffCursorID;
-                                         aBlobNr   : TffInt64;
+                                         aBlobNr   : UInt64;
                                          aOffset   : Longint;
                                          aLen      : Longint;
                                      var aBLOB) : TffResult;
@@ -5884,7 +5884,7 @@ end;
 {----------}
 function TFFRemoteServerEngine.FileBLOBAdd(aCursorID : TffCursorID;
                                      const aFileName : TffFullFileName;
-                                       var aBlobNr   : TffInt64) : TffResult;
+                                       var aBlobNr   : UInt64) : TffResult;
 var
   Cursor : TFFProxyCursor;
 begin

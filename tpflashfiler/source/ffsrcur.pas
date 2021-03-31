@@ -393,10 +393,9 @@ function TffSrSimpleTable.InsertRecord(aTI        : PffTransInfo;
                                        aLockType  : TffSrLockType;
                                    var aNewRefNr  : UInt64) : TffResult;
 var
-  RefNr : TffInt64;
+  RefNr : UInt64;
 begin
-  RefNr.iLow := 0;
-  RefNr.iHigh := 0;
+  RefNr := 0;
   Result := DBIERR_NONE;
   if not Dictionary.CheckRequiredRecordFields(aData) then
     Result := DBIERR_REQDERR
@@ -423,10 +422,9 @@ function TffSrSimpleTable.InsertRecordNoDefault(aTI        : PffTransInfo;{!!.10
                                                 aLockType  : TffSrLockType;
                                             var aNewRefNr  : UInt64) : TffResult;
 var
-  RefNr : TffInt64;
+  RefNr : UInt64;
 begin
-  RefNr.iLow := 0;
-  RefNr.iHigh := 0;
+  RefNr := 0;
   Result := DBIERR_NONE;
   if not Dictionary.CheckRequiredRecordFields(aData) then
     Result := DBIERR_REQDERR

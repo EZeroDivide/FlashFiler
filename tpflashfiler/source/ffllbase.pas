@@ -1670,10 +1670,12 @@ function FFCmpI64(const a, b : TffInt64) : integer;
   {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b signed TffWord32}
 
 {===TffInt64 Operations===}
+(*
 procedure ffShiftI64L(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
   {-shift a TffInt64 to the left Bits spaces}
 procedure ffShiftI64R(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
   {-shift a TffInt64 to the right Bits spaces}
+  *)
 procedure ffI64MinusI64(const a, b : TffInt64; var Result : TffInt64);
   {-subtract a TffInt64 from a TffInt64}
 procedure ffI64MinusInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);

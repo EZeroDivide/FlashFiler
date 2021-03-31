@@ -735,20 +735,20 @@ type
   end;
   PffnmCreateBLOBRpy = ^TffnmCreateBLOBRpy;
   TffnmCreateBLOBRpy = packed record
-    BLOBNr : TffInt64;
+    BLOBNr : UInt64;
   end;
 
   PffnmDeleteBLOBReq = ^TffnmDeleteBLOBReq;
   TffnmDeleteBLOBReq = packed record
     CursorID : TffCursorID;
-    BLOBNr : TffInt64;
+    BLOBNr : UInt64;
   end;
   {reply as error in message header}
 
   PffnmGetBLOBLengthReq = ^TffnmGetBLOBLengthReq;
   TffnmGetBLOBLengthReq = packed record
     CursorID : TffCursorID;
-    BLOBNr : TffInt64;
+    BLOBNr : UInt64;
   end;
   PffnmGetBLOBLengthRpy = ^TffnmGetBLOBLengthRpy;
   TffnmGetBLOBLengthRpy = packed record
@@ -758,7 +758,7 @@ type
   PffnmTruncateBLOBReq = ^TffnmTruncateBLOBReq;
   TffnmTruncateBLOBReq = packed record
     CursorID     : TffCursorID;
-    BLOBNr       : TffInt64;
+    BLOBNr       : UInt64;
     BLOBLength   : longint;
   end;
   {reply as error in message header}
@@ -766,7 +766,7 @@ type
   PffnmReadBLOBReq = ^TffnmReadBLOBReq;
   TffnmReadBLOBReq = packed record
     CursorID     : TffCursorID;
-    BLOBNr       : TffInt64;
+    BLOBNr       : UInt64;
     Offset       : longint;
     Len          : longint;
   end;
@@ -779,7 +779,7 @@ type
   PffnmWriteBLOBReq = ^TffnmWriteBLOBReq;
   TffnmWriteBLOBReq = packed record
     CursorID     : TffCursorID;
-    BLOBNr       : TffInt64;
+    BLOBNr       : UInt64;
     Offset       : longint;
     Len          : longint;
     BLOB         : TffVarMsgField;
@@ -789,7 +789,7 @@ type
   PffnmFreeBLOBReq = ^TffnmFreeBLOBReq;
   TffnmFreeBLOBReq = packed record
     CursorID     : longint;
-    BLOBNr       : TffInt64;
+    BLOBNr       : UInt64;
     ReadOnly     : boolean;
   end;
   {reply as error in message header}
@@ -801,7 +801,7 @@ type
   end;
   PffnmAddFileBLOBRpy = ^TffnmAddFileBLOBRpy;
   TffnmAddFileBLOBRpy = packed record
-    BLOBNr : TffInt64;
+    BLOBNr : UInt64;
   end;
 
   {Begin !!.03}
@@ -816,7 +816,7 @@ type
   PffnmListBLOBSegmentsReq = ^TffnmListBLOBSegmentsReq;
   TffnmListBLOBSegmentsReq = packed record
     CursorID : TffCursorID;
-    BLOBNr : TffInt64;
+    BLOBNr : UInt64;
   end;
   {End !!.03}
 

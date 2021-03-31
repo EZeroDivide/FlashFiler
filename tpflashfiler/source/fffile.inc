@@ -64,7 +64,7 @@ begin
   end;
 end;
 {--------}
-function FFGetPositionFilePrim32(aFI : PffFileInfo) : TffInt64;
+function FFGetPositionFilePrim32(aFI : PffFileInfo) : UInt64;
 var
   WinError : TffWord32;
   HighWord : TffWord32;
@@ -78,8 +78,8 @@ begin
   FFAddTrace(foSeek, Params, sizeof(Params));
   {$ENDIF}
   HighWord := 0;
-  result.iLow := SetFilePointer(aFI^.fiHandle, 0, @HighWord , FILE_CURRENT);
-  if (Result.iLow = $FFFFFFFF) then begin
+  Int64Rec(result).Lo := SetFilePointer(aFI^.fiHandle, 0, @HighWord , FILE_CURRENT);
+  if (Int64Rec(Result).Lo = $FFFFFFFF) then begin
     WinError := GetLastError;
     {$IFDEF Tracing}
     FFAddTrace(foUnknown, WinError, sizeof(WinError));
@@ -87,7 +87,7 @@ begin
     FFRaiseException(EffServerException, ffStrResServer, fferrSeekFailed,
                      [aFI.fiName^, 0, 0, WinError, SysErrorMessage(WinError)]);
   end;
-  result.ihigh := HighWord;
+  Int64Rec(result).hi := HighWord;
   {$IFDEF Tracing}
   FFAddTrace(foUnknown, Result, sizeof(Result));
   {$ENDIF}
@@ -149,7 +149,7 @@ begin
 end;
 {--------}
 procedure FFPositionFilePrim32(aFI     : PffFileInfo;
-                         const aOffset : TffInt64);
+                         const aOffset : UInt64);
 var
   SeekResult : TffWord32;
   WinError   : TffWord32;
@@ -162,7 +162,8 @@ begin
   Params[1] := aOffset.iLow;
   FFAddTrace(foSeek, Params, sizeof(Params));
   {$ENDIF}
-  SeekResult := SetFilePointer(aFI^.fiHandle, aOffset.iLow, @aOffset.iHigh,
+  // ToDo: Bug?? @
+  SeekResult := SetFilePointer(aFI^.fiHandle, Int64Rec(aOffset).Lo, @(Int64Rec(aOffset).Hi),
                                FILE_BEGIN);
   if (SeekResult = $FFFFFFFF) then begin
     WinError := GetLastError;
@@ -170,7 +171,7 @@ begin
     FFAddTrace(foUnknown, WinError, sizeof(WinError));
     {$ENDIF}
     FFRaiseException(EffServerException, ffStrResServer, fferrSeekFailed,
-                     [aFI.fiName^, aOffset.iLow, aOffset.iHigh, WinError,
+                     [aFI.fiName^, Int64Rec(aOffset).Lo, Int64Rec(aOffset).Hi, WinError,
                       SysErrorMessage(WinError)]);
   end;
   {$IFDEF Tracing}
@@ -178,7 +179,7 @@ begin
   {$ENDIF}
 end;
 {--------}
-function FFPositionFileEOFPrim32(aFI : PffFileInfo) : TffInt64;
+function FFPositionFileEOFPrim32(aFI : PffFileInfo) : UInt64;
 var
   WinError : TffWord32;
   highWord : TffWord32;
@@ -192,8 +193,8 @@ begin
   FFAddTrace(foSeek, Params, sizeof(Params));
   {$ENDIF}
   highWord := 0;
-  Result.iLow := SetFilePointer(aFI^.fiHandle, 0, @highWord, FILE_END);
-  if (Result.iLow = $FFFFFFFF) then begin
+  Int64Rec(Result).Lo := SetFilePointer(aFI^.fiHandle, 0, @highWord, FILE_END);
+  if (Int64Rec(Result).Lo = $FFFFFFFF) then begin
     WinError := GetLastError;
     {$IFDEF Tracing}
     FFAddTrace(foUnknown, WinError, sizeof(WinError));
@@ -201,7 +202,7 @@ begin
     FFRaiseException(EffServerException, ffStrResServer, fferrSeekFailed,
                      [aFI.fiName^, 0, 0, WinError, SysErrorMessage(WinError)]);
   end;
-  result.iHigh := HighWord;
+  Int64Rec(result).Hi := HighWord;
   {$IFDEF Tracing}
   FFAddTrace(foUnknown, Result, sizeof(Result));
   {$ENDIF}
@@ -237,7 +238,7 @@ begin
 end;
 {--------}
 procedure FFSetEOFPrim32(aFI : PffFileInfo;
-                         const aOffset : TffInt64);
+                         const aOffset : UInt64);
 var
   WinError : TffWord32;
   {$IFDEF Tracing}

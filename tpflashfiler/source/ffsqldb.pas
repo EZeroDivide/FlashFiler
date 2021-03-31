@@ -217,8 +217,8 @@ type
     {- return a copy of the table with only records that are valid
        as per the called Validator function}
     function CopySortedOnAllFields(AOwner: TObject): TFFSqlTableProxy;
-    function GetCurrentRecordID: Tffint64;
-    procedure GetRecordByID(ID: Tffint64;                              {!!.11}
+    function GetCurrentRecordID: UInt64;
+    procedure GetRecordByID(ID: UInt64;                              {!!.11}
                       const LockType : TffSrLockType);                 {!!.11}
     function IndexesOnField(F : TFFSqlFieldProxy; MustBeCaseInsensitive: Boolean;
       var IndexRefs: array of integer): Integer;
@@ -293,14 +293,14 @@ type
   end;
 
 const
-  ffNRHashMaxRecords = MaxInt div sizeof(TffInt64);
+  ffNRHashMaxRecords = MaxInt div sizeof(UInt64);
   ffMaxSourceTables = MaxInt div sizeof(TFFSqlTableProxy);
 type
   TffNRecordHashNode = class(TffHashNode)
     destructor Destroy; override;
   end;
 
-  TffNRecordHashEntry = array[0..pred(ffNRHashMaxRecords)] of TffInt64;
+  TffNRecordHashEntry = array[0..pred(ffNRHashMaxRecords)] of UInt64;
   PffNRecordHashEntry = ^TffNRecordHashEntry;
   TffTableArray = array[0..pred(ffMaxSourceTables)] of TFFSqlTableProxy;
   PffTableArray = ^TffTableArray;
@@ -826,7 +826,7 @@ begin
     TffSrBaseCursor(FCursorID).SortRecords(FldList, aOrderByArray, SortListCount);
 end;
 
-function TFFSqlTableProxy.GetCurrentRecordID: tffint64;
+function TFFSqlTableProxy.GetCurrentRecordID: UInt64;
 begin
   if NoRecord then
     Result := 0
@@ -837,7 +837,7 @@ begin
   end;
 end;
 
-procedure TFFSqlTableProxy.GetRecordByID(ID: TffInt64;                 {!!.11}
+procedure TFFSqlTableProxy.GetRecordByID(ID: UInt64;                 {!!.11}
                                    const LockType : TffSrLockType);    {!!.11}
 begin
   TffSrBaseCursor(FCursorID).SetToKey(skaEqual, True, 1, 0, @ID);
@@ -1227,7 +1227,7 @@ function TffSqlFieldProxy.GetBlobValue: Variant;
 {Rewritten !!.13}
 var
   Offset        : Integer;
-  BLOBNr        : TffInt64;
+  BLOBNr        : UInt64;
   Error, Len    : Integer;
   BytesRead     : TffWord32;
   VPtr          : PByte;
@@ -1255,7 +1255,7 @@ procedure TffSqlFieldProxy.SetBlobValue(const Value: Variant);
 {Rewritten !!.13}
 var
   Offset   : Integer;
-  BLOBNr   : TffInt64;
+  BLOBNr   : UInt64;
   Error,
   Len      : Longint;
   ValueLen : TffWord32;
@@ -1282,7 +1282,7 @@ begin
 
     { If there is already BLOB data, truncate it to the length of the
       new value. }
-    if (BLOBNr.iLow <> 0) or (BLOBNr.iHigh <> 0) then begin
+    if (Int64Rec(BLOBNr).Lo <> 0) or (Int64Rec(BLOBNr).Hi <> 0) then begin
       Len := TffSrBaseCursor(FCursorID).BLOBGetLength(BLOBNr, Error);
       if TffWord32(Len) > ValueLen then
         TffSrBaseCursor(FCursorID).BLOBTruncate(BLOBNr, ValueLen);
@@ -1824,7 +1824,7 @@ const
   BufferSize = 4096;
 var
   Offset        : Integer;
-  BLOBNr        : TffInt64;
+  BLOBNr        : UInt64;
   Error, Len    : Integer;
   BytesRead     : TffWord32;
   Pos           : Cardinal;
@@ -1897,7 +1897,7 @@ var
   keyPtr : PffNRecordHashEntry;
   i, Size : Integer;
 begin
-  Size := EntrySlots * sizeOf(TffInt64);
+  Size := EntrySlots * sizeOf(UInt64);
   FFGetMem(keyPtr, Size);
   for i := 0 to pred(EntrySlots) do
     KeyPtr^[i] := FSourceTables[i].GetCurrentRecordID;
@@ -1945,21 +1945,22 @@ end;
 {--------}
 procedure TffNRecordHash.fhFreeKeyPrim(aKey : pointer);
 begin
-  FFFreeMem(aKey, EntrySlots * sizeOf(TffInt64));
+  FFFreeMem(aKey, EntrySlots * sizeOf(UInt64));
 end;
 {--------}
 function TffNRecordHash.fhGetIndex(const AKey   : Pointer;
                               const ACount : Integer): Integer;
 var
-  X : TffInt64;
+  X : UInt64;
   I : Integer;
 begin
   X := PffNRecordHashEntry(aKey)^[0];
   for i := 1 to pred(EntrySlots) do begin
-    X.iLow := X.iLow xor PffNRecordHashEntry(aKey)^[i].iLow;
-    X.iHigh := X.iHigh xor PffNRecordHashEntry(aKey)^[i].iHigh;
+    Int64Rec(X).Lo := Int64Rec(X).Lo xor Int64Rec(PffNRecordHashEntry(aKey)^[i]).Lo;
+    Int64Rec(X).Hi := Int64Rec(X).Hi xor Int64Rec(PffNRecordHashEntry(aKey)^[i]).Hi;
   end;
-  Result := ffI64ModInt(X, ACount);
+  // Result := ffI64ModInt(X, ACount);
+  Result := X mod ACount;
 end;
 {--------}
 function TffNRecordHash.Exists: Boolean;
@@ -1969,13 +1970,13 @@ var
   keyPtr : PffNRecordHashEntry;
 begin
 
-  FFGetMem(keyPtr, EntrySlots * sizeOf(TffInt64));
+  FFGetMem(keyPtr, EntrySlots * sizeOf(UInt64));
   try
     for i := 0 to pred(EntrySlots) do
       KeyPtr^[i] := FSourceTables[i].GetCurrentRecordID;
     Result := fhFindPrim(KeyPtr, I, Node);
   finally
-    FFFreeMem(keyPtr, EntrySlots * sizeOf(TffInt64));
+    FFFreeMem(keyPtr, EntrySlots * sizeOf(UInt64));
   end;
 end;
 
@@ -2014,7 +2015,7 @@ var
   SrcOffset,
   TgtOffset      : Integer;
   aSrcBLOBNr,
-  aBLOBNr        : TffInt64;
+  aBLOBNr        : UInt64;
   aLinkTableName : TffTableName;                                       {!!.11 - New}
 begin
   Assert(SourceField.GetType = TargetField.GetType);

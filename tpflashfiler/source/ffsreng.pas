@@ -427,7 +427,7 @@ type
 
       bcIndexID  : Longint;
 {Begin !!.03}
-      bcLockedRefNum : TffInt64;     { Last record locked via GetRecord
+      bcLockedRefNum : UInt64;     { Last record locked via GetRecord
                                       method. The cursor tracks this to
                                       ensure that a record lock obtained
                                       via TffTable.Edit, while an implicit
@@ -480,18 +480,18 @@ type
           interested in a cursor. }
 
       function bcBLOBCopy(aSrcCursor  : TffSrBaseCursor;
-                    const aBLOBNr     : TffInt64;
-                      var aDestBLOBNr : TffInt64) : TffResult;
+                    const aBLOBNr     : UInt64;
+                      var aDestBLOBNr : UInt64) : TffResult;
         { Used to copy a BLOB from one cursor to another. }
 
       function bcBLOBLinkGetLength(const aTableName : TffTableName;
-                                   const aBLOBNr    : TffInt64;
+                                   const aBLOBNr    : UInt64;
                                      var aLength    : Longint) : TffResult; virtual;
         {-Used to obtain the length of a BLOB referenced by a BLOB link within
           a record of this cursor's result set. }
 
       function bcBLOBLinkRead(const aTableName : TffTableName;
-                              const aBLOBNr    : TffInt64;
+                              const aBLOBNr    : UInt64;
                               const aOffset    : TffWord32;            {!!.06}
                               const aLen       : TffWord32;            {!!.06}
                                 var aBLOB;
@@ -577,11 +577,11 @@ type
       procedure AppendNewRecord(aData : PffByteArray); virtual;
 
       { BLOB methods }
-      function BLOBAdd(var aBLOBNr : TffInt64) : TffResult; virtual;
+      function BLOBAdd(var aBLOBNr : UInt64) : TffResult; virtual;
 
       function BLOBLinkAdd(const aTableName : TffTableName;
-                           const aTableBLOBNr : TffInt64;
-                             var aBLOBNr    : TffInt64) : TffResult; virtual;
+                           const aTableBLOBNr : UInt64;
+                             var aBLOBNr    : UInt64) : TffResult; virtual;
         { Adds a link to a BLOB in another table to the cursor's table. }
 
       procedure Build(const aTableName : TffTableName;
@@ -602,35 +602,35 @@ type
           transaction. }
 
       function FileBLOBAdd(const aFileName : TffFullFileName;
-                             var aBLOBNr   : TffInt64) : TffResult; virtual;
+                             var aBLOBNr   : UInt64) : TffResult; virtual;
 
-      function BLOBDelete(const aBLOBNr : TffInt64) : TffResult; virtual;
+      function BLOBDelete(const aBLOBNr : UInt64) : TffResult; virtual;
 
-      function BLOBFree(aBLOBNr : TffInt64) : TffResult; virtual;
+      function BLOBFree(aBLOBNr : UInt64) : TffResult; virtual;
 
-      function BLOBGetLength(aBLOBNr : TffInt64;
+      function BLOBGetLength(aBLOBNr : UInt64;
                          var aFBError: TffResult) : Longint; virtual;
 
-      function BLOBIsLink(aBLOBNr         : TffInt64;                  {!!.11 - New}
+      function BLOBIsLink(aBLOBNr         : UInt64;                  {!!.11 - New}
                       var aSrcTableName   : TffTableName;
-                      var aSrcTableBLOBNr : TffInt64)
+                      var aSrcTableBLOBNr : UInt64)
                                           : Boolean;
 
 {Begin !!.03}
-      function BLOBListSegments(aBLOBNr : TffInt64;
+      function BLOBListSegments(aBLOBNr : UInt64;
                                 aStream : TStream) : TffResult; virtual;
 {End !!.03}
-      function BLOBRead(aBLOBNr    : TffInt64;
+      function BLOBRead(aBLOBNr    : UInt64;
                         aOffset    : TffWord32;                        {!!.06}
                         aLen       : TffWord32;                        {!!.06}
                     var aBLOB;
                     var aBytesRead : TffWord32)                        {!!.06}
                                    : TffResult; virtual;
 
-      function BLOBTruncate(aBLOBNr : TffInt64;
+      function BLOBTruncate(aBLOBNr : UInt64;
                             aLen    : TffWord32) : TffResult; virtual;
 
-      function BLOBWrite(const aBLOBNr : TffInt64;
+      function BLOBWrite(const aBLOBNr : UInt64;
                                aOffset : TffWord32;
                                aLen    : TffWord32;
                            var aBLOB) : TffResult; virtual;
@@ -1838,7 +1838,7 @@ type
       procedure RebuildDeregister(aRebuildID : Longint);
 
       function seBLOBCopy(aSrc, aTgt                   : TffSrBaseCursor;
-                           aSourceBLOBNr, aTargetBLOBNr : TffInt64;
+                           aSourceBLOBNr, aTargetBLOBNr : UInt64;
                            aBuffer                      : pointer;
                            aBufLen                      : Longint): TffResult;
       function seDatabaseAddAliasPrim(const aAlias      : TffName;
@@ -2270,33 +2270,31 @@ type
 
       {BLOB stuff}
       function BLOBCreate(aCursorID : TffCursorID;
-                      var aBlobNr   : TffInt64) : TffResult; override;
-      function BLOBDelete(aCursorID : TffCursorID; aBLOBNr : TffInt64) : TffResult; override;
-{Begin !!.03}
+                      var aBlobNr   : UInt64) : TffResult; override;
+      function BLOBDelete(aCursorID : TffCursorID; aBLOBNr : UInt64) : TffResult; override;
       function BLOBListSegments(aCursorID : TffCursorID;
-                                aBLOBNr : TffInt64;
+                                aBLOBNr : UInt64;
                                 aStream : TStream) : TffResult; override;
-{End !!.03}
       function BLOBRead(aCursorID  : TffCursorID;
-                        aBLOBNr    : TffInt64;
+                        aBLOBNr    : UInt64;
                         aOffset    : TffWord32;                        {!!.06}
                         aLen       : TffWord32;                        {!!.06}
                     var aBLOB;
                     var aBytesRead : TffWord32)                        {!!.06}
                                    : TffResult; override;
-      function BLOBFree(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBFree(aCursorID : TffCursorID; aBLOBNr : UInt64;
                         readOnly : boolean) : TffResult; override;
-      function BLOBGetLength(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBGetLength(aCursorID : TffCursorID; aBLOBNr : UInt64;
                          var aLength   : Longint) : TffResult; override;
-      function BLOBTruncate(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBTruncate(aCursorID : TffCursorID; aBLOBNr : UInt64;
                              aBLOBLength : Longint) : TffResult; override;
-      function BLOBWrite(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+      function BLOBWrite(aCursorID : TffCursorID; aBLOBNr : UInt64;
                           aOffset : Longint;
                           aLen    : Longint;
                       var aBLOB    ) : TffResult; override;
       function FileBLOBAdd(aCursorID : TffCursorID;
                      const aFileName : TffFullFileName;
-                       var aBLOBNr   : TffInt64) : TffResult; override;
+                       var aBLOBNr   : UInt64) : TffResult; override;
 
       {query stuff}
       function SQLAlloc(aClientID : TffClientID;
@@ -3153,8 +3151,8 @@ begin
 end;
 {--------}
 function TffSrBaseCursor.bcBLOBCopy(aSrcCursor  : TffSrBaseCursor;
-                              const aBLOBNr     : TffInt64;
-                                var aDestBLOBNr : TffInt64)
+                              const aBLOBNr     : UInt64;
+                                var aDestBLOBNr : UInt64)
                                                 : TffResult;
 var
   aBLOB      : PffByteArray;
@@ -3203,7 +3201,7 @@ begin
 end;
 {--------}
 function TffSrBaseCursor.bcBLOBLinkGetLength(const aTableName : TffTableName;
-                                             const aBLOBNr    : TffInt64;
+                                             const aBLOBNr    : UInt64;
                                                var aLength    : Longint) : TffResult;
 var
   Cursor : TffSrBaseCursor;
@@ -3214,7 +3212,7 @@ begin
 end;
 {--------}
 function TffSrBaseCursor.bcBLOBLinkRead(const aTableName : TffTableName;
-                                        const aBLOBNr    : TffInt64;
+                                        const aBLOBNr    : UInt64;
                                         const aOffset    : TffWord32;  {!!.06}
                                         const aLen       : TffWord32;  {!!.06}
                                           var aBLOB;
@@ -3527,7 +3525,7 @@ begin
   end;
 end;
 {--------}
-function TffSrBaseCursor.BLOBAdd(var aBLOBNr : TffInt64) : TffResult;
+function TffSrBaseCursor.BLOBAdd(var aBLOBNr : UInt64) : TffResult;
 begin
   Result := NotifyExtenders(ffeaBeforeBLOBCreate, ffeaBLOBCreateFail);
 
@@ -3544,8 +3542,8 @@ begin
 end;
 {--------}
 function TffSrBaseCursor.BLOBLinkAdd(const aTableName : TffTableName;
-                                     const aTableBLOBNr : TffInt64;
-                                       var aBLOBNr    : TffInt64) : TffResult;
+                                     const aTableBLOBNr : UInt64;
+                                       var aBLOBNr    : UInt64) : TffResult;
 begin
   Result := NotifyExtenders(ffeaBeforeBLOBLinkAdd, ffeaBLOBLinkAddFail);
 
@@ -3563,7 +3561,7 @@ begin
 end;
 {--------}
 function TffSrBaseCursor.FileBLOBAdd(const aFileName : TffFullFileName;
-                                       var aBLOBNr   : TffInt64) : TffResult;
+                                       var aBLOBNr   : UInt64) : TffResult;
 begin
   Result := NotifyExtenders(ffeaBeforeFileBLOBAdd, ffeaFileBLOBAddFail);
 
@@ -3579,7 +3577,7 @@ begin
     end;
 end;
 {--------}
-function TffSrBaseCursor.BLOBDelete(const aBLOBNr : TffInt64) : TffResult;
+function TffSrBaseCursor.BLOBDelete(const aBLOBNr : UInt64) : TffResult;
 begin
   Result := NotifyExtenders(ffeaBeforeBLOBDelete, ffeaBLOBDeleteFail);
   if Result = DBIERR_NONE then
@@ -3594,7 +3592,7 @@ begin
     end;
 end;
 {--------}
-function TffSrBaseCursor.BLOBFree(aBLOBNr : TffInt64) : TffResult;
+function TffSrBaseCursor.BLOBFree(aBLOBNr : UInt64) : TffResult;
 begin
   Result := NotifyExtenders(ffeaBeforeBLOBFree, ffeaBLOBFreeFail);
 
@@ -3611,7 +3609,7 @@ begin
     end;
 end;
 {--------}
-function TffSrBaseCursor.BLOBGetLength(aBLOBNr : TffInt64;
+function TffSrBaseCursor.BLOBGetLength(aBLOBNr : UInt64;
                                    var aFBError: TffResult) : Longint;
 begin
   Result := -1;
@@ -3637,9 +3635,9 @@ begin
 end;
 {Begin !!.03}
 {--------}
-function TffSrBaseCursor.BLOBIsLink(aBLOBNr         : TffInt64;        {!!.11 - Start}
+function TffSrBaseCursor.BLOBIsLink(aBLOBNr         : UInt64;        {!!.11 - Start}
                                 var aSrcTableName   : TffTableName;
-                                var aSrcTableBLOBNr : TffInt64)
+                                var aSrcTableBLOBNr : UInt64)
                                                     : Boolean;
 begin
   Result := FFTblIsBLOBLink(bcTable.Files[bcTable.Dictionary.BLOBFileNumber],
@@ -3649,7 +3647,7 @@ begin
                             aSrcTableBLOBNr);
 end;
 {--------}                                                             {!!.11 - End}
-function TffSrBaseCursor.BLOBListSegments(aBLOBNr : TffInt64;
+function TffSrBaseCursor.BLOBListSegments(aBLOBNr : UInt64;
                                           aStream : TStream)
                                                   : TffResult;
 begin
@@ -3665,7 +3663,7 @@ begin
 end;
 {End !!.03}
 {--------}
-function TffSrBaseCursor.BLOBRead(aBLOBNr    : TffInt64;
+function TffSrBaseCursor.BLOBRead(aBLOBNr    : UInt64;
                                   aOffset    : TffWord32;              {!!.06}
                                   aLen       : TffWord32;              {!!.06}
                               var aBLOB;
@@ -3700,7 +3698,7 @@ begin
     end;
 end;
 {--------}
-function TffSrBaseCursor.BLOBTruncate(aBLOBNr : TffInt64;
+function TffSrBaseCursor.BLOBTruncate(aBLOBNr : UInt64;
                                       aLen    : TffWord32) : TffResult;
 begin
   Result := NotifyExtenders(ffeaBeforeBLOBTruncate, ffeaBLOBTruncateFail);
@@ -3720,7 +3718,7 @@ begin
     end;
 end;
 {--------}
-function TffSrBaseCursor.BLOBWrite(const aBLOBNr : TffInt64;
+function TffSrBaseCursor.BLOBWrite(const aBLOBNr : UInt64;
                                          aOffset : TffWord32;
                                          aLen    : TffWord32;
                                      var aBLOB) : TffResult;
@@ -3755,7 +3753,7 @@ var
   aThisAutoInc : TffWord32;                                            {!!.02}
   aBLOBFields : TffPointerList;
   aBLOBNr,
-  aSrcBLOBNr : TffInt64;
+  aSrcBLOBNr : UInt64;
   aInx,
   aOffset : integer;
   aRecord : PffByteArray;
@@ -3900,7 +3898,7 @@ var
   aBLOBFields : TffPointerList;
   aInx : integer;
   aDestRec, aSrcRec : PffByteArray;
-  aSrcBLOBNr, aBLOBNr : TffInt64;
+  aSrcBLOBNr, aBLOBNr : UInt64;
   aOffset : integer;
   aTableName : TffTableName;
   aTransID : TffTransID;
@@ -6392,15 +6390,15 @@ begin
       bhf1stFreeBlock := $FFFFFFFF;
       bhfRecordCount := 0;
       bhfDelRecCount := 0;
-      bhf1stDelRec.iLow := $FFFFFFFF;
+      Int64Rec(bhf1stDelRec).Lo := $FFFFFFFF;
       bhfRecordLength := RecLen;
       bhfRecLenPlusTrailer := RecLen + Sizeof(Byte);
       bhfRecsPerBlock := (BlockSize - ffc_BlockHeaderSizeData) div bhfRecLenPlusTrailer;
       bhf1stDataBlock := $FFFFFFFF;
       bhfLastDataBlock := $FFFFFFFF;
       bhfBLOBCount := 0;
-      bhfDelBLOBHead.iLow := $FFFFFFFF;
-      bhfDelBLOBTail.iLow := $FFFFFFFF;
+      Int64Rec(bhfDelBLOBHead).Lo := $FFFFFFFF;
+      Int64Rec(bhfDelBLOBTail).Lo := $FFFFFFFF;
       bhfAutoIncValue := 0;
       bhfIndexCount := Dictionary.IndexCount;
       bhfHasSeqIndex := 1;
@@ -6427,7 +6425,7 @@ procedure TffSrBaseTable.btDeleteBLOBsForRecord(aTI : PffTransInfo;
 var
   FldInx  : integer;
   FldDesc : PffFieldDescriptor;
-  BLOBNr  : TffInt64;
+  BLOBNr  : UInt64;
   IsNull  : boolean;
 begin
   with Dictionary do begin
@@ -6436,7 +6434,7 @@ begin
       if (FldDesc^.fdType >= fftBLOB) and
          (FldDesc^.fdType <= ffcLastBLOBType) then begin
         GetRecordField(FldInx, aData, IsNull, @BLOBNr);
-        if (not IsNull) and (BLOBNr.iLow <> ffc_W32NoValue) then       {!!.03}
+        if (not IsNull) and (Int64Rec(BLOBNr).Lo <> ffc_W32NoValue) then       {!!.03}
           FFTblDeleteBLOB(Files[BLOBFileNumber], aTI, BLOBNr);
       end;
     end;
@@ -7273,10 +7271,9 @@ function TffSrTable.InsertRecord(aTI        : PffTransInfo;
                                  aLockType  : TffSrLockType;
                              var aNewRefNr  : UInt64) : TffResult;
 var
-  RefNr : TffInt64;
+  RefNr : UInt64;
 begin
-  RefNr.iLow := 0;
-  RefNr.iHigh := 0;
+  RefNr := 0;
   if not Dictionary.CheckRequiredRecordFields(aData) then
     Result := DBIERR_REQDERR
   else begin
@@ -7302,8 +7299,7 @@ begin
          are to cleanup after ourselves then remove the inserted record. }
        if (Result <> DBIERR_NONE) then begin                           {!!.11}
          FFTblDeleteRecord(Files[0], aTI, RefNr);
-         RefNr.iLow := 0;
-         RefNr.iHigh := 0;
+         RefNr := 0;
        end;
     end;
   end;
@@ -7315,10 +7311,10 @@ function TffSrTable.InsertRecordNoDefault(aTI        : PffTransInfo;   {!!.10}
                                           aLockType  : TffSrLockType;
                                       var aNewRefNr  : UInt64) : TffResult;
 var
-  RefNr : TffInt64;
+  RefNr : UInt64;
 begin
-  RefNr.iLow := 0;
-  RefNr.iHigh := 0;
+  RefNr := 0;
+
   if not Dictionary.CheckRequiredRecordFields(aData) then
     Result := DBIERR_REQDERR
   else begin
@@ -7340,8 +7336,7 @@ begin
          are to cleanup after ourselves then remove the inserted record. }
        if (Result <> DBIERR_NONE) then begin                           {!!.11}
          FFTblDeleteRecord(Files[0], aTI, RefNr);
-         RefNr.iLow := 0;
-         RefNr.iHigh := 0;
+         RefNr := 0;
        end;
     end;
   end;
@@ -9487,7 +9482,7 @@ begin
 end;
 {--------}
 function TffServerEngine.BLOBCreate(aCursorID : TffCursorID;
-                                var aBLOBNr   : TffInt64) : TffResult;
+                                var aBLOBNr   : UInt64) : TffResult;
 {Restructured !!.10}
 var
   Cursor   : TffSrBaseCursor;
@@ -9530,7 +9525,7 @@ begin
     end;
 end;
 {--------}
-function TffServerEngine.BLOBDelete(aCursorID : TffCursorID; aBLOBNr : TffInt64) : TffResult;
+function TffServerEngine.BLOBDelete(aCursorID : TffCursorID; aBLOBNr : UInt64) : TffResult;
 var
   Cursor  : TffSrBaseCursor;
   StartedTrans : boolean;
@@ -9574,7 +9569,7 @@ begin
 end;
 {--------}
 function TffServerEngine.BLOBFree(aCursorID : TffCursorID;
-                                  aBLOBNr   : TffInt64;
+                                  aBLOBNr   : UInt64;
                                   ReadOnly  : boolean) : TffResult;
 {Restructured !!.10}
 var
@@ -9623,7 +9618,7 @@ begin
     end;
 end;
 {--------}
-function TffServerEngine.BLOBGetLength(aCursorID : TffCursorID; aBLOBNr : TffInt64;
+function TffServerEngine.BLOBGetLength(aCursorID : TffCursorID; aBLOBNr : UInt64;
                                    var aLength   : Longint) : TffResult;
 var
   Cursor : TffSrBaseCursor;
@@ -9647,7 +9642,7 @@ end;
 {Begin !!.03}
 {--------}
 function TffServerEngine.BLOBListSegments(aCursorID : TffCursorID;
-                                          aBLOBNr : TffInt64;
+                                          aBLOBNr : UInt64;
                                           aStream : TStream) : TffResult;
 var
   Cursor : TffSrBaseCursor;
@@ -9671,7 +9666,7 @@ end;
 {End !!.03}
 {--------}
 function TffServerEngine.BLOBRead(aCursorID  : TffCursorID;
-                                  aBLOBNr    : TffInt64;
+                                  aBLOBNr    : UInt64;
                                   aOffset    : TffWord32;              {!!.06}
                                   aLen       : TffWord32;              {!!.06}
                               var aBLOB;
@@ -9698,7 +9693,7 @@ begin
 end;
 {--------}
 function TffServerEngine.BLOBTruncate(aCursorID   : TffCursorID;
-                                      aBLOBNr     : TffInt64;
+                                      aBLOBNr     : UInt64;
                                       aBLOBLength : Longint) : TffResult;
 {Restructured !!.10}
 var
@@ -9740,7 +9735,7 @@ begin
 end;
 {--------}
 function TffServerEngine.BLOBWrite(aCursorID : TffCursorID;
-                                   aBLOBNr   : TffInt64;
+                                   aBLOBNr   : UInt64;
                                    aOffset   : Longint;
                                    aLen      : Longint;
                                var aBLOB)    : TffResult;
@@ -9789,7 +9784,7 @@ end;
 {--------}
 function TffServerEngine.FileBLOBAdd(aCursorID : TffCursorID;
                                const aFileName : TffFullFileName;
-                                 var aBLOBNr   : TffInt64) : TffResult;
+                                 var aBLOBNr   : UInt64) : TffResult;
 {Restructured !!.10}
 var
   Cursor  : TffSrBaseCursor;
@@ -10134,7 +10129,7 @@ end;
 function TffServerEngine.seBLOBCopy(aSrc,
                                     aTgt          : TffSrBaseCursor;
                                     aSourceBLOBNr,
-                                    aTargetBLOBNr : TffInt64;
+                                    aTargetBLOBNr : UInt64;
                                     aBuffer       : Pointer;
                                     aBufLen       : Longint)
                                                   : TffResult;
@@ -13432,13 +13427,13 @@ begin
 
       { Handle BLOB targets }
       if TargetType in [fftBLOB..ffcLastBLOBType] then begin
-        Result := BLOBCreate(TargetCursor.CursorID, TffInt64(TargetValue^));
+        Result := BLOBCreate(TargetCursor.CursorID, UInt64(TargetValue^));
         if Result = DBIERR_NONE then
           if SourceType in [fftBLOB..ffcLastBLOBType] then
             Result := seBLOBCopy(SourceCursor,
                                  TargetCursor,
-                                 TffInt64(SourceValue^),
-                                 TffInt64(TargetValue^),
+                                 UInt64(SourceValue^),
+                                 UInt64(TargetValue^),
                                  aBLOBBuffer,
                                  aBLOBBufLen)
           else
@@ -13446,7 +13441,7 @@ begin
           if SourceType in [fftShortString, fftShortAnsiStr] then begin
             { skip lengthbyte }
             SourceValue := Pointer(Succ(Integer(SourceValue)));
-            Result := TargetCursor.BLOBWrite(TffInt64(TargetValue^),
+            Result := TargetCursor.BLOBWrite(UInt64(TargetValue^),
                                              0,
                                              SourceLength-1,
                                              SourceValue^);
@@ -13454,7 +13449,7 @@ begin
           else
 //          if SourceType in [fftShortString, fftShortAnsiStr] begin
           {End !!.10}
-            Result := TargetCursor.BLOBWrite(TffInt64(TargetValue^),
+            Result := TargetCursor.BLOBWrite(UInt64(TargetValue^),
                                              0,
                                              SourceLength,
                                              SourceValue^);
