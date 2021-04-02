@@ -1762,8 +1762,6 @@ function FFWideStrLToWideStr(aSourceValue, aTargetValue: PWideChar; MaxLength: L
 {-Copies a null-terminated UNICODE wide string to another null-terminated UNICODE string}
 
 {===File and Path name routines===}
-function FFDirectoryExists(const Path : TffPath) : boolean;
-  {-Returns true if the directory given by PN exists}
 function FFExpandFileName(const FN : TffFullFileName) : TffFullFileName;
   {-Merges the filename with the current drive/directory to give a
     fully expanded file name; . and .. references are removed}
@@ -3510,20 +3508,6 @@ begin
   end;
 end;
 {===end Helpers===}
-function FFDirectoryExists(const Path : TffPath) : boolean;
-var
-  Attr : TffWord32;
-  PathZ: TffStringZ;
-begin
-  Result := false;
-  {we don't support wildcards}
-  if (Pos('*', Path) <> 0) or (Pos('?', Path) <> 0) then
-    Exit;
-  Attr := GetFileAttributesA(FFStrPCopy(PathZ, Path));
-  if (Attr <> TffWord32(-1)) and ((Attr and FILE_ATTRIBUTE_DIRECTORY) <> 0) then
-    Result := true;
-end;
-{--------}
 function FFExpandFileName(const FN : TffFullFileName) : TffFullFileName;
 var
   FNZ         : TffMaxPathZ;

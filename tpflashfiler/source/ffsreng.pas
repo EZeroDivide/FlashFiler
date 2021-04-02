@@ -11163,7 +11163,7 @@ begin
           seConfig.AliasList.EndRead;
         end;
         {check to see whether the directory exists}
-        if not FFDirectoryExists(UNCPath) then begin
+        if not DirectoryExists(UNCPath) then begin
           Result := DBIERR_INVALIDDIR;
           Exit;
         end;
@@ -11269,7 +11269,7 @@ begin
           Client.SessionList.EndRead;
         end;
         {check to see whether the directory exists}
-        if not FFDirectoryExists(aPath) then begin
+        if not DirectoryExists(aPath) then begin
           Result := DBIERR_INVALIDDIR;
           Exit;
         end;
@@ -14275,7 +14275,7 @@ begin
   end
   {if it isn't it must be an alias definition}
   else begin
-    if FFDirectoryExists(ValueStr) then
+    if DirectoryExists(ValueStr) then
       { Assumption: This routine happens on sever startup therefore we
         do not need to ensure thread-safeness. }
       seDatabaseAddAliasPrim(KeyStr, ValueStr, False);                 {!!.11}
