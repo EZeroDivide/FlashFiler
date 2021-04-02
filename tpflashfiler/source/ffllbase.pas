@@ -167,9 +167,9 @@ type
   TffWord16 = word;                         {16-bit unsigned integer}
   TffWord32 = type DWORD;                   {32-bit unsigned integer}
   PffWord32 = ^TffWord32;                   {pointer to a 32-bit unsigned integer}
-  TffBookmark = TArray<Byte>;
   PffByteArray = ^TffByteArray;             {General array of bytes}
   TffByteArray = array[0..65531] of byte;
+  TffBookmark = PffByteArray;
   PffCharArray = ^TffCharArray;             {For debugging purposes. }
   TffCharArray = array[0..65531] of AnsiChar;
   PffBLOBArray = ^TffBLOBArray;
@@ -377,7 +377,9 @@ type
   TffExtension = string[ffcl_Extension];       {Extension identifier type}
   TffFileNameExt = string[succ(ffcl_FileName + ffcl_Extension)];
                                                {File name + extension type}
-  TffFullFileName = string[255];               {Expanded file name (inc drive/path}
+  TffFullFileName = string[255];            {Expanded file name (inc drive/path}
+  // <summary> Expanded file name (inc drive/path </summary>
+  // TffFullFileName = string;
   TffPath = string[ffcl_Path];                 {Complete directory path (excl final \)}
   TffMaxPathZ = array [0..pred(MAX_PATH)] of AnsiChar;
                                                {Null-terminated path&file name type}
@@ -2273,13 +2275,6 @@ begin
     Result := 1;
 end;
 {--------}
-function  ffI64toInt(const aI64 : UInt64) : TffWord32;
-begin
-  {What should we do if aI64 larger than DWord?
-   - D5 doesn't do anything}
-  Result := Int64Rec(aI64).Lo;
-end;
-{--------}
 function  ffI64ToStrHash(const aI64 : UInt64) : AnsiString;
 begin
   Result := AnsiString(IntToStr(Int64Rec(aI64).Hi) + IntToStr(Int64Rec(aI64).Lo));
@@ -3573,7 +3568,6 @@ begin
 end;
 {--------}
 function FFExtractTableName(const PFN : TffFullFileName) : TffTableName;
-
 var
   DotPos   : integer;
   SlashPos : integer;

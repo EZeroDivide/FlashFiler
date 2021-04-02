@@ -122,7 +122,7 @@ type
         properly if RespondToBroadcasts is changed while the transport is
         active. }
 
-    procedure btSetServername(const aServername : AnsiString); override;   {!!.10}
+    procedure btSetServername(const aServername : String); override;
       {-This method sets the server name.  The implementation for this class
         does not perform any validation.  Transport subclasses should perform
         their own validation. }
@@ -846,7 +846,7 @@ begin
       FProtocol.StopReceiveDatagram;
 end;
 {--------}
-procedure TffLegacyTransport.btSetServerName(const aServerName : AnsiString); {!!.10}
+procedure TffLegacyTransport.btSetServerName(const aServerName : String);
 begin
   inherited btSetServerName(aServerName);
   FFSplitNetAddress(aServerName, FServerLocalName, FServerAddress);

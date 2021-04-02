@@ -53,7 +53,8 @@ type
   protected
     function deGetErrorString : string;
   public
-    constructor Create(const aMsg : string);
+    constructor Create(const aMsg : string); overload;
+    constructor Create(const aMsg : AnsiString); overload;
     constructor CreateViaCode(aErrorCode : TffResult; aDummy : Boolean);
     constructor CreateViaCodeFmt(const aErrorCode : TffResult;         {!!.06}
                                  const args : array of const;          {!!.06}
@@ -332,8 +333,7 @@ end;
 {--------}
 procedure RaiseFFErrorObj(aObj : TComponent; const aErrorCode : TffResult);
 begin
-  raise EffDatabaseError.CreateWithObj(aObj, aErrorCode,
-                                       ffStrResDataSet[aErrorCode]);
+  raise EffDatabaseError.CreateWithObj(aObj, aErrorCode, ffStrResDataSet[aErrorCode]);
 end;
 {--------}
 procedure RaiseFFErrorObjFmt(aObj : TComponent; const aErrorCode : TffResult;
@@ -359,6 +359,13 @@ begin
   inherited CreateFmt(ffStrResDataSet[ffdse_NoErrorCode], [aMsg]);
 end;
 {--------}
+constructor EffDatabaseError.Create(const aMsg : AnsiString);
+begin
+  deErrorCode := 0;
+  inherited CreateFmt(ffStrResDataSet[ffdse_NoErrorCode], [aMsg]);
+end;
+{--------}
+
 constructor EffDatabaseError.CreateViaCode(aErrorCode : TffResult; aDummy : Boolean);
 var
   Msg : string;

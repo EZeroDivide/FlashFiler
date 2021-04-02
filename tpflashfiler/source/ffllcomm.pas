@@ -517,13 +517,13 @@ type
       {-Whether or not a transport in server mode (i.e., Listen = True) is
         to respond to broadcast messages. }
 
-    function btGetServerName : AnsiString; virtual;                        {!!.10}
-    procedure btSetServername(const aServername : AnsiString); virtual;    {!!.10}
-      {-For a transport in Listen mode (i.e., Server), the server's name.  For
-        a transport in Send mode (i.e., Client), the name of the server to
-        which the client is to send information.  The implementation for this
-        class does not perform any validation.  Transport subclasses should
-        perform their own validation. }
+    function btGetServerName : String; virtual;
+    /// <summary>-For a transport in Listen mode (i.e., Server), the server's name.  For
+    /// a transport in Send mode (i.e., Client), the name of the server to
+    /// which the client is to send information.  The implementation for this
+    /// class does not perform any validation.  Transport subclasses should
+    /// perform their own validation. </summary>
+    procedure btSetServername(const aServername : String); virtual;
 
     { Other protected methods }
 
@@ -585,8 +585,7 @@ type
     procedure EndUpdate;
       { Apply the new properties. }
 
-    procedure AutoConnectionLost(Sender : TffBaseTransport;
-                                 aClientID : TffClientID);
+    procedure AutoConnectionLost(Sender : TffBaseTransport; aClientID : TffClientID);
 
     function ConnectionCount : Longint; virtual; abstract;
       { Returns the number of established connections.  For a sender (i.e.,
@@ -743,14 +742,11 @@ type
        write btSetCmdHandler;
       { The command handler to which requests are routed. }
 
-    property Enabled : boolean
-       read btGetEnabled
-       write btSetEnabled
-       default False;
-      { Use this property to control whether or not the transport can send
-        or receive messages as per its Mode property.  If this property is
-        set to True, the State property must still be set to ffesStarted
-        before the transport will actually send or receive messages. }
+    /// <summary> Use this property to control whether or not the transport can send
+    /// or receive messages as per its Mode property.  If this property is
+    /// set to True, the State property must still be set to ffesStarted
+    /// before the transport will actually send or receive messages. </summary>
+    property Enabled : boolean read btGetEnabled write btSetEnabled default False;
 
     property EventLogOptions : TffTransportLogOptions
        read btGetLogOptions
@@ -788,22 +784,15 @@ type
       { The handler for the event raised when a listening transport must
         disconnect an existing client. }
 
-    property OnStateChange : TNotifyEvent
-      read scOnStateChange
-      write btSetOnStateChange;
-      { Raised when the transport's state changes. }
+    /// <summary> Raised when the transport's state changes. </summary>
+    property OnStateChange : TNotifyEvent read scOnStateChange write btSetOnStateChange;
 
-    property RespondToBroadcasts : boolean
-       read btGetRespondToBroadcasts
-       write btSetRespondToBroadcasts
-       default False;
-      { Use this property to indicate wheher or not a listener should respond
-        to a broadcast for active listeners. }
+    /// <summary>  Use this property to indicate wheher or not a listener should respond
+    /// to a broadcast for active listeners. </summary>
+    property RespondToBroadcasts : boolean read btGetRespondToBroadcasts write btSetRespondToBroadcasts default False;
 
-    property ServerName : AnsiString                                       {!!.10}
-       read btGetServerName
-       write btSetServerName;
-      { The name and address of the server to be accessed by this transport. }
+    /// <summary>  The name and address of the server to be accessed by this transport. </summary>
+    property ServerName : String read btGetServerName write btSetServerName;
 
   end;
 
@@ -1534,7 +1523,7 @@ begin
   Result := FRespondToBroadcasts;
 end;
 {--------}
-function TffBaseTransport.btGetServerName : AnsiString;                    {!!.10}
+function TffBaseTransport.btGetServerName : String;
 begin
   Result := FServerName;
 end;
@@ -1610,7 +1599,7 @@ begin
     FRespondToBroadcasts := aRespond;
 end;
 {--------}
-procedure TffBaseTransport.btSetServername(const aServername : AnsiString); {!!.10}
+procedure TffBaseTransport.btSetServername(const aServername : String);
 begin
   if (FUpdateCount > 0) then
     _FServerName := aServerName

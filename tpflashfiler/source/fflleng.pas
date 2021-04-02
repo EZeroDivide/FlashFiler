@@ -396,7 +396,7 @@ type
       function CursorClose(aCursorID : TffCursorID) : TffResult; virtual; abstract;
       function CursorCompareBookmarks(aCursorID   : TffCursorID;
                                       const aBookmark1,
-                                      aBookmark2  : TArray<Byte>;
+                                      aBookmark2  : TffBookmark;
                                   var aCompResult : Longint) : TffResult; virtual; abstract;
 {Begin !!.02}
       function CursorCopyRecords(aSrcCursorID,
@@ -430,7 +430,7 @@ type
       function CursorSetTimeout(const aCursorID : TffCursorID;
                                 const aTimeout : Longint) : TffResult; virtual; abstract;
       function CursorSetToBegin(aCursorID : TffCursorID) : TffResult; virtual; abstract;
-      function CursorSetToBookmark(aCursorID : TffCursorID; const aBookmark : TArray<Byte>) : TffResult; virtual; abstract;
+      function CursorSetToBookmark(aCursorID : TffCursorID; const aBookmark : TffBookmark) : TffResult; virtual; abstract;
       function CursorSetToCursor(aDestCursorID : TffCursorID; aSrcCursorID : TffCursorID) : TffResult; virtual; abstract;
       function CursorSetToEnd(aCursorID : TffCursorID) : TffResult; virtual; abstract;
       function CursorSetToKey(aCursorID     : TffCursorID;

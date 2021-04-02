@@ -38,7 +38,8 @@
   Disabling this behavior is appropriate for certain data-aware controls
   such as the InfoPower DBTreeView and the VCL DBGrid. }
 {$DEFINE RaiseBookmarksExcept}
-
+{$WARN IMPLICIT_STRING_CAST OFF}
+{.$WARN IMPLICIT_STRING_CAST_LOSS OFF}
 unit ffdb;
 
 interface
@@ -106,7 +107,7 @@ type
 
   TffChooseServerEvent = procedure (aSource      : TObject;
                                     aServerNames : TStrings;
-                                var aServerName  : TffNetAddress;
+                                var aServerName  : string; // TffNetAddress;
                                 var aResult      : Boolean) of object;
     {-an event to choose server name to attach to}
 
@@ -218,9 +219,7 @@ type
       function MatchesRecord(aRecBuf : Pointer) : Boolean;
       procedure GetFilterInfo(Index : Word; var FilterInfo : FilterInfo);
 
-      property Active : Boolean
-         read fliActive
-         write fliActive;
+      property Active : Boolean read fliActive write fliActive;
   end;
 
 type
@@ -250,7 +249,7 @@ type
       bcPasswordRetries  : Integer;
       bcServerEngine     : TffBaseServerEngine;
       bcTimeOut          : Longint;
-      bcUserName         : TffNetName;
+      bcUserName         : string; // TffNetName;
       bcPassword         : string;
         {bcPassword is only used to store the last password at design-time.
          It is not used at run-time.}
@@ -317,7 +316,7 @@ type
         write bcSetAutoClientName
         default False;
 
-      property BeepOnLoginError : Boolean                                {!!.06}
+      property BeepOnLoginError : Boolean
         read bcBeepOnLoginError
         write bcBeepOnLoginError
         default True;
@@ -385,11 +384,11 @@ type
 
   TffCommsEngine = class(TffBaseClient)
     protected {private}
-      FServerName    : TffNetName;
+      FServerName    : string; // TffNetName;
       ceProtocol     : TffProtocolType;
       ceRegProt      : TffCommsProtocolClass;
       ceRegProtRead  : Boolean;
-      ceServerName   : TffNetAddress;
+      ceServerName   : String; // TffNetAddress;
 
     protected
       procedure ceSetProtocol(const Value : TffProtocolType);
@@ -472,7 +471,7 @@ type
       procedure dbliMustBeOpenError; override;
       procedure dbliOpenPrim; override;
       procedure DoStartup; virtual;
-      procedure ChooseServer(var aServerName : TffNetAddress);
+      procedure ChooseServer(var aServerName: string{TffNetAddress});
       procedure FindServers(aStarting : Boolean);
       procedure DoLogin(var aUserName : TffName;
                         var aPassword : TffName;
@@ -739,7 +738,7 @@ type
       procedure dsAddFuncFilter(aFilterFunc : pfGENFilter);
       function dsCancelServerFilter: Boolean; virtual;
       procedure dsClearServerSideFilter;
-      function dsCreateLookupFilter(aFields  : TList;
+      function dsCreateLookupFilter(aFields  : TList<TField>;
                               const aValues  : Variant;
                                     aOptions : TLocateOptions): HDBIFilter;
       function dsDeactivateFilter(hFilter : hDBIFilter) : TffResult;
@@ -848,8 +847,10 @@ type
 
       {Bookmark management and use}
       procedure GetBookmarkData(aBuffer : TRecordBuffer; aData : Pointer); override;
+      procedure GetBookmarkData(Buffer: TRecBuf; Data: TBookmark); override;
       function GetBookmarkFlag(aBuffer : TRecordBuffer): TBookmarkFlag; override;
       procedure InternalGotoBookmark(aBookmark : TBookmark); override;
+      procedure InternalGotoBookmark(aBookmark : Pointer); override;
       procedure SetBookmarkData(aBuffer : PByte; aData : Pointer); override;
       procedure SetBookmarkFlag(aBuffer : PByte;
                                 aValue  : TBookmarkFlag); override;
@@ -863,7 +864,8 @@ type
       procedure ClearCalcFields(aBuffer : PByte); override;
       procedure CloseBlob(aField : TField); override;
       procedure InternalInitRecord(aBuffer : PByte); override;
-      procedure SetFieldData(aField : TField; aBuffer : Pointer); override;
+      procedure SetFieldData(aField : TField; aBuffer : Pointer); override;  // depecated
+      procedure SetFieldData(Field : TField; Buffer : TValueBuffer); override;
       function FreeBlob(                                { Free the blob }
                         pRecBuf : Pointer;              { Record Buffer }
                         iField  : Word                  { Field number of blob(1..n) }
@@ -872,9 +874,7 @@ type
       {Record access and update}
       function FindRecord(aRestart, aGoForward : Boolean) : Boolean; override;
       function GetRecNo: Integer; override;
-      function GetRecord(aBuffer  : PByte;
-                         aGetMode : TGetMode;
-                         aDoCheck : Boolean): TGetResult; override;
+      function GetRecord(aBuffer: PByte; aGetMode: TGetMode; aDoCheck: Boolean): TGetResult; override;
       procedure InternalAddRecord(aBuffer : Pointer;
                                   aAppend : Boolean); override;
       procedure InternalCancel; override;
@@ -953,7 +953,7 @@ type
       procedure DeleteTable;
       procedure EmptyTable;
       function GetCurrentRecord(aBuffer : PByte) : Boolean; override;
-      function GetFieldData(aField: TField; aBuffer: Pointer): Boolean; override;
+      function GetFieldData(aField: TField; aBuffer: Pointer): Boolean; override;  // deprecated
       function GetFieldData(Field: TField; var Buffer: TValueBuffer): Boolean; override;
 
       function GetRecordBatch(
@@ -1169,8 +1169,7 @@ type
       function GetCursorProps(var aProps : TffCursorProps) : TffResult; override;
 
       {---Field management---}
-      function btDoFldsMapToCurIdx(aFields : TList;
-                                   aNoCase : Boolean) : Boolean;
+      function btDoFldsMapToCurIdx(aFields: TList<TField>; aNoCase: Boolean) : Boolean;
 
       {---Index and key management---}
       procedure btDecodeIndexDesc(const aIndexDesc : IDXDesc;
@@ -1233,7 +1232,7 @@ type
       procedure DoOnNewRecord; override;
 
       {field access and update}
-      procedure SetFieldData(aField : TField; aBuffer : Pointer); override;
+      procedure SetFieldData(aField : TField; aBuffer : Pointer); override;  // depreceated
 
       {filtering}
       procedure SetFiltered(Value : Boolean); override;
@@ -1759,8 +1758,7 @@ type
                               const aKeyValues : Variant;
                                     aOptions   : TLocateOptions;
                                     aSyncCursor: Boolean): Boolean;
-      function quParseSQL(aStmt : AnsiString; createParams : boolean;
-                          aParams : TParams) : AnsiString;
+      function quParseSQL(AStatement: String; createParams: boolean; aParams: TParams) : String;
       procedure quPreparePrim(prepare : boolean);
       procedure quReadParams(Reader : TReader);
       procedure quRefreshParams;
@@ -2073,7 +2071,7 @@ begin
   try
     aSession.GetAliasNamesEx(AliasList, False);
     for i := 0 to pred(AliasList.Count) do
-      if (FFAnsiCompareText(AliasList[i], aName) = 0) then             {!!.10}
+      if (AnsiCompareText(AliasList[i], aName) = 0) then             {!!.10}
         Exit;
   finally
     AliasList.Free;
@@ -2180,7 +2178,7 @@ begin
       aSession.GetAliasNamesEx(AliasList, False);
       { if the alias is valid, create the database and exit }
       for i := 0 to pred(AliasList.Count) do
-        if (FFAnsiCompareText(AliasList[i], aName) = 0) then begin    {!!.07}
+        if (AnsiCompareText(AliasList[i], aName) = 0) then begin    {!!.07}
           Result := TffDatabase.Create(nil);
           Result.dbliSwitchOwnerTo(aSession);                          {!!.01}
 //          Result.SessionName := aSession.SessionName;                {Deleted !!.01}
@@ -3211,7 +3209,7 @@ var
   aRSE         : TffRemoteServerEngine;  { for convenient access}
   {$ENDIF}
   aLTrans      : TffBaseTransport;       { for convenient access}
-  aServerName  : TffNetAddress;
+  aServerName  : string; // TffNetAddress;
   aStatus      : TffResult;
   aRetryCount  : Integer;
 begin
@@ -3228,7 +3226,7 @@ begin
       if (FFDB.ServerEngine = nil) then
         FFDB.ServerEngine := TffServerEngine.Create(nil);
       bcServerEngine := FFDB.ServerEngine;
-      bcServerEngine.FFAddDependent(Self);                             {!!.01}
+      bcServerEngine.FFAddDependent(Self);
     {$ELSE}
       {Get the protocol from the registry}
       FFClientConfigReadProtocol(aProt, aProtName);
@@ -3238,7 +3236,6 @@ begin
       bcOwnServerEngine := True;
       aRSE.TimeOut := Timeout;
       aLTrans := TffLegacyTransport.Create(aRSE);
-{Begin !!.01}
       {$IFDEF AutoLog}
       aLTrans.EventLog := TffEventLog.Create(aLTrans);
       aLTrans.EventLog.Enabled := True;
@@ -3253,7 +3250,6 @@ begin
       aLTrans.EventLog.WriteStringFmt('Automatic transport serverName: %s',
                                      [aLTrans.ServerName]);
       {$ENDIF}
-{End !!.01}
       aRSE.Transport := aLTrans;
       bcServerEngine := aRSE;
       bcServerEngine.FFAddDependent(Self);                             {!!.01}
@@ -3398,7 +3394,7 @@ var
   aRSE        : TffRemoteServerEngine;  { for convenient access}
   {$ENDIF}
   aLTrans     : TffBaseTransport;       { for convenient access}
-  aServerName : TffNetAddress;
+  aServerName : string; // TffNetAddress;
   aRetryCount : Integer;
   aStatus     : TffResult;
 begin
@@ -4103,10 +4099,9 @@ begin
   Client.OpenConnection(Self);
 end;
 {--------}
-procedure TffSession.ChooseServer(var aServerName  : TffNetAddress);
+procedure TffSession.ChooseServer(var aServerName: string{TffNetAddress});
 var
   Names         : TStringList;
-//  OurServerName : TffNetAddress;                                     {!!.01}
   ChoseOne      : boolean;
 begin
   aServerName := '';
@@ -4137,9 +4132,7 @@ begin
           finally
             Free;
           end;
-      if not ChoseOne then                                             {!!.01}
-//        aServerName := OurServerName                                 {!!.01}
-//      else                                                           {!!.01}
+      if not ChoseOne then
         aServerName := Names[0];
     end;
   finally
@@ -5136,8 +5129,7 @@ begin
       end;
       {reset the record position}
       if (Bookmark <> nil) then begin
-        Check(ServerEngine.CursorSetToBookmark(CursorID,
-                                               Bookmark));
+        Check(ServerEngine.CursorSetToBookmark(CursorID, @Bookmark[0]));
         FreeBookmark(Bookmark);
       end;
     end;
@@ -5204,8 +5196,10 @@ end;
 {--------}
 function TffDataSet.AllocRecordBuffer : TRecordBuffer;
 begin
-  FFGetZeroMem(Result, dsRecBufSize);
-  Assert(Assigned(Result), 'Rec Buf not Assigned');
+  GetMem(Result, dsRecBufSize);
+  FillChar(Result^, dsRecBufSize, 0);
+  // FFGetZeroMem(Result, dsRecBufSize);
+  // Assert(Assigned(Result), 'Rec Buf not Assigned');
 end;
 {--------}
 procedure TffBaseTable.ApplyRange;
@@ -5221,8 +5215,7 @@ begin
     Result := False
   else begin
     CursorPosChanged;
-    Result := ServerEngine.CursorSetToBookmark(CursorID,
-                                               aBookmark) = DBIERR_NONE;
+    Result := ServerEngine.CursorSetToBookmark(CursorID, @aBookmark[0]) = DBIERR_NONE;
     if Result then
       Result := dsGetRecord(ffltNoLock, nil, nil) = DBIERR_NONE;
   end;
@@ -5303,13 +5296,13 @@ begin
 {Begin !!.02}
 {$IFDEF RaiseBookmarksExcept}
   Check(ServerEngine.CursorCompareBookmarks(CursorID,
-                                            Bookmark1,
-                                            Bookmark2,
+                                            @Bookmark1[0],
+                                            @Bookmark2[0],
                                             Result));
 {$ELSE}
   aResult := ServerEngine.CursorCompareBookmarks(CursorID,
-                                                 Bookmark1,
-                                                 Bookmark2,
+                                                 @Bookmark1[0],
+                                                 @Bookmark2[0],
                                                  Result);
   if aResult <> DBIERR_NONE then
     Result := aResult;
@@ -5623,15 +5616,24 @@ end;
 {--------}
 procedure TffDataSet.FreeRecordBuffer(var aBuffer : TRecordBuffer);
 begin
+  FreeMem(aBuffer);
+  aBuffer := nil;
+  {
   if Assigned(aBuffer) then begin
     FFFreeMem(aBuffer, dsRecBufSize);
     aBuffer := nil;
   end;
+  }
 end;
 {--------}
 procedure TffDataSet.GetBookmarkData(aBuffer : TRecordBuffer; aData : Pointer);
 begin
   Move(aBuffer[dsBookmarkOfs], aData^, BookmarkSize);
+end;
+{--------}
+procedure TffDataSet.GetBookmarkData(Buffer: TRecBuf; Data: TBookmark);
+begin
+  GetBookmarkData(TRecordBuffer(Buffer), @Data[0]);
 end;
 {--------}
 function TffDataSet.GetBookmarkFlag(aBuffer : TRecordBuffer): TBookmarkFlag;
@@ -5740,16 +5742,11 @@ function TffDataSet.GetRecord(aBuffer  : PByte;
 var
   Status : TffResult;
   Buff : TRecordBuffer;
-  Bookm: TBookmark;
 begin
   {read the current, next or prior record; no locks placed}
   case aGetMode of
     gmCurrent :
-      (*if Assigned(dsCurRecBuf) then begin                   {removed !!.03}
-         Move(dsCurRecBuf^,aBuffer^,dsPhyRecSize);
-         Status := DBIERR_NONE;
-      end else*)
-         Status := dsGetRecord(ffltNoLock, aBuffer, nil);
+        Status := dsGetRecord(ffltNoLock, aBuffer, nil);
     gmNext :
       begin
         Status := dsGetNextRecord(ffltNoLock, Pointer(aBuffer), nil);
@@ -5774,7 +5771,7 @@ begin
         end;
         Buff := aBuffer + dsBookmarkOfs;
         Check(ServerEngine.CursorGetBookmark(CursorID, TffBookmark(Buff)));
-        GetCalcFields(aBuffer);
+        GetCalcFields(TRecBuf(aBuffer));
         Result := grOK;
       end;
     DBIERR_BOF :
@@ -5840,8 +5837,8 @@ end;
 {--------}
 procedure TffDataSet.GotoCurrent(aDataSet : TffDataSet);
 begin
-  if (FFAnsiCompareText(DatabaseName, aDataSet.DatabaseName) <> 0) or
-     (FFAnsiCompareText(TableName, aDataSet.TableName) <> 0) then
+  if (AnsiCompareText(DatabaseName, aDataSet.DatabaseName) <> 0) or
+     (AnsiCompareText(TableName, aDataSet.TableName) <> 0) then
     RaiseFFErrorObj(Self, ffdse_NotSameTbl);
   CheckBrowseMode;
   aDataSet.CheckBrowseMode;
@@ -5979,7 +5976,6 @@ end;
 {--------}
 procedure TffDataSet.InternalClose;
 begin
-{Begin !!.05}
   try
     {deactivate filters}
     if Filtered then
@@ -5993,7 +5989,6 @@ begin
       DestroyFields;
     dsServerEngine := nil;
   end;
-{End !!.05}
 end;
 {--------}
 procedure TffBaseTable.InternalClose;
@@ -6034,13 +6029,18 @@ begin
   Check(ServerEngine.CursorSetToBegin(CursorID));
 end;
 {--------}
-procedure TffDataSet.InternalGotoBookmark(aBookmark : TBookmark);
+procedure TffDataSet.InternalGotoBookmark(aBookmark: Pointer);
 begin
   if not Assigned(aBookmark) then
     Check(DBIERR_INVALIDHNDL);
 
-  Check(ServerEngine.CursorSetToBookmark(CursorID,
-                                         aBookmark));
+  Check(ServerEngine.CursorSetToBookmark(CursorID, aBookmark));
+end;
+
+{--------}
+procedure TffDataSet.InternalGotoBookmark(aBookmark : TBookmark);
+begin
+  InternalGotoBookmark(@aBookmark[0]);
 end;
 {--------}
 procedure TffDataSet.InternalHandleException;
@@ -6364,6 +6364,11 @@ begin
     if not (State in [dsCalcFields, dsFilter, dsNewValue]) then
       DataEvent(deFieldChange, Longint(aField));
   end;
+end;
+{--------}
+procedure TffDataSet.SetFieldData(Field: TField; Buffer: TValueBuffer);
+begin
+  SetFieldData(Field, @Buffer[0]);
 end;
 {--------}
 procedure TffBaseTable.SetFieldData(aField : TField; aBuffer : Pointer);
@@ -6691,7 +6696,7 @@ begin
   Result := GetCursorHandle('');
 end;
 {--------}
-function TffDataSet.dsCreateLookupFilter(aFields  : TList;
+function TffDataSet.dsCreateLookupFilter(aFields  : TList<TField>;
                                    const aValues  : Variant;
                                          aOptions : TLocateOptions): HDBIFilter;
 var
@@ -6862,8 +6867,7 @@ begin
   end;
 end;
 {--------}
-function TffBaseTable.btDoFldsMapToCurIdx(aFields : TList;
-                                      aNoCase : Boolean) : Boolean;
+function TffBaseTable.btDoFldsMapToCurIdx(aFields: TList<TField>; aNoCase: Boolean) : Boolean;
 var
   i : Integer;
 begin
@@ -7220,7 +7224,7 @@ begin
         end
         else {field must be translated} begin
           with FDI.PhyDesc^ do begin
-            inc(PAnsiChar(pRecBuff), ioffset);
+            inc(PByte(pRecBuff), ioffset);
             if MapffDataToBDE(TffFieldType(iFldType),
                               iLen,
                               pRecBuff,
@@ -7560,7 +7564,6 @@ function TffDataSet.dsGetDatabaseName : string;
 begin
   Result := dsProxy.DatabaseName;
 end;
-{Begin !!.11}
 {--------}
 function TffBaseTable.btGetFFVersion : string;
 var
@@ -7570,7 +7573,6 @@ begin
                                   dsGetTableName, Version));
   Result := Format('%5.4f', [Version / 10000.0]);
 end;
-{End !!.11}
 {--------}
 function TffBaseTable.btGetIndexField(aInx : Integer) : TField;
 var
@@ -7807,7 +7809,7 @@ function TffBaseTable.btLocateRecord(const aKeyFields : string;
 var
   i, FieldCount, PartialLength : Integer;
   OurBuffer    : PByte;
-  OurFields    : TList;
+  OurFields    : TList<TField>;
   LookupCursor : TffCursorID;
   FilterHandle : HDBIFilter;
   Status       : TffResult;
@@ -7819,7 +7821,7 @@ begin
   {get a temporary record Buffer}
   OurBuffer := Pointer(TempBuffer);
   {create list of fields}
-  OurFields := TList.Create;
+  OurFields := TList<TField>.Create;
   try
     {get the actual fields in the parameter aKeyFields}
     GetFieldList(OurFields, aKeyFields);
@@ -8495,18 +8497,16 @@ begin
                                              Request^.KeyIncl1,
                                              Request^.FieldCount2,
                                              Request^.PartialLen2,
-{Begin !!.06}
                                              PffByteArray(PAnsiChar(@Request^.KeyData1) +
                                                           Request^.KeyLen1),
-{End !!.06}
                                              Request^.KeyIncl2);
 
       end;
       {reset the record position}
       if (Bookmark <> nil) and
-        BookmarkValid(TBookmark(Bookmark)) then begin                            {!!.06}
-        Check(ServerEngine.CursorSetToBookmark(aCursorID,
-                                               TBookmark(Bookmark)));
+        BookmarkValid(TBookmark(Bookmark)) then
+        begin
+        Check(ServerEngine.CursorSetToBookmark(aCursorID, Bookmark));
         // FreeBookmark(Bookmark);
         SetLength(TBookmark(Bookmark), 0);
       end;
@@ -9672,7 +9672,7 @@ function TffQuery.Lookup(const aKeyFields    : string;
                          const aResultFields : string) : Variant;
 var
   OurBuffer    : PByte;
-  OurFields    : TList;
+  OurFields    : TList<TField>;
   FilterHandle : HDBIFilter;
 begin
   Result := Null;
@@ -9683,7 +9683,7 @@ begin
   {get a temporary record Buffer}
   OurBuffer := Pointer(TempBuffer);
   {create list of fields}
-  OurFields := TList.Create;
+  OurFields := TList<TField>.Create;
   try
     {get the actual fields in the parameter aKeyFields}
     GetFieldList(OurFields, aKeyFields);
@@ -9722,7 +9722,7 @@ procedure TffQuery.quBuildParams(var ParamsList : PffSqlParamInfoList;
                                  var ParamsDataLen : integer);
 var
   aParam : TParam;
-  aSrcBuffer : pointer;
+  aSrcBuffer : TValueBuffer; // pointer;
   aTgtBuffer : pointer;
   Index : integer;
   Offset : integer;
@@ -9735,7 +9735,8 @@ begin
   ParamsDataLen := 0;
 
   { Fill in the parameter list. }
-  for Index := 0 to Pred(FParams.Count) do begin
+  for Index := 0 to Pred(FParams.Count) do
+  begin
     aParam := FParams.Items[Index];
     PSqlParamInfo := @ParamsList^[Index];
     with PSqlParamInfo^ do begin
@@ -9744,12 +9745,9 @@ begin
       piName := aParam.Name;
         { parameter name }
       MapVCLTypeToFF(aParam.DataType, aParam.GetDataSize, piType, piLength);
-{Begin !!.13}
       { If this is a BLOB then we must obtain the actual size of the data. }
       if piType in [fftBLOB..fftBLOBTypedBin] then
         piLength := aParam.GetDataSize;
-{End !!.13}
-
         { data type & length }
       piOffset := Offset;
         { offset in data buffer }
@@ -9769,22 +9767,21 @@ begin
     PSqlParamInfo := @ParamsList^[Index];
     { Convert the data into FF format and store it in the buffer. }
     with PSqlParamInfo^ do begin
-{Begin !!.13}
         aTgtBuffer := @ParamsData^[piOffset];
         if piType in [fftBLOB..fftBLOBTypedBin] then begin
           if piLength > 0 then
             aParam.GetData(aTgtBuffer);
         end
         else begin
-          FFGetmem(aSrcBuffer, aParam.GetDataSize);
-          try
+          // FFGetmem(aSrcBuffer, aParam.GetDataSize);
+          SetLength(aSrcBuffer, aParam.GetDataSize);
+          // try
             aParam.GetData(aSrcBuffer);
             MapBDEDataToFF(piType, aParam.GetDataSize, aSrcBuffer, aTgtBuffer);
-          finally
+          {finally
             FFFreemem(aSrcBuffer, aParam.GetDataSize);
-          end;
+          end;}
         end;  { if..else }
-{End !!.13}
     end;  { with }
   end;  { for }
 
@@ -9820,7 +9817,7 @@ function TffQuery.quLocateRecord(const aKeyFields : string;
                                        aSyncCursor: Boolean): Boolean;
 var
   OurBuffer    : TRecordBuffer;
-  OurFields    : TList;
+  OurFields    : TList<TField>;
   FilterHandle : HDBIFilter;
   Status       : TffResult;
 begin
@@ -9830,7 +9827,7 @@ begin
   { Get a temporary record buffer. }
   OurBuffer := Pointer(TempBuffer);
   { Create list of fields. }
-  OurFields := TList.Create;
+  OurFields := TList<TField>.Create;
   try
     { Get the actual fields in the parameter aKeyFields. }
     GetFieldList(OurFields, aKeyFields);
@@ -9860,8 +9857,7 @@ begin
   Result := FRowsAffected;
 end;
 {--------}
-function TffQuery.quParseSQL(aStmt : AnsiString; createParams : boolean;
-                             aParams : TParams) : AnsiString;
+function TffQuery.quParseSQL(AStatement: String; createParams: boolean; aParams: TParams) : String;
 const
   MaxNest = 5;
   ParamNameTerminators = [#9, #10, #13, ' ', ',', ';', ')', '=',
@@ -9871,7 +9867,7 @@ const
 var
   CurPos, EndPos, NameEndPos, NameStartPos, StartPos : integer;
   DelimStackTop : integer;
-  DelimStack : array[1..MaxNest] of Ansichar;
+  DelimStack : array[1..MaxNest] of Char;
   aLen : integer;
 begin
   { Parameter format:
@@ -9883,10 +9879,10 @@ begin
      a colon occuring within double or single quotes
   }
 
-  if aStmt = '' then
+  if AStatement = '' then
     Exit;
 
-  Result := aStmt;
+  Result := AStatement;
 
   CurPos := 1;
   DelimStackTop := 0;
@@ -9894,10 +9890,11 @@ begin
   repeat
 
     { Skip past the leading bytes of multi-byte character set. }
-    while Result[CurPos] in LeadBytes do inc(CurPos);
+    // while Result[CurPos] in LeadBytes do inc(CurPos);
 
     { Is this the start of a literal? }
-    if Result[CurPos] in StringDelims then begin
+    if AnsiChar(Result[CurPos]) in StringDelims then
+    begin
       { Yes.  Skip to the end of the literal.  Note that we can have nested
         delimiters. }
       inc(DelimStackTop);
@@ -9908,10 +9905,10 @@ begin
         inc(CurPos);
         aLen := Length(Result);
 
-        while (CurPos < aLen) and
-              (not (Result[CurPos] in StringDelims)) do begin
+        while (CurPos < aLen) and (not (AnsiChar(Result[CurPos]) in StringDelims)) do
+        begin
           { Skip past leading bytes of MBCS. }
-          while Result[CurPos] in LeadBytes do inc(CurPos);
+          //while Result[CurPos] in LeadBytes do inc(CurPos);
           { Skip this char. }
           inc(CurPos);
         end;
@@ -9961,7 +9958,7 @@ begin
           NameStartPos := CurPos;
           repeat
             inc(CurPos);
-          until Result[CurPos] in ParamNameTerminators;
+          until AnsiChar(Result[CurPos]) in ParamNameTerminators;
           EndPos := CurPos - 1;
           NameEndPos := EndPos;
         end;
@@ -10179,30 +10176,13 @@ begin
   end
   else
     { Yes.  Parse the text, replacing parameters with question marks. }
-{Begin !!.02}
-    {$IFDEF DCC4OrLater}
     FText := quParseSQL(FSQL.Text, False, nil);
-    {$ELSE}
-    begin                                                              {!!.03}
-      aList := TParams.Create;
-      try
-        FText := quParseSQL(FSQL.Text, True, aList);
-        aList.AssignValues(FParams);
-        FParams.Clear;
-        FParams.Assign(aList);
-      finally
-        aList.Free;
-      end;
-    end;                                                               {!!.03}
-    {$ENDIF}
 end;
-{$IFDEF DCC4OrLater}
 {--------}
 procedure TffQuery.quWriteParams(Writer : TWriter);
 begin
   Writer.WriteCollection(FParams);
 end;
-{$ENDIF}
 {--------}
 procedure TffQuery.Unprepare;
 begin

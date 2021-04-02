@@ -711,8 +711,8 @@ var
 begin
   PosAt := AnsiPos('@', aAddress);
   if (PosAt > 0) then begin
-    aLocalName := Copy(aAddress, 1, FFMinI(Pred(PosAt), ffcl_NetNameSize)); {!!.06}
-    aNetName := Copy(aAddress, succ(PosAt), FFMinI(Length(aAddress) - PosAt, ffcl_NetNameSize)); {!!.06}
+    aLocalName := Copy(aAddress, 1, FFMinI(Pred(PosAt), ffcl_NetNameSize));
+    aNetName := Copy(aAddress, succ(PosAt), FFMinI(Length(aAddress) - PosAt, ffcl_NetNameSize));
   end
   else begin
     aLocalName := aAddress;

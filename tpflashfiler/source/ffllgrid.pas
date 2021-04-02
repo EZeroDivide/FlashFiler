@@ -157,8 +157,9 @@ type
   end;
 
 implementation
+
 uses
-  ffllbase;                                                           {!!.07}
+  ffllbase;
 
 {===TffInPlaceEdit===================================================}
 procedure TffInPlaceEdit.WMKillFocus(var msg : TMessage);
@@ -328,12 +329,12 @@ begin
     FOnExitCell(self, aCol, aRow, text);
 end;
 {--------}
-function TffStringGrid.sgGetVersion : string;                    {new !!.07}
+function TffStringGrid.sgGetVersion : string;
 begin
   Result := Format('%5.4f', [ffVersionNumber / 10000.0]);
 end;
 {--------}
-procedure TffStringGrid.sgSetVersion(const aValue : string);     {new !!.07}
+procedure TffStringGrid.sgSetVersion(const aValue : string);
 begin
   {do nothing}
 end;
