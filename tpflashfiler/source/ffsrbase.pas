@@ -39,11 +39,11 @@
             4K, 8K, 16K, 32K, or 64k in size; 32-bit signed integer (with
             the smallest block size it has a range of 0..1024*1024-1)
          "record reference number"
-            an offset into file, 64-bit unsigned word (TffInt64)
+            an offset into file, 64-bit unsigned word
          "BLOB number"
-            an offset into file, 64-bit unsigned word (TffInt64)
+            an offset into file, 64-bit unsigned word
          "BLOB segment number"
-            an offset into file, 64-bit unsigned word (TffInt64)
+            an offset into file, 64-bit unsigned word
          "stream number"
             a block number
 

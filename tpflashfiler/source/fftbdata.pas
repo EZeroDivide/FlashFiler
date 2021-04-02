@@ -240,7 +240,7 @@ begin
       // ffI64AddInt(BlockOffset, NextLink, TempI64);
       TempI64 := BlockOffset + NextLink;
       PByte(@RecordBlock^[ThisLink])^ := $FF;
-      PffInt64(@RecordBlock^[ThisLink + 1])^ := TempI64;
+      PUInt64(@RecordBlock^[ThisLink + 1])^ := TempI64;
       ThisLink := NextLink;
       inc(NextLink, FI^.fiRecLenPlusTrailer);
     end;
@@ -302,7 +302,7 @@ begin
        deleted record reference}
       aRefNr := bhf1stDelRec;
       DelLink := @(RecordBlock^[OffsetInBlock]);
-      bhf1stDelRec := PffInt64(@(RecordBlock^[OffsetInBlock + 1]))^;
+      bhf1stDelRec := PUInt64(@(RecordBlock^[OffsetInBlock + 1]))^;
       DelLink^ := 0;
       {copy the data from the record into the block}
       Move(aRecData^, RecordBlock^[OffsetInBlock + sizeof(byte)], bhfRecordLength);
@@ -325,7 +325,7 @@ var
   RecordBlock    : PffBlock;
   RecBlockHdr    : PffBlockHeaderData absolute RecordBlock;
   DelLink        : PByte;
-  DeletedRecOfs  : PffInt64;
+  DeletedRecOfs  : PUInt64;
   TempI64        : UInt64;
   aFHRelMethod,
   aBlkRelMethod  : TffReleaseMethod;
@@ -350,7 +350,7 @@ begin
         {mark this record as the start of the chain}
         DelLink^ := $FF;
         inc(DelLink, sizeOf(Byte));
-        DeletedRecOfs := PffInt64(DelLink);
+        DeletedRecOfs := PUInt64(DelLink);
         DeletedRecOfs^ := bhf1stDelRec;
 
         { Zero out the remainder of the record. }

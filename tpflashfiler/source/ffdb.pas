@@ -79,16 +79,14 @@ uses
   fflllgcy,
   Messages,
   ffllthrd,
-{Begin !!.02}
   ffsqlbas
   {$IFDEF SingleEXE}
   , ffsreng
   {$ENDIF}
   ;
-{End !!.02}
 
 const
-  DefaultTimeOut = 10 * 1000; { 10 Seconds }                             {!!.01}
+  DefaultTimeOut = 10 * 1000; { 10 Seconds }
   AutoObjName = '[automatic]';
 
 type
@@ -244,7 +242,7 @@ type
   TffBaseClient = class(TffDBListItem)
     protected {private}
       bcAutoClientName   : Boolean;
-      bcBeepOnLoginError : Boolean;                                   {!!.06}
+      bcBeepOnLoginError : Boolean;
       bcOwnServerEngine  : Boolean;
       bcClientID         : TffClientID;
       bcIsDefault        : Boolean;
@@ -253,7 +251,7 @@ type
       bcServerEngine     : TffBaseServerEngine;
       bcTimeOut          : Longint;
       bcUserName         : TffNetName;
-      bcPassword         : string;                                    {!!.06}
+      bcPassword         : string;
         {bcPassword is only used to store the last password at design-time.
          It is not used at run-time.}
       function dbliCreateOwnedList : TffDBList; override;
@@ -264,7 +262,7 @@ type
       procedure dbliMustBeOpenError; override;
 
       function bcGetServerEngine : TffBaseServerEngine;
-      function bcGetUserName : string;                                 {!!.10}
+      function bcGetUserName : string;
       procedure bcSetAutoClientName(const Value : Boolean);
       procedure bcSetClientName(const aName : string);
       procedure bcSetIsDefault(const Value : Boolean);
@@ -353,26 +351,16 @@ type
          write bcPasswordRetries
          default 3;
 
-      property ServerEngine : TffBaseServerEngine
-         read bcGetServerEngine
-         write bcSetServerEngine;
+      property ServerEngine : TffBaseServerEngine read bcGetServerEngine write bcSetServerEngine;
 
-      property SessionCount : Integer
-         read bcGetSessionCount
-         stored False;
+      property SessionCount : Integer read bcGetSessionCount stored False;
 
-      property Sessions[aInx : Integer] : TffSession
-         read bcGetSession;
+      property Sessions[aInx : Integer] : TffSession read bcGetSession;
 
-      property TimeOut : Longint
-         read bcTimeOut
-         write bcSetTimeOut
-         default DefaultTimeout;
-         { Timeout specified in milliseconds }
+      /// <summary> Timeout specified in milliseconds </summary>
+      property TimeOut : Longint read bcTimeOut write bcSetTimeOut default DefaultTimeout;
 
-      property UserName : string                                       {!!.10}
-         read bcGetUserName
-         write bcSetUserName;
+      property UserName : string read bcGetUserName write bcSetUserName;
 
   end;
 
@@ -385,7 +373,7 @@ type
     published
       property Active;
       property AutoClientName;
-      property BeepOnLoginError;                                         {!!.06}
+      property BeepOnLoginError;
       property ClientName;
       property IsDefault;
       property OnConnectionLost;
@@ -405,13 +393,13 @@ type
 
     protected
       procedure ceSetProtocol(const Value : TffProtocolType);
-      procedure ceSetServerName(const Value : string);                 {!!.10}
-      function ceGetServerName : string;                               {!!.10}
+      procedure ceSetServerName(const Value : string);
+      function ceGetServerName : string;
       procedure ceReadRegistryProtocol;
     public
       constructor Create(aOwner : TComponent); override;
 
-      procedure GetServerNames(aServerNames : TStrings); override;      {!! .01}
+      procedure GetServerNames(aServerNames : TStrings); override;
       procedure OpenConnection (aSession : TffSession); override;
       function ProtocolClass : TffCommsProtocolClass; dynamic;
 
@@ -422,7 +410,7 @@ type
     published
       property Active;
       property AutoClientName;
-      property BeepOnLoginError;                                         {!!.06}
+      property BeepOnLoginError;
       property CommsEngineName;
       property IsDefault;
       property OnConnectionLost;
@@ -470,7 +458,7 @@ type
       function scGetDatabaseCount : Integer;
       function scGetIsDefault : Boolean;
       function scGetServerEngine : TffBaseServerEngine;
-      procedure scRefreshTimeout;                                      {!!.11}
+      procedure scRefreshTimeout;
       procedure scSetAutoSessionName(const Value : Boolean);
       procedure scSetIsDefault(const Value : Boolean);
       procedure scSetSessionName(const aName : string);
@@ -517,19 +505,13 @@ type
 
       procedure AddAlias(const aName       : string;
                          const aPath       : string;
-                               aCheckSpace : Boolean                   {!!.11}
-                               {$IFDEF DCC4OrLater}                    {!!.11}
-                               = False                                 {!!.11}
-                               {$ENDIF});                              {!!.11}
+                               aCheckSpace : Boolean = False);
       function AddAliasEx(const aName       : string;
                           const aPath       : string;
-                                aCheckSpace : Boolean                  {!!.11}
-                                {$IFDEF DCC4OrLater}                   {!!.11}
-                                = False                                {!!.11}
-                                {$ENDIF})                              {!!.11}
+                                aCheckSpace : Boolean = False)
                                             : TffResult;
       procedure CloseDatabase(aDatabase : TffBaseDatabase);
-      procedure CloseInactiveTables;                                   {!!.06}
+      procedure CloseInactiveTables;
       procedure DeleteAlias(const aName : string);
       function DeleteAliasEx(const aName : string) : TffResult;
       function FindDatabase(const aName : string) : TffBaseDatabase;
@@ -541,7 +523,7 @@ type
                                var aPath : string);
       procedure GetDatabaseNames(aList : TStrings);
       function GetServerDateTime(var aServerNow : TDateTime) : TffResult;
-                                                                       {begin !!.10}
+
       function GetServerSystemTime(var aServerNow : TSystemTime) : TffResult;
       function GetServerGUID(var aGUID : TGUID) : TffResult;
       function GetServerID(var aUniqueID : TGUID) : TffResult;
@@ -554,7 +536,7 @@ type
                                       const aTransportIdx  : Integer;
                                         var aStats         : TffTransportStatistics)
                                                            : TffResult;
-                                                                       {End !!.10}
+
       procedure GetTableNames(const aDatabaseName : string;
                               const aPattern      : string;
                                     aExtensions   : Boolean;
@@ -568,38 +550,29 @@ type
       function ModifyAlias(const aName    : string;
                            const aNewName : string;
                            const aNewPath : string;
-                                 aCheckSpace : Boolean                 {!!.11}
-                                 {$IFDEF DCC4OrLater}                  {!!.11}
-                                 = False                               {!!.11}
-                                 {$ENDIF})                             {!!.11}
+                                 aCheckSpace : Boolean = False)
                                           : TffResult;
       function OpenDatabase(const aName : string) : TffBaseDatabase;
       procedure SetLoginRetries(const aRetries : Integer);
       procedure SetLoginParameters(const aName : TffName; aPassword : TffName);
 
-      property Client : TffBaseClient
-         read scGetClient;
+      property Client : TffBaseClient read scGetClient;
 
-      property CommsEngine : TffBaseClient
-         read scGetClient;
+      property CommsEngine : TffBaseClient read scGetClient;
 
-      property DatabaseCount : Integer
-         read scGetDatabaseCount;
-        { TODO:: This functionality assumes that all dependents are databases.
-          This is not the case when a plugin engine attaches itself to the
-          session in order to re-use the connection. }
+      /// <summary> TODO:: This functionality assumes that all dependents are databases.
+      /// This is not the case when a plugin engine attaches itself to the
+      /// session in order to re-use the connection. </summary>
+      property DatabaseCount : Integer read scGetDatabaseCount;
 
-      property Databases[aInx : Integer] : TffBaseDatabase
-         read scGetDatabase;
-        { TODO:: This functionality assumes that all dependents are databases.
-          This is not the case when a plugin engine attaches itself to the
-          session in order to re-use the connection. }
+      /// <summary>  TODO:: This functionality assumes that all dependents are databases.
+      ///  This is not the case when a plugin engine attaches itself to the
+      ///  session in order to re-use the connection. </summary>
+      property Databases[aInx : Integer] : TffBaseDatabase read scGetDatabase;
 
-      property ServerEngine : TffBaseServerEngine
-         read scGetServerEngine;
+      property ServerEngine : TffBaseServerEngine read scGetServerEngine;
 
-      property SessionID : TffSessionID
-         read scSessionID;
+      property SessionID : TffSessionID read scSessionID;
 
     published
       property Active;
@@ -980,8 +953,9 @@ type
       procedure DeleteTable;
       procedure EmptyTable;
       function GetCurrentRecord(aBuffer : PByte) : Boolean; override;
-      function GetFieldData(aField  : TField;
-                            aBuffer : Pointer): Boolean; override;
+      function GetFieldData(aField: TField; aBuffer: Pointer): Boolean; override;
+      function GetFieldData(Field: TField; var Buffer: TValueBuffer): Boolean; override;
+
       function GetRecordBatch(
                               RequestCount : Longint;
                           var ReturnCount  : Longint;
@@ -1759,7 +1733,7 @@ type
       FRecordsRead  : Integer;                                        {!!.10}
       FSQL          : TStrings;
       FStmtID       : TffSqlStmtID;
-      FText         : string;
+      FText         : String;
 
       {$IFDEF DCC4OrLater}
       procedure DefineProperties(Filer : TFiler); override;
@@ -1776,24 +1750,19 @@ type
                               var ParamsDataLen : integer);
         {-Constructs the parameter data sent to the server. }
       procedure quDisconnect;
-      procedure quExecSQLStmt(const aOpenMode : TffOpenMode;
-                                var aCursorID : TffCursorID);
+      procedure quExecSQLStmt(const aOpenMode: TffOpenMode; var aCursorID: TffCursorID);
       procedure quFreeStmt;
       function quGetDataSource : TDataSource;
       function quGetParamCount : Word;
-      function quGetRowsAffected : Integer;                           {!!.10}
-{Begin !!.01}
+      function quGetRowsAffected : Integer;
       function quLocateRecord(const aKeyFields : string;
                               const aKeyValues : Variant;
                                     aOptions   : TLocateOptions;
                                     aSyncCursor: Boolean): Boolean;
-{End !!.01}
       function quParseSQL(aStmt : AnsiString; createParams : boolean;
                           aParams : TParams) : AnsiString;
       procedure quPreparePrim(prepare : boolean);
-      {$IFDEF DCC4OrLater}
       procedure quReadParams(Reader : TReader);
-      {$ENDIF}
       procedure quRefreshParams;
       procedure quSetDataSource(aSrc : TDataSource);
       procedure quSetParams(aParamList : TParams);
@@ -1804,22 +1773,17 @@ type
       procedure quSQLChanged(Sender : TObject);
         {-Called when the SQL property changes.  Allows us to update the
           Params property. }
-      {$IFDEF DCC4OrLater}
-        procedure quWriteParams(Writer : TWriter);
-      {$ENDIF}
+      procedure quWriteParams(Writer : TWriter);
 
-      property DataLink : TDataLink
-         read FDataLink;
+      property DataLink : TDataLink read FDataLink;
 
     public
       constructor Create(aOwner : TComponent); override;
       destructor Destroy; override;
       procedure ExecSQL;                                              {!!.10}
-{Begin !!.01}
       function Locate(const aKeyFields : string;
                       const aKeyValues : Variant;
                             aOptions   : TLocateOptions) : Boolean; override;
-{End !!.01}
       function Lookup(const aKeyFields    : string;
                       const aKeyValues    : Variant;
                       const aResultFields : string) : Variant; override;
@@ -1831,11 +1795,10 @@ type
       property Prepared : boolean
          read FPrepared
          write quSetPrepared;
-      property RowsAffected : Integer                                 {!!.10}
+      property RowsAffected : Integer
          read quGetRowsAffected;
-      property RecordsRead: Integer read FRecordsRead;                {!!.10}
-      property Text : string
-         read FText;
+      property RecordsRead: Integer read FRecordsRead;
+      property Text: string read FText;
 
     published
       property Active;
@@ -2094,17 +2057,17 @@ var
 {$ENDIF}
 
 {== Database object search routines ==================================}
-function IsFFAliasName(aSession : TffSession;
-                       aName    : string)
-                                : Boolean;
+function IsFFAliasName(aSession: TffSession; aName: string): Boolean;
 var
   i         : Integer;
   AliasList : TStringList;
 begin
-  if (aSession = nil) or (aName = '') then begin
+  if (aSession = nil) or (aName = '') then
+  begin
     Result := False;
     Exit;
   end;
+
   Result := True;
   AliasList := TStringList.Create;
   try
@@ -3734,13 +3697,12 @@ begin
   Result := FindFFDatabaseName(Self, aName, False);
 end;
 {--------}
-procedure TffSession.GetAliasNames(aList : TStrings);
+procedure TffSession.GetAliasNames(aList: TStrings);
 begin
   GetAliasNamesEx(aList, True);
 end;
 {--------}
-function TffSession.GetAliasNamesEx(aList : TStrings;
-                              const aEmptyList : Boolean) : TffResult;
+function TffSession.GetAliasNamesEx(aList: TStrings; const aEmptyList: Boolean): TffResult;
 var
   WasActive   : Boolean;
   CEWasActive : Boolean;
@@ -5699,7 +5661,14 @@ begin
 end;
 {$ENDIF}
 {--------}
-function TffDataSet.GetFieldData(aField : TField; aBuffer : Pointer): Boolean;
+
+function TffDataSet.GetFieldData(Field: TField; var Buffer: TValueBuffer): Boolean;
+begin
+  Result := GetFieldData(Field, @Buffer[0]);
+end;
+
+
+function TffDataSet.GetFieldData(aField: TField; aBuffer: Pointer): Boolean;
 var
   IsBlank : Boolean;
   RecBuf  : TRecordBuffer;
@@ -5871,8 +5840,8 @@ end;
 {--------}
 procedure TffDataSet.GotoCurrent(aDataSet : TffDataSet);
 begin
-  if (FFAnsiCompareText(DatabaseName, aDataSet.DatabaseName) <> 0) or {!!.07}
-     (FFAnsiCompareText(TableName, aDataSet.TableName) <> 0) then     {!!.07}
+  if (FFAnsiCompareText(DatabaseName, aDataSet.DatabaseName) <> 0) or
+     (FFAnsiCompareText(TableName, aDataSet.TableName) <> 0) then
     RaiseFFErrorObj(Self, ffdse_NotSameTbl);
   CheckBrowseMode;
   aDataSet.CheckBrowseMode;
@@ -7391,6 +7360,7 @@ begin
   aProps.Filters := Filters.Count;
   Result := DBIERR_NONE;
 end;
+
 {--------}
 function TffBaseTable.GetCursorProps(var aProps : TffCursorProps) : TffResult;
 begin
@@ -8261,9 +8231,9 @@ var
   OldState : TDataSetState;
   i        : Integer;
 begin
-  { if the current index is not composite, raise error}                {!!.10}
-  if Dictionary.IndexType[btIndexID] = itUserDefined then              {!!.10}
-    raise EffDatabaseError.Create(ffStrResDataSet[ffdse_TblIdxFldMissing]); {!!.10}
+  { if the current index is not composite, raise error}
+  if Dictionary.IndexType[btIndexID] = itUserDefined then
+    raise EffDatabaseError.Create(ffStrResDataSet[ffdse_TblIdxFldMissing]);
   OldState := SetTempState(dsSetKey);
   try
     btKeyBuffer := PKeyBuffers(btKeyBuffers)^[aInx];
@@ -9884,18 +9854,18 @@ function TffQuery.quGetParamCount : Word;
 begin
   Result := FParams.Count;
 end;
-{--------}                                                      {begin !!.10}
+{--------}
 function TffQuery.quGetRowsAffected : Integer;
 begin
   Result := FRowsAffected;
 end;
-{--------}                                                        {end !!.10}
+{--------}
 function TffQuery.quParseSQL(aStmt : AnsiString; createParams : boolean;
                              aParams : TParams) : AnsiString;
 const
   MaxNest = 5;
-  ParamNameTerminators = [#9, #10, #13, ' ', ',', ';', ')', '=',       {!!.11}
-                          '>', '<'];                                   {!!.11}
+  ParamNameTerminators = [#9, #10, #13, ' ', ',', ';', ')', '=',
+                          '>', '<'];
   StringDelims = ['''', '"', '`'];
     { Things that delimit a string. }
 var

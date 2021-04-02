@@ -55,9 +55,7 @@ uses
   AnsiStrings,
   Classes,
   DB,
-  {$IFDEF DCC6OrLater}
   Variants,
-  {$ENDIF}
   ffllbase,
   ffsqldb,
   ffhash;
@@ -2034,7 +2032,7 @@ type
       read GetUpdateItem;
     procedure EmitSQL(Stream : TStream); override;
     function Equals(Other: TffSqlNode): Boolean; override;
-    function Update : TffResult;                                       {!!.11}
+    function Update : TffResult;
   end;
 
   TffSqlUPDATE = class(TffSqlColumnListOwner)
@@ -2043,16 +2041,14 @@ type
     FCondExpWhere: TffSqlCondExp;
     FUpdateList: TFFSqlUpdateList;
     Bound: Boolean;
-//    T : TffSqlTableProxy;                                            {!!.11}
     Joiner : TffSqlJoiner;
     FRowsAffected: Integer;
     UpdateRecList: TList;
     procedure AddColumns(Node: TffSqlNode);
     procedure Bind;
-    function BindField(const TableName,
-      FieldName: AnsiString): TFFSqlFieldProxy; override;
+    function BindField(const TableName, FieldName: AnsiString): TFFSqlFieldProxy; override;
     procedure ClearBindings(Node: TffSqlNode);
-    function Reduce: Boolean;                                          {!!.11}
+    function Reduce: Boolean;
     procedure UpdateRecord;
   public
     destructor Destroy; override;
@@ -2095,19 +2091,15 @@ type
     property TableExp: TffSqlTableExp read FTableExp write FTableExp;
     constructor Create;
     destructor Destroy; override;
-{Begin !!.11}
     procedure Bind(const ClientID: TffClientID;
                    const SessionID: TffSessionID;
                          Database : TffSqlDatabaseProxy);
-{End !!.11}
     procedure EmitSQL(Stream : TStream); override;
      {- write the SQL statement represented by this hierarchy}
-{Begin !!.11}
     function Execute(var aLiveResult: Boolean;
                      var aCursorID: TffCursorID;
                      var RowsAffected,
                          aRecordsRead: integer) : TffResult;
-{End !!.11}
     function Equals(Other: TffSqlNode): Boolean; override;
     procedure SetParameter(Index: Integer; Value: Variant);
     procedure ReduceStrength;
@@ -2138,7 +2130,7 @@ uses
   ffsrbase,
   ffsrbde,
   ffsrlock,
-  Math;                                                                {!!.11}
+  Math;
 
 {$I ffconst.inc}
 
@@ -2229,69 +2221,6 @@ begin
   Result := 0;
 end;
 
-{$IFNDEF DCC5OrLater}
-function CompareText(const S1, S2: AnsiString): Integer; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBX
-        MOV     ESI,EAX
-        MOV     EDI,EDX
-        OR      EAX,EAX
-        JE      @@0
-        MOV     EAX,[EAX-4]
-@@0:    OR      EDX,EDX
-        JE      @@1
-        MOV     EDX,[EDX-4]
-@@1:    MOV     ECX,EAX
-        CMP     ECX,EDX
-        JBE     @@2
-        MOV     ECX,EDX
-@@2:    CMP     ECX,ECX
-@@3:    REPE    CMPSB
-        JE      @@6
-        MOV     BL,BYTE PTR [ESI-1]
-        CMP     BL,'a'
-        JB      @@4
-        CMP     BL,'z'
-        JA      @@4
-        SUB     BL,20H
-@@4:    MOV     BH,BYTE PTR [EDI-1]
-        CMP     BH,'a'
-        JB      @@5
-        CMP     BH,'z'
-        JA      @@5
-        SUB     BH,20H
-@@5:    CMP     BL,BH
-        JE      @@3
-        MOVZX   EAX,BL
-        MOVZX   EDX,BH
-@@6:    SUB     EAX,EDX
-        POP     EBX
-        POP     EDI
-        POP     ESI
-end;
-
-function SameText(const S1, S2: AnsiString): Boolean; assembler;
-asm
-        CMP     EAX,EDX
-        JZ      @1
-        OR      EAX,EAX
-        JZ      @2
-        OR      EDX,EDX
-        JZ      @3
-        MOV     ECX,[EAX-4]
-        CMP     ECX,[EDX-4]
-        JNE     @3
-        CALL    CompareText
-        TEST    EAX,EAX
-        JNZ     @3
-@1:     MOV     AL,1
-@2:     RET
-@3:     XOR     EAX,EAX
-end;
-{$ENDIF}
-
 type
   TReadSourceEvent = procedure(Sender: TObject;
     var OkToCopy: boolean) of object;
@@ -2345,9 +2274,9 @@ procedure TffSqlJoiner.AddColumn(
   Target: TFFSqlFieldProxy);
 begin
   Assert((SourceExpression = nil) or (SourceField = nil));
-  if (SourceExpression = nil) and (SourceField = nil) then             {!!.13}
-    FSX.Add(Pointer(1)) // flag - see CreateResultRecord               {!!.13}
-  else                                                                 {!!.13}
+  if (SourceExpression = nil) and (SourceField = nil) then
+    FSX.Add(Pointer(1)) // flag - see CreateResultRecord
+  else
     FSX.Add(SourceExpression);
   Target.IsTarget := True;
   if SourceField <> nil then begin
@@ -16028,11 +15957,11 @@ end;
 
 procedure TffSqlDELETE.DeleteRecord;
 var
-  Pos: TffInt64;
+  Pos: UInt64;
 begin
   Pos := T.GetCurrentRecordID;
-  DeleteList.Add(Pointer(Pos.iLow));
-  DeleteList.Add(Pointer(Pos.iHigh));
+  DeleteList.Add(Pointer(Int64Rec(Pos).Lo));
+  DeleteList.Add(Pointer(Int64Rec(Pos).Hi));
 end;
 
 destructor TffSqlDELETE.Destroy;
@@ -16083,20 +16012,18 @@ end;
 function TffSqlDELETE.Execute(var RowsAffected: Integer) : TffResult;  {!!.11}
 var
   i: Integer;
-  Pos: TffInt64;
+  Pos: UInt64;
 begin
   Result := Owner.FDatabase.StartTransaction([T]);
   if Result = DBIERR_NONE then
     try
       if not Bound then
         Bind;
-{Begin !!.11}
       Result := T.EnsureWritable;
       if Result <> DBIERR_NONE then begin
         Owner.FDatabase.AbortTransaction;
         Exit;
       end;
-{End !!.11}
       RowsAffected := 0;
       if Joiner = nil then begin
         Joiner := TffSqlJoiner.Create(Owner, CondExpWhere);
@@ -16113,10 +16040,10 @@ begin
         i := 0;
         while (Result = DBIERR_NONE) and                               {!!.11}
               (i < DeleteList.Count) do begin                          {!!.11}
-          Pos.iLow := TffWord32(DeleteList[i]);
+          Int64Rec(Pos).Lo := TffWord32(DeleteList[i]);
           inc(i);
           Assert(i < DeleteList.Count);
-          Pos.iHigh := TffWord32(DeleteList[i]);
+          Int64Rec(Pos).Hi := TffWord32(DeleteList[i]);
           inc(i);
           T.GetRecordByID(Pos, ffsltExclusive);                        {!!.11}
           Result := T.Delete;                                          {!!.11}
@@ -16309,20 +16236,18 @@ end;
 function TffSqlUPDATE.Execute(var RowsAffected: Integer) : TffResult;  {!!.11}
 var
   i: Integer;
-  Pos: TffInt64;
+  Pos: UInt64;
 begin
   Result := Owner.FDatabase.StartTransaction([T]);
   if Result = DBIERR_NONE then
     try
       if not Bound then
         Bind;
-{Begin !!.11}
       Result := T.EnsureWritable;
       if Result <> DBIERR_NONE then begin
         Owner.FDatabase.AbortTransaction;
         Exit;
       end;
-{End !!.11}
       FRowsAffected := 0;
       if Joiner = nil then begin
         Joiner := TffSqlJoiner.Create(Owner, CondExpWhere);
@@ -16341,10 +16266,10 @@ begin
         i := 0;
         while (Result = DBIERR_NONE) and                               {!!.11}
               (i < UpdateRecList.Count) do begin                       {!!.11}
-          Pos.iLow := TffWord32(UpdateRecList[i]);
+          Int64Rec(Pos).Lo := TffWord32(UpdateRecList[i]);
           inc(i);
           Assert(i < UpdateRecList.Count);
-          Pos.iHigh := TffWord32(UpdateRecList[i]);
+          Int64Rec(Pos).Hi := TffWord32(UpdateRecList[i]);
           inc(i);
           T.GetRecordByID(Pos, ffsltExclusive);                        {!!.11}
           Result := UpdateList.Update;                                 {!!.11}
@@ -16398,11 +16323,11 @@ end;
 
 procedure TffSqlUPDATE.UpdateRecord;
 var
-  Pos: TffInt64;
+  Pos: UInt64;
 begin
   Pos := T.GetCurrentRecordID;
-  UpdateRecList.Add(Pointer(Pos.iLow));
-  UpdateRecList.Add(Pointer(Pos.iHigh));
+  UpdateRecList.Add(Pointer(Int64Rec(Pos).Lo));
+  UpdateRecList.Add(Pointer(Int64Rec(Pos).Hi));
 end;
 
 { TffSqlUpdateItem }

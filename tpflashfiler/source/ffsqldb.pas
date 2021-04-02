@@ -1233,7 +1233,7 @@ var
   VPtr          : PByte;
 begin
   Offset := TffSrBaseCursor(FCursorID).Dictionary.FieldOffset[Index];
-  BLOBNr := PffInt64(@OwnerTable.RecordBuffer^[Offset])^;
+  BLOBNr := PUInt64(@OwnerTable.RecordBuffer^[Offset])^;
   Len := TffSrBaseCursor(FCursorID).BLOBGetLength(BLOBNr, Error);
   if Error = DBIERR_NONE then begin
     if Len = 0 then
@@ -1278,7 +1278,7 @@ begin
     end;
 
     Offset := TffSrBaseCursor(FCursorID).Dictionary.FieldOffset[Index];
-    BLOBNr := PffInt64(@OwnerTable.RecordBuffer^[Offset])^;
+    BLOBNr := PUInt64(@OwnerTable.RecordBuffer^[Offset])^;
 
     { If there is already BLOB data, truncate it to the length of the
       new value. }
@@ -1834,7 +1834,7 @@ var
 begin
   Result := False;
   Offset := TffSrBaseCursor(FCursorID).Dictionary.FieldOffset[Index];
-  BLOBNr := PffInt64(@OwnerTable.RecordBuffer^[Offset])^;
+  BLOBNr := PUInt64(@OwnerTable.RecordBuffer^[Offset])^;
   Len := TffSrBaseCursor(FCursorID).BLOBGetLength(BLOBNr, Error);
   if Error = DBIERR_NONE then begin
     ChunkOffset := 0;
@@ -2026,7 +2026,7 @@ begin
     TgtOffset := TffSrBaseCursor(TargetField.FCursorID).Dictionary.FieldOffset[TargetField.Index];
     { link the BLOBs }
     { Get the BLOB reference out of the record. }
-    aSrcBLOBNr := PffInt64(@SourceField.OwnerTable.RecordBuffer^[SrcOffset])^;
+    aSrcBLOBNr := PUInt64(@SourceField.OwnerTable.RecordBuffer^[SrcOffset])^;
 
     with TffSrBaseCursor(TargetField.FCursorID) do begin               {!!.11 - Start}
       { Clear the null flag for the target field. }                     {!!.10}
@@ -2052,7 +2052,7 @@ begin
     end;                                                               {!!.11 - End}
 
     { Update the BLOB reference in the record. }
-    PffInt64(@TargetField.OwnerTable.RecordBuffer^[TgtOffset])^ := aBLOBNr;
+    PUInt64(@TargetField.OwnerTable.RecordBuffer^[TgtOffset])^ := aBLOBNr;
   end else
     TargetField.SetFieldToNull;
 end;

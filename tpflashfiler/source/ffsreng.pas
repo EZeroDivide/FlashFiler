@@ -3827,20 +3827,20 @@ begin
                           (Integer(aBLOBFields[aInx]), aRecord, nil);
                       ffbcmCopyFull :
                         begin
-                          aSrcBLOBNr := PffInt64(@aRecord^[aOffset])^;
+                          aSrcBLOBNr := PUInt64(@aRecord^[aOffset])^;
                           Result := bcBLOBCopy(aSrcCursor, aSrcBLOBNr, aBLOBNr);
                           if Result = DBIERR_NONE then
-                            PffInt64(@aRecord^[aOffset])^ := aBLOBNr
+                            PUInt64(@aRecord^[aOffset])^ := aBLOBNr
                           else
                             break;
                         end;
                     else  { link the BLOBs }
                       { Get the BLOB reference out of the record. }
-                      aSrcBLOBNr := PffInt64(@aRecord^[aOffset])^;
+                      aSrcBLOBNr := PUInt64(@aRecord^[aOffset])^;
                       { Add a BLOB link. }
                       BLOBLinkAdd(aTableName, aSrcBLOBNr, aBLOBNr);
                       { Update the BLOB reference in the record. }
-                      PffInt64(@aRecord^[aOffset])^ := aBLOBNr;
+                      PUInt64(@aRecord^[aOffset])^ := aBLOBNr;
                     end;  { case }
                   end; { if BLOB field not null }
                 end;  { for }
@@ -3967,20 +3967,20 @@ begin
                         bcTable.Dictionary.SetRecordField(aInx, aDestRec, nil);
                       ffbcmCopyFull :
                         begin
-                          aSrcBLOBNr := PffInt64(@aSrcRec^[aOffset])^;
+                          aSrcBLOBNr := PUInt64(@aSrcRec^[aOffset])^;
                           Result := bcBLOBCopy(aSrcCursor, aSrcBLOBNr, aBLOBNr);
                           if Result = DBIERR_NONE then
-                            PffInt64(@aDestRec^[aOffset])^ := aBLOBNr
+                            PUInt64(@aDestRec^[aOffset])^ := aBLOBNr
                           else
                             break;
                         end;
                     else  { link the BLOBs }
                       { Get the BLOB reference out of the record. }
-                      aSrcBLOBNr := PffInt64(@aSrcRec^[aOffset])^;
+                      aSrcBLOBNr := PUInt64(@aSrcRec^[aOffset])^;
                       { Add a BLOB link. }
                       BLOBLinkAdd(aTableName, aSrcBLOBNr, aBLOBNr);
                       { Update the BLOB reference in the record. }
-                      PffInt64(@aDestRec^[aOffset])^ := aBLOBNr;
+                      PUInt64(@aDestRec^[aOffset])^ := aBLOBNr;
                     end;  { case }
                   end
                   else

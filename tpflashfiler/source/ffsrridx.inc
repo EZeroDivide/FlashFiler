@@ -275,7 +275,7 @@ begin
                   { Loop through all the nondeleted records... }
                   OurTable.GetNextRecordSeq(rpDB.TransactionInfo,
                                             RefNr, RecordBuf);
-                  while (not (TffInt64(RefNr).iLow = 0) and (TffInt64(RefNr).iHigh = 0)) do begin
+                  while (not (Int64Rec(RefNr).Lo = 0) and (Int64Rec(RefNr).Hi = 0)) do begin
                     Inc(RecordsRead);
 
                     { Reindexing the Sequential Access Index }

@@ -101,6 +101,7 @@ type
 
     property Strings[Ident : TInt32] : AnsiString read GetString; default;
     function GetWideChar(Ident : TInt32; Buffer : PWideChar; BufChars : Integer) : PWideChar;
+    function GetWideString(Ident : TInt32) : String;
 
     /// <summary> -Returns the number of strings managed by this resource. <summary>
     property Count : longInt read srGetCount;
@@ -173,6 +174,30 @@ begin
 
   Result := Buffer;
 end;
+
+function TffStringResource.GetWideString(Ident: TInt32): String;
+var
+  P : PIndexRec;
+  Src : PWideChar;
+  Len, OLen : Integer;
+begin
+  srLock;
+  try
+    P := srFindIdent(Ident);
+    if P = nil then
+      Result := ''
+
+    else
+    begin
+      Src := PWideChar(PByte(srP)+P^.ofs);
+      Len := P^.len;
+      SetString(Result, Src, Len);
+    end;
+  finally
+    srUnLock;
+  end;
+end;
+
 {--------}
 function TffStringResource.GetAsciiZ(Ident : TInt32; Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
 var

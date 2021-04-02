@@ -744,7 +744,7 @@ begin
     writeln(F, '---', i, '---');
     Node := TffHashNode(FTable[i]);
     while assigned(Node) do begin
-      writeln(F, FFI64ToStrHash(PffInt64(Node.fhKey)^), intToStr(longInt(Node.fhValue)):20);
+      writeln(F, FFI64ToStrHash(PUInt64(Node.fhKey)^), intToStr(longInt(Node.fhValue)):20);
       Node := Node.fhNext;
     end;
   end;
@@ -759,7 +759,7 @@ end;
 function TffHash64.fhCompareKey(const aKey1 : Pointer;
                                 const aKey2 : Pointer) : Boolean;
 begin
-   Result := FFCmpI64(PffInt64(aKey1)^, PffInt64(aKey2)^) = 0;
+   Result := FFCmpI64(PUInt64(aKey1)^, PUInt64(aKey2)^) = 0;
 end;
 {--------}
 procedure TffHash64.fhFreeKeyPrim(aKey : pointer);
@@ -773,7 +773,7 @@ var
   Int : Integer;
 begin
   // Int := ffI64ModInt(PffInt64(AKey)^, ACount);
-  Int := PUInt64(AKey)^ mod ACount;
+  Int := PUInt64(AKey)^ mod Cardinal(ACount);
   Result := Int;
 end;
 {--------}

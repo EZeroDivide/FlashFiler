@@ -185,14 +185,6 @@ type
                                             {picture mask}
   TffVCheckValue = array [0..pred(ffcl_MaxVCheckLength)] of byte;
                                             {a validity check}
-  PffInt64 = ^TffInt64;                     {pointer to a TffInt64}
-  TffInt64 = record                         {64-bit integer for Delphi 3}
-    iLow : TffWord32;
-    iHigh : TffWord32;
-    class operator Implicit(Value: TffInt64): UInt64;
-    class operator Implicit(Value: UInt64): TffInt64;
-  end;
-
   PffBlock = ^TffBlock; { A FlashFiler file consists of a set of blocks. }
   TffBlock = array [0..65535] of byte; { A block may be 4k, 8k, 16k, 32k, or 64k
                                          in size. }
@@ -874,12 +866,12 @@ type
 
   TffI64ListItem = class(TffListItem)
     protected {private}
-      iliKey : TffInt64;
+      iliKey : UInt64;
       iliExtraData : Pointer;
     public
-      constructor Create(const aKey : TffInt64);
+      constructor Create(const aKey : UInt64);
         {-create the list item; aKey is its access/sort key}
-      function KeyValue : TffInt64;
+      function KeyValue : UInt64;
         {-return this item's ket as a TffInt64 (for convenience)}
       function Compare(aKey : pointer) : integer; override;
         {-compare Self's key to aKey: return <0 if aKey < Self's, 0 if
@@ -1653,41 +1645,11 @@ function FFCmpShStr(const a, b : TffShStr; MaxLen : byte) : integer;
 function FFCmpShStrUC(const a, b : TffShStr; MaxLen : byte) : integer;
   {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b short strings, case insensitive}
   { At most MaxLen characters are compared}
-function FFCmpI64(const a, b : TffInt64) : integer;
+function FFCmpI64(const a, b : UInt64) : integer;
   {-return -ve number if a<b, 0 if equal, +ve number if a>b; a,b signed TffWord32}
 
-{===TffInt64 Operations===}
-(*
-procedure ffShiftI64L(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
-  {-shift a TffInt64 to the left Bits spaces}
-procedure ffShiftI64R(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
-  {-shift a TffInt64 to the right Bits spaces}
-  *)
-(*
-procedure ffI64MinusI64(const a, b : TffInt64; var Result : TffInt64);
-  {-subtract a TffInt64 from a TffInt64}
-procedure ffI64MinusInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-  {-subtract an integer from a TffInt64}
-function  ffI64ModInt(const aI64 : TffInt64; const aInt : TffWord32) : integer;
-  {-remainder of aI64 divided by aInt}
-procedure ffI64DivInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-  {-divide a TffInt64 by an integer}
-procedure ffI64MultInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-  {-Multiply a TffInt64 by an integer}
-procedure ffI64AddInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-  {-add an integer to a TffInt64}
-function  ffI64ToInt(const aI64 : TffInt64) : TffWord32;
-  {-convert a TffInt64 to an integer}
-*)
+{===UInt64 Operations===}
 function  ffI64ToStrHash(const aI64 : UInt64) : AnsiString;
-  {-convert a TffInt64 to a string}
-(*
-procedure  ffIntToI64(const aInt : TffWord32; var Result : TffInt64);
-  {-convert an integer to a TffInt64}
-function ffI64IsZero(const aI64 : TffInt64) : boolean;
-  {-If the specified Int64 is zero then return True. }
-*)
-
 
 {===Minimum/maximum declarations===}
 function FFMinDW(a, b : TffWord32) : TffWord32;
@@ -1702,10 +1664,6 @@ function FFMinL(a, b : Longint) : Longint;
   {-calculate the (signed) minimum of two long integers}
 function FFMaxL(a, b : Longint) : Longint;
   {-calculate the (signed) maximum of two long integers}
-function FFMinI64(a, b : TffInt64) : TffInt64;
-  {-calculate the (signed) minimum of two TffInt64s}
-function FFMaxI64(a, b : TffInt64) : TffInt64;
-  {-calculate the (signed) maximum of two TffInt64s}
 
 {===Calculate value declarations===}
 function FFCheckDescend(aAscend : boolean; a : integer) : integer;
@@ -2305,234 +2263,26 @@ asm
   pop esi
 end;
 {--------}
-function FFCmpI64(const a, b : TffInt64) : Integer;                    {!!.06 - Rewritten}
+function FFCmpI64(const a, b : UInt64) : Integer;
 begin
- if (a.iHigh = b.iHigh) then
-    Result := FFCmpDW(a.iLow, b.iLow)
+  if (a = b) then
+    Result := 0 else
+  if a < b then
+    Result := -1
   else
-    Result := FFCmpDW(a.iHigh, b.iHigh);
-end;                                                                   {!!.06 - End rewritten}
-{--------}
-procedure ffShiftI64L(const I      : TffInt64;
-                      const Bits   : Byte;
-                        var Result : TffInt64);
-asm
-  push ebx
-  push edi
-  mov ebx, [eax]
-  mov edi, [eax+4]
-  or dl, dl
-  je @@Exit
-@@LOOP:
-  shl ebx, 1
-  rcl edi, 1
-  dec dl
-  jnz @@LOOP
-@@EXIT:
-  mov [ecx], ebx
-  mov [ecx+4], edi
-  pop edi
-  pop ebx
+    Result := 1;
 end;
 {--------}
-procedure ffShiftI64R(const I : TffInt64; const Bits : Byte; var Result : TffInt64);
-asm
-  push ebx
-  push edi
-  mov ebx, [eax]
-  mov edi, [eax+4]
-  or dl, dl
-  je @@Exit
-@@LOOP:
-  shr edi, 1
-  rcr ebx, 1
-//  rcr edi, 1
-  dec dl
-  jnz @@LOOP
-@@EXIT:
-  mov [ecx], ebx
-  mov [ecx+4], edi
-  pop edi
-  pop ebx
-end;
-{--------}
-procedure ffI64MinusI64(const a, b : TffInt64; var Result : TffInt64);
-asm
-  push ebx
-  push edi
-  mov ebx, eax
-  mov edi, edx
-  mov eax,[ebx]
-  mov edx,[ebx+4]
-  sub eax,[edi]
-  sbb edx,[edi+4]
-  mov [ecx], eax
-  mov [ecx+4], edx
-  pop edi
-  pop ebx
-end;
-{--------}
-procedure ffI64MinusInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-asm
-  push edi
-  mov edi, edx
-  mov edx, [eax+4]
-  mov eax, [eax]
-  sub eax, edi
-  sbb edx,  0
-  mov [ecx], eax
-  mov [ecx+4], edx
-  pop edi
-end;
-{--------}
-(*
-function  ffI64ModInt(const aI64 : TffInt64; const aInt : TffWord32) : integer;
-var
-  Quotient : TffInt64;
-  QSum     : TffInt64;
-begin
-  Quotient.iLow := 0;
-  Quotient.iHigh := 0;
-  QSum.iLow := 0;
-  QSum.iHigh := 0;
-  {how many time will aInt go into aI64?}
-  ffI64DivInt(aI64, aInt, Quotient);
-  {multiply Quotient by aInt to see what it (QSum) equals}
-  ffI64MultInt(Quotient, aInt, QSum);
-  {mod equals (aI64 minus QSum)}
-  ffI64MinusI64(aI64, QSum, QSum);
-
-  Result := QSum.iLow;
-end;
-*)
-{--------}
-procedure ffI64DivInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-  {This procedure was originally intended to divide a 64-bit word by a
-   64-bit word.  Since we are now dividing a 64-bit word by a 32-bit word,
-   we are forcing the divisor's high word to a 0.  This is an area for
-   improvement}
-asm
-  push ebp
-  push ebx
-  push esi
-  push edi
-  push ecx       {push ecx to the stack before we trash the address}
-
-  mov  ebx, edx  //move divisor low word to ebx
-  mov  ecx, 0        {we are forcing the divosor high word to zero because our divisor in only 4 bytes}
-  mov  edx, [eax+4]    //move the dividend low word to edx
-  mov  eax, [eax]
-
-
-{if the low word of the dividend (i.e., aI64) is zero or
- the divisor low word is 0
- then we can do a quick division. }
-  or   edx, edx
-  jz   @ffI64DivInt_Quick
-  or   ebx, ebx
-  jz   @ffI64DivInt_Quick
-
-{ Slow division starts here}
-@ffI64DivInt_Slow:
-  mov  ebp, ecx
-  mov  ecx, 64
-  xor  edi, edi
-  xor  esi, esi
-
-@ffI64DivInt_xLoop:
-  shl  eax, 1
-  rcl  edx, 1
-  rcl  esi, 1
-  rcl  edi, 1
-  cmp  edi, ebp
-  jb   @ffI64DivInt_NoSub
-  ja   @ffI64DivInt_Subtract
-  cmp  esi, ebx
-  jb   @ffI64DivInt_NoSub
-
-@ffI64DivInt_Subtract:
-  sub  esi, ebx
-  sbb  edi, ebp
-  inc  eax
-
-@ffI64DivInt_NoSub:
-  loop @ffI64DivInt_xLoop
-  jmp  @ffI64DivInt_Finish
-
-{ Quick division starts here}
-{ - either the dividend's low word or divisor low word is 0}
-@ffI64DivInt_Quick:
-  div  ebx
-  xor  edx, edx
-
-@ffI64DivInt_Finish:
-// fill result, ecx = low word, ecx+4 = high word
-  pop  ecx
-  mov  [ecx].TffInt64.iHigh, edx
-  mov  [ecx].TffInt64.iLow,  eax
-  pop  edi
-  pop  esi
-  pop  ebx
-  pop  ebp
-end;
-{--------}
-procedure ffI64MultInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-asm
-  push ebx
-  push edi
-
-  mov ebx, eax         // set [ebx] to aI64
-  mov edi, edx         // set edi to aInt
-
-  mov eax, [ebx+4]     // get top DWORD of aI64
-  mul edi              // multiply by aInt
-  push eax             // save bottom DWORD of result
-  mov eax, [ebx]       // get bottom DWORD of aI64
-  mul edi              // multiply by aInt
-
-  pop ebx              // pop bottom part of upper result
-  add edx, ebx         // add to top part of lower result
-
-  mov [ecx], eax       // save result
-  mov [ecx+4], edx
-
-  pop edi
-  pop ebx
-end;
-{--------}
-procedure ffI64AddInt(const aI64 : TffInt64; const aInt : TffWord32; var Result : TffInt64);
-asm
- push ebx
-  mov ebx, [eax].TffInt64.iLow
-  add ebx, edx
-  mov [ecx].TffInt64.iLow, ebx
-  mov ebx, [eax].TffInt64.iHigh
-  adc ebx, 0
-  mov [ecx].TffInt64.iHigh, ebx
-  pop ebx
-end;
-{--------}
-function  ffI64toInt(const aI64 : TffInt64) : TffWord32;
+function  ffI64toInt(const aI64 : UInt64) : TffWord32;
 begin
   {What should we do if aI64 larger than DWord?
    - D5 doesn't do anything}
-  Result := aI64.iLow;
+  Result := Int64Rec(aI64).Lo;
 end;
 {--------}
 function  ffI64ToStrHash(const aI64 : UInt64) : AnsiString;
 begin
-  Result := IntToStr(Int64Rec(aI64).Hi) + IntToStr(Int64Rec(aI64).Lo);
-end;
-{--------}
-procedure ffIntToI64(const aInt : TffWord32; var Result : TffInt64);
-begin
-  Result.iLow := aInt;
-  Result.iHigh := 0;
-end;
-{--------}
-function ffI64IsZero(const aI64 : TffInt64) : boolean;
-begin
-  Result := ((aI64.iHigh = 0) and (aI64.iLow = 0));
+  Result := AnsiString(IntToStr(Int64Rec(aI64).Hi) + IntToStr(Int64Rec(aI64).Lo));
 end;
 {====================================================================}
 
@@ -2584,22 +2334,6 @@ asm
   jge @@Exit
   mov eax, edx
 @@Exit:
-end;
-{--------}
-function FFMinI64(a, b : TffInt64) : TffInt64;
-begin
-  if FFCmpI64(a,b) <= 0 then
-    Result := a
-  else
-    Result := b;
-end;
-{--------}
-function FFMaxI64(a, b : TffInt64) : TffInt64;
-begin
-  if FFCmpI64(a,b) >= 0 then
-    Result := a
-  else
-    Result := b;
 end;
 {====================================================================}
 
@@ -4767,7 +4501,7 @@ begin
   Result := wliKey;
 end;
 {--------}
-constructor TffI64ListItem.Create(const aKey : TffInt64);
+constructor TffI64ListItem.Create(const aKey : UInt64);
 begin
   {$IFDEF FF_DEBUG_THREADS}ThreadEnter; try{$ENDIF}                    {!!.03}
   inherited Create;
@@ -4777,7 +4511,7 @@ end;
 {--------}
 function TffI64ListItem.Compare(aKey : pointer) : integer;
 begin
-  Result := FFCmpI64(PffInt64(aKey)^, iliKey);
+  Result := FFCmpI64(PUInt64(aKey)^, iliKey);
 end;
 {--------}
 function TffI64ListItem.Key : pointer;
@@ -4785,7 +4519,7 @@ begin
   Result := @iliKey;
 end;
 {--------}
-function TffI64ListItem.KeyValue : TffInt64;
+function TffI64ListItem.KeyValue : UInt64;
 begin
   Result := iliKey;
 end;
@@ -7029,19 +6763,7 @@ begin
     raise Exception.Create('Error getting free disk space: %s' +
                            SysErrorMessage(GetLastError));
 end;
-{End !!.11}                                                                   
-
-{ TffInt64 }
-
-class operator TffInt64.Implicit(Value: TffInt64): UInt64;
-begin
-  Result := UInt64(Value);
-end;
-
-class operator TffInt64.Implicit(Value: UInt64): TffInt64;
-begin
-  Move (Value, Result, 8);
-end;
+{End !!.11}
 
 initialization
   InitializeUnit;

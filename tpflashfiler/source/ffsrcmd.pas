@@ -3788,8 +3788,8 @@ procedure TffServerCommandHandler.schOnAddClient
                             var errorCode : TffResult;
                             var isSecure : boolean;
                             var aVersion : longInt);
-var                                                                    {!!.05}
-  Method : PffInt64;                                                   {!!.05}
+var
+  Method : PMethod;
 begin
   if FLogEnabled then
     ichLogAll(['AddClientEvent',
@@ -3797,14 +3797,13 @@ begin
                format('  timeout  [%d]', [Timeout]),
                format('  clientVersion  [%d]', [ClientVersion])]);
 
-{Begin !!.05}
   { See if there is a saved event for the listener. }
-  schSavedAddClientEvents.BeginRead;                                  {begin !!.05}
+  schSavedAddClientEvents.BeginRead;
   try
     Method := schSavedAddClientEvents.Get(Longint(Listener));
   finally
     schSavedAddClientEvents.EndRead;
-  end;                                                                {end !!.05}
+  end;
   if Method <> nil then begin
     errorCode := DBIERR_NONE;
     TffAddClientEvent(Method^)
@@ -3814,7 +3813,6 @@ begin
       if errorCode <> DBIERR_NONE then
         Exit;
   end;
-{End !!.05}
 
   aClientID := ffc_NoClientID;
   isSecure := False;
