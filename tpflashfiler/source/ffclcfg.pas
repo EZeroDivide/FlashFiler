@@ -149,7 +149,7 @@ end;
 {$IFDEF UseRegistryConfig}
 function GetRegistryKey : TffShStr;
 begin
-  Result := SREG_PRODUCT + cfgRegistryKey;
+  Result := ffStrResClient[ffccREG_PRODUCT] + cfgRegistryKey;
 end;
 {$ENDIF}
 

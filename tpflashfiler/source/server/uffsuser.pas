@@ -535,7 +535,7 @@ end;
 procedure TFFUserForm.btnSaveClick(Sender: TObject);
 var
   Inx     : integer;
-  errStr : array [0..127] of Ansichar;
+  errStr : string; // array [0..127] of Ansichar;
   aResult : TffResult;
   Rights  : TffUserRights;
   CanSave : Boolean;
@@ -586,10 +586,12 @@ begin
     end;
 
   aResult := FEngine.WriteUserData;
-  if aResult <> DBIERR_NONE then begin
-    ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+  if aResult <> DBIERR_NONE then
+  begin
+    // ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+    errStr := ffStrResBDE[aResult];
     showMessage(format('Could not save users: %s [$%x/%d])',
-                       [strPas(errStr), aResult, aResult]));
+                       [errStr, aResult, aResult]));
     self.modalResult := mrNone;
   end;
 end;

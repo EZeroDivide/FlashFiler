@@ -48,13 +48,17 @@ uses
 var
   ffStrResClient : TffStringResource;
 
-function GetErrorStringPrim(aResult : TffResult; aStrZ : PAnsiChar) : TffResult;
+function GetErrorStringPrim(aResult : TffResult; aStrZ : PAnsiChar) : TffResult; overload;
+function GetErrorStringPrim(aResult : TffResult): String; overload;
 
+(*
 resourcestring
+
   SDupItemInColl = 'Duplicate item in collection';
   SInvalidParameter = 'Invalid Parameter';
   SREG_PRODUCT = '\Software\TurboPower\FlashFiler\2.0';
-
+  *)
+  (*
   SImport_NoSchemaFile = 'Schema file %s not found';
   SImport_RECLENGTHRequired = 'RECLENGTH required in schema file for this import filetype';
   SImport_NoMatchingFields = 'No import fields match any target table fields; nothing to import';
@@ -76,13 +80,18 @@ resourcestring
   SDesign_SLinkMasterSource = 'The MasterSource property of ''%s'' must be linked to a DataSource';
   SDesign_SLinkMaster = 'Unable to open the MasterSource Table';
   SDesign_SLinkDesigner = 'Field ''%s'', from the Detail Fields list, must be linked';
-
+  *)
 implementation
 
 function GetErrorStringPrim(aResult : TffResult; aStrZ : PAnsiChar) : TffResult;
 begin
   ffStrResBDE.GetASCIIZ(aResult, aStrZ, sizeof(DBIMSG));
   Result := DBIERR_NONE;
+end;
+
+function GetErrorStringPrim(aResult : TffResult): String;
+begin
+  Result := ffStrResBDE[aResult];
 end;
 
 initialization

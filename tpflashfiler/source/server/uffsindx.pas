@@ -421,7 +421,7 @@ var
   Inx   : integer;
   Path  : TffPath;
   Table : TffTableName;
-  errStr : array [0..127] of AnsiChar;
+  errStr : string; // array [0..127] of AnsiChar;
   aResult : TffResult;
 begin
 
@@ -442,10 +442,12 @@ begin
       end;
 
   aResult := FEngine.WriteKeyProcData;
-  if aResult <> DBIERR_NONE then begin
-    ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+  if aResult <> DBIERR_NONE then
+  begin
+    // ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+    errStr := ffStrResBDE[aResult];
     showMessage(format('Could not save user-defined indexes: %s [$%x/%d])',
-                       [strPas(errStr), aResult, aResult]));
+                       [errStr, aResult, aResult]));
     self.modalResult := mrNone;
   end;
 

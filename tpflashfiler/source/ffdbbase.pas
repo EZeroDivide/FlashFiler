@@ -430,19 +430,19 @@ end;
 {--------}
 function EffDatabaseError.deGetErrorString : string;
 var
-  PC : array [0..127] of AnsiChar;
+  PC : string; // array [0..127] of AnsiChar;
 begin
   if (deErrorCode >= ffDSCNSTLow) and (deErrorCode <= ffDSCNSTHigh) then
-    ffStrResDataSet.GetASCIIZ(deErrorCode, PC, sizeOf(DBIMSG))
+    PC := ffStrResDataSet[deErrorCode]
   else if (deErrorCode >= ffLLCNSTLow) and (deErrorCode <= ffLLCNSTHigh) then
-    ffStrResGeneral.GetASCIIZ(deErrorCode, PC, sizeOf(DBIMSG))
+    PC := ffStrResGeneral[deErrorCode]
   else if (deErrorCode >= ffCLCNSTLow) and (deErrorCode <= ffCLCNSTHigh) then
   begin
-    ffStrResClient.GetASCIIZ(deErrorCode, PC, SizeOf(DBIMSG));
+    PC := ffStrResClient[deErrorCode];
   end
   else
-    GetErrorStringPrim(deErrorCode, PC);
-  Result := StrPas(PC);
+    PC := GetErrorStringPrim(deErrorCode);
+  Result := PC;
 end;
 {====================================================================}
 

@@ -128,7 +128,7 @@ var
   LMInterval   : Longint;
   KAInterval   : Longint;
   KARetries    : Integer;
-  errStr       : array [0..127] of AnsiChar;
+  errStr       : string; // array [0..127] of AnsiChar;
   aResult      : TffResult;
   OverRideRO   : Boolean;
 begin
@@ -208,10 +208,12 @@ begin
     GeneralInfo^ := OurGenInfo;
   end;
   aResult := FEngine.WriteGeneralInfo(OverrideRO);
-  if aResult <> DBIERR_NONE then begin
-    ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+  if aResult <> DBIERR_NONE then
+  begin
+    // ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+    errStr := ffStrResBDE[aResult];
     ShowMessage(Format('Could not save configuration: %s [$%x/%d])',
-                       [strPas(errStr), aResult, aResult]));
+                       [errStr, aResult, aResult]));
     ModalResult := mrNone;
   end
   else

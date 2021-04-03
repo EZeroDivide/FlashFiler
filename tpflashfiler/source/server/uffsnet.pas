@@ -231,7 +231,7 @@ end;
 {--------}
 procedure TFFNetConfigForm.btnOKClick(Sender: TObject);
 var
-  errStr : array [0..127] of Ansichar;
+  errStr : String; // array [0..127] of Ansichar;
   aResult : TffResult;
 begin
    if ValidateValues then begin
@@ -257,10 +257,12 @@ begin
     end;
     FEngine.Configuration.GeneralInfo^ := OurGenInfo;
     aResult := FEngine.WriteGeneralInfo(False);
-    if aResult <> DBIERR_NONE then begin
-      ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+    if aResult <> DBIERR_NONE then
+    begin
+      // ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+      errStr := ffStrResBDE[aResult];
       showMessage(format('Could not save configuration: %s [$%x/%d])',
-                         [strPas(errStr), aResult, aResult]));
+                         [errStr, aResult, aResult]));
       self.modalResult := mrNone;
     end
     else

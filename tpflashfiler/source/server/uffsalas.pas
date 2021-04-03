@@ -419,7 +419,7 @@ procedure TFFAliasForm.btnCommitClick(Sender : TObject);
 var
   aResult    : TffResult;
   Inx        : Integer;
-  errStr     : array [0..127] of AnsiChar;
+  errStr     : string; // array [0..127] of AnsiChar;
   CheckSpace : Boolean;                                                {!!.11}
 begin
   { Get rid of the aliases. }
@@ -444,10 +444,12 @@ begin
     FEngine.Configuration.AliasList.EndWrite;
   end;
 
-  if (aResult <> DBIERR_NONE) then begin
-    ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+  if (aResult <> DBIERR_NONE) then
+  begin
+    // ffStrResBDE.GetASCIIZ(aResult, errStr, sizeof(DBIMSG));
+    errStr := ffStrResBDE[aResult];
     ShowMessage(Format('Could not save aliases: %s [$%x/%d])',
-                       [strPas(errStr), aResult, aResult]));
+                       [errStr, aResult, aResult]));
     ModalResult := mrNone;
   end;
 end;
