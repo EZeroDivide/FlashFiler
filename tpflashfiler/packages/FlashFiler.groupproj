@@ -30,12 +30,6 @@
         <Projects Include="..\source\explorer\ffe.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\source\explorer\FFEReportEngine.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="..\source\explorer\TestDll.dproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -125,32 +119,14 @@
     <Target Name="ffe:Make">
         <MSBuild Projects="..\source\explorer\ffe.dproj" Targets="Make"/>
     </Target>
-    <Target Name="FFEReportEngine">
-        <MSBuild Projects="..\source\explorer\FFEReportEngine.dproj"/>
-    </Target>
-    <Target Name="FFEReportEngine:Clean">
-        <MSBuild Projects="..\source\explorer\FFEReportEngine.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="FFEReportEngine:Make">
-        <MSBuild Projects="..\source\explorer\FFEReportEngine.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="TestDll">
-        <MSBuild Projects="..\source\explorer\TestDll.dproj"/>
-    </Target>
-    <Target Name="TestDll:Clean">
-        <MSBuild Projects="..\source\explorer\TestDll.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="TestDll:Make">
-        <MSBuild Projects="..\source\explorer\TestDll.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ff2_r100;ff2_d100;Project2;ffserver;ffsrvice;FFVerify;FFRebuild210;ffcomms;ffe;FFEReportEngine;TestDll"/>
+        <CallTarget Targets="ff2_r100;ff2_d100;Project2;ffserver;ffsrvice;FFVerify;FFRebuild210;ffcomms;ffe"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ff2_r100:Clean;ff2_d100:Clean;Project2:Clean;ffserver:Clean;ffsrvice:Clean;FFVerify:Clean;FFRebuild210:Clean;ffcomms:Clean;ffe:Clean;FFEReportEngine:Clean;TestDll:Clean"/>
+        <CallTarget Targets="ff2_r100:Clean;ff2_d100:Clean;Project2:Clean;ffserver:Clean;ffsrvice:Clean;FFVerify:Clean;FFRebuild210:Clean;ffcomms:Clean;ffe:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ff2_r100:Make;ff2_d100:Make;Project2:Make;ffserver:Make;ffsrvice:Make;FFVerify:Make;FFRebuild210:Make;ffcomms:Make;ffe:Make;FFEReportEngine:Make;TestDll:Make"/>
+        <CallTarget Targets="ff2_r100:Make;ff2_d100:Make;Project2:Make;ffserver:Make;ffsrvice:Make;FFVerify:Make;FFRebuild210:Make;ffcomms:Make;ffe:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
