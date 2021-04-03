@@ -588,7 +588,6 @@ type
   { All FF classes that would normally inherit from TObject must inherit
     from this class instead. }
   TffObject = class(TObject)
-{Begin !!.03}
   {$IFDEF FF_DEBUG_THREADS}
   protected {private}
     ffoMethodLock      : Integer;
@@ -599,7 +598,6 @@ type
     procedure ThreadExit;
   public
   {$ENDIF}
-{End !!.03}
     class function NewInstance: TObject; override;
     procedure FreeInstance; override;
   end;
@@ -615,7 +613,6 @@ type
   { All FF classes that would normally inherit from TPersistent must inherit
     from this class instead. }
   TffPersistent = class(TPersistent)
-{Begin !!.03}
   {$IFDEF FF_DEBUG_THREADS}
   protected {private}
     ffpMethodLock      : Integer;
@@ -626,7 +623,6 @@ type
     procedure ThreadExit;
   public
   {$ENDIF}
-{End !!.03}
     class function NewInstance: TObject; override;
     procedure FreeInstance; override;
   end;

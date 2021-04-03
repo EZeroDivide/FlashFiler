@@ -87,12 +87,11 @@ type
     procedure srOpenResource(Instance : THandle; const ResourceName : string);
     procedure srUnLock;
 
-  public
-    constructor Create(Instance : THandle; const ResourceName : string); virtual;
-    destructor Destroy; override;
-    procedure ChangeResource(Instance : THandle; const ResourceName : string);
-
     function GetAsciiZ(Ident : TInt32; Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
+  public
+    constructor Create(Instance : THandle; const ResourceName: string); virtual;
+    destructor Destroy; override;
+    procedure ChangeResource(Instance : THandle; const ResourceName: string);
 
     function GetIdentAtIndex(const anIndex : longInt) : integer;
 
