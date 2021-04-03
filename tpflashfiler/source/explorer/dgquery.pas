@@ -58,18 +58,16 @@ uses
   ffllcomm,
   fflllgcy,
   ffllbase,
-  ffllprot,  {!!.07}
+  ffllprot,
   ffdbbase,
   ffdb,
   fflllog,
-  {$IFDEF DCC4OrLater}
   ImgList,
-  {$ENDIF}
   Buttons,
   usqlcfg,
   ffclbase,
-  dgParams,   {!!.11}
-  uentity;    {!!.10}
+  dgParams,
+  uentity, System.ImageList;
 
 type
   TffSQLConnection = class;
@@ -751,14 +749,13 @@ begin
         ExecTime := GetTickCount;
         aConn.Query.Open;
         ExecTime := GetTickCount - ExecTime;
-        aConn.ExecutionTime := ExecTime;                              {!!.05}
+        aConn.ExecutionTime := ExecTime;
         StatusBar.Panels[0].Text := 'Query retrieved';
         StatusBar.Panels[2].Text := 'Record count = ' +
-                                     FFCommaizeChL(aConn.Query.RecordCount,
-                                                   ThousandSeparator);
-        StatusBar.Panels[3].Text := Format(strExecutionTime, [aConn.ExecutionTime]); {!!.05}
+                                     FormatFloat(',0', aConn.Query.RecordCount);
+        StatusBar.Panels[3].Text := Format(strExecutionTime, [aConn.ExecutionTime]);
 
-        { make sure no column exceeds screen width }                        {!!.07}
+        { make sure no column exceeds screen width }
         for I := 0 to grdResults.Columns.Count-1 do begin
           if grdResults.Columns[i].Width>(Width DIV 5)*4 then
             grdResults.Columns[i].Width := (Width DIV 5)*4;
@@ -769,12 +766,11 @@ begin
           ExecTime := GetTickCount;
           aConn.Query.ExecSQL;
           ExecTime := GetTickCount - ExecTime;
-          aConn.ExecutionTime := ExecTime;                              {!!.05}
+          aConn.ExecutionTime := ExecTime;
           StatusBar.Panels[0].Text := 'Query executed';
           StatusBar.Panels[2].Text := 'Rows affected = ' +
-                                       FFCommaizeChL(aConn.Query.RowsAffected,
-                                                     ThousandSeparator);
-          StatusBar.Panels[3].Text := Format(strExecutionTime, [aConn.ExecutionTime]); {!!.05}
+                                       FormatFloat(',0', aConn.Query.RowsAffected);
+          StatusBar.Panels[3].Text := Format(strExecutionTime, [aConn.ExecutionTime]);
         end;
       end else begin
         if not FSupressSyntaxOKDialog then begin              {!!.11}
@@ -922,7 +918,7 @@ begin
       if FIsLastQuerySelect then begin                                              {!!.10}
         if Active then begin
           StatusBar.Panels[2].Text := 'Record count = ' +
-                                      FFCommaizeChL(RecordCount, ThousandSeparator);
+                                      FormatFloat(',0', RecordCount);
           StatusBar.Panels[3].Text := Format(strExecutionTime, [aConn.ExecutionTime]); {!!.05}
         end else begin
           StatusBar.Panels[2].Text := 'Record count = 0';
@@ -932,7 +928,7 @@ begin
       {Begin !!.10}
       else begin
         StatusBar.Panels[2].Text := 'Rows affected = ' +
-                                    FFCommaizeChL(RowsAffected, ThousandSeparator);
+                                    FormatFloat(',0', RowsAffected);
         StatusBar.Panels[3].Text := Format(strExecutionTime, [aConn.ExecutionTime]); {!!.05}
       end;
     end;

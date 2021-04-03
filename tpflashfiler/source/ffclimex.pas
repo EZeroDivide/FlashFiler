@@ -453,7 +453,7 @@ end;
 
 function TffSchemaFile.GetDelimiter: AnsiChar;
 begin
-  Result := ReadString(FMainSection, 'DELIMITER', DefDelimitor)[1];
+  Result := AnsiChar(ReadString(FMainSection, 'DELIMITER', DefDelimitor)[1]);
 end;
 
 function TffSchemaFile.GetFileType: TffieFileType;
@@ -470,7 +470,7 @@ end;
 
 function TffSchemaFile.GetSeparator: AnsiChar;
 begin
-  Result := ReadString(FMainSection, 'SEPARATOR', DefSeparator)[1];
+  Result := AnsiChar(ReadString(FMainSection, 'SEPARATOR', DefSeparator)[1]);
 end;
 
 procedure TffSchemaFile.LoadFields;
@@ -1082,9 +1082,9 @@ var
   Hr, Mn, Sc: Integer;
   IsBlank: Boolean;
 
-  function ExtractAsciiField(aPtr: PChar; aSize: SmallInt): TffShStr;
+  function ExtractAsciiField(aPtr: PAnsiChar; aSize: SmallInt): TffShStr;
   var
-    HoldChar: Char;
+    HoldChar: AnsiChar;
   begin
     HoldChar := aPtr[aSize];
     aPtr[aSize] := #0;
@@ -1122,7 +1122,7 @@ begin
           fftNullString, fftNullAnsiStr:
             Move(aSourcePtr^, FBuffer^, MinUnits);
           fftWideChar:
-            WideChar(FBuffer^) := FFCharToWideChar(Char(aSourcePtr^));
+            WideChar(FBuffer^) := FFCharToWideChar(AnsiChar(aSourcePtr^));
           fftWideString:
             begin
               { Note: the length of a "wide" field is the number of bytes

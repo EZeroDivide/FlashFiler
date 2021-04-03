@@ -3416,32 +3416,30 @@ const
   valValidSpace    = [' '];
   valValidAll      = [#8, #9];
 var
-  valValidAMPM    : set of Char;
-  valValidDecSep  : set of Char;
-  valValidDateSep : set of Char;
-  valValidTimeSep : set of Char;
+  valValidAMPM    : set of AnsiChar;
+  valValidDecSep  : set of AnsiChar;
+  valValidDateSep : set of AnsiChar;
+  valValidTimeSep : set of AnsiChar;
   i : Integer;
 begin
-{Begin !!.10}
   Result := (aUpKey in valValidAll) or
             (aFieldType in [fftShortString, fftShortAnsiStr, fftNullString,
                             fftNullAnsiStr, fftWideString]);
   if Result then
     Exit;
-{End !!.10}
 
   {Add Local Settings to the valValidAMPM set}
   valValidAMPM := [];
-  for i := 1 to Length(TimeAMString) do
-    Include(valValidAMPM, UpCase(TimeAMString[i]));
-  for i := 1 to Length(TimePMString) do
-    Include(valValidAMPM, UpCase(TimePMString[i]));
+  for i := 1 to Length(FormatSettings.TimeAMString) do
+    Include(valValidAMPM, AnsiChar(UpCase(FormatSettings.TimeAMString[i])));
+  for i := 1 to Length(FormatSettings.TimePMString) do
+    Include(valValidAMPM, AnsiChar(UpCase(FormatSettings.TimePMString[i])));
   valValidDecSep := [];
   valValidDateSep := [];
   valValidTimeSep := [];
-  Include(valValidDecSep, UpCase(DecimalSeparator));
-  Include(valValidDateSep, UpCase(DateSeparator));
-  Include(valValidTimeSep, UpCase(TimeSeparator));
+  Include(valValidDecSep, AnsiChar(UpCase(FormatSettings.DecimalSeparator)));
+  Include(valValidDateSep, AnsiChar(UpCase(FormatSettings.DateSeparator)));
+  Include(valValidTimeSep, AnsiChar(UpCase(FormatSettings.TimeSeparator)));
 
   case aFieldType of
     fftBoolean  : Result := aUpKey in valValidBoolean;

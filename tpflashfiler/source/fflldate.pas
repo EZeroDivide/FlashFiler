@@ -287,8 +287,8 @@ begin
 end;
 
 initialization
-  GetProfileString('intl', 's1159', 'AM', w1159, SizeOf(w1159));
-  GetProfileString('intl', 's2359', 'PM', w2359, SizeOf(w2359));
+  GetProfileStringA('intl', 's1159', 'AM', w1159, SizeOf(w1159));
+  GetProfileStringA('intl', 's2359', 'PM', w2359, SizeOf(w2359));
 end.
 
 

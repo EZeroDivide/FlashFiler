@@ -358,10 +358,10 @@ end;
 {--------}
 procedure TdlgTable.FormShow(Sender: TObject);
 var
-  aServerName : string;
-  aAddress : string;
+  aServerName : AnsiString;
+  aAddress : AnsiString;
   I : Integer;
-  OldPass, OldUser : string;
+  OldPass, OldUser : AnsiString;
 
   {$IFNDEF DCC5OrLater}
   function IsPublishedProp(Source : TObject; const PropName : string) : Boolean;
@@ -700,7 +700,8 @@ begin
   if BeforeInitDone then
     Exit;
   if mnuViewShowRecordCount.Checked then
-    barStatus.Panels[0].Text := 'Records: ' + FFCommaizeChL(FTable.RecordCount, ThousandSeparator)
+    // barStatus.Panels[0].Text := 'Records: ' + FFCommaizeChL(FTable.RecordCount, ThousandSeparator)
+    barStatus.Panels[0].Text := 'Records: ' + FormatFloat(',0', FTable.RecordCount)
   else
     barStatus.Panels[0].Text := '';
 
@@ -1053,20 +1054,20 @@ end;
 {--------}
 procedure TdlgTable.ViewActiveBlobField;
 const
-  JPEGHeader : array [0..10] of Char = (Chr($FF), Chr($D8), Chr($FF), Chr($E0),
-                                        Chr($0), Chr($10), 'J', 'F', 'I', 'F', Chr(0));
-  BMPHeader : array [0..1] of char = ('B', 'M');
-  WMFHeader : array [0..1] of char = ('B', 'M');
-  ICOHeader : array [0..1] of char = ('B', 'M');
-  HexChar : array [0..15] of char = '0123456789ABCDEF';
+  JPEGHeader : array [0..10] of AnsiChar = (AnsiChar($FF), AnsiChar($D8), AnsiChar($FF), AnsiChar($E0),
+                                        AnsiChar($0), AnsiChar($10), 'J', 'F', 'I', 'F', AnsiChar(0));
+  BMPHeader : array [0..1] of Ansichar = ('B', 'M');
+  WMFHeader : array [0..1] of Ansichar = ('B', 'M');
+  ICOHeader : array [0..1] of Ansichar = ('B', 'M');
+  HexChar : array [0..15] of Ansichar = '0123456789ABCDEF';
 var
-  HeaderBuffer : array [0..10] of char;
+  HeaderBuffer : array [0..10] of Ansichar;
   Stream : TffBlobStream;
   jpegImage : TJPEGImage;
   i : Integer;
-  BlobBuffer : array [0..1024] of char;
+  BlobBuffer : array [0..1024] of Ansichar;
   ByteArrayBuffer : Pointer;
-  tempStr : String;
+  tempStr : AnsiString;
 
   { copied from TffEventLog.WriteBlock and transmogrified }
   function GenerateHexLines(Buf : pointer; BufLen : TffMemSize) : String;
@@ -1101,7 +1102,7 @@ var
           Line[HexPos[j]+1] := HexChar[Work and $F];
           if (Work < 32) {or (Work >= $80)} then
             Work := ord('.');
-          Line[39+j] := char(Work);
+          Line[39+j] := Ansichar(Work);
         end;
         Result := Result + Line + ffcCRLF;
         dec(BufLen, ThisWidth);

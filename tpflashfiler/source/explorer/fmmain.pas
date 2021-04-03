@@ -62,13 +62,9 @@ uses
   uentity,
   fflllgcy,
   ffdb,
-  fflllog
-{$IFDEF DCC4ORLATER}
-  ,
+  fflllog, System.ImageList,
   ImgList,
-  ToolWin
-{$ENDIF}
-;
+  ToolWin;
 
 type
   TfrmMain = class(TForm)

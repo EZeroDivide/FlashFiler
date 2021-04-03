@@ -50,7 +50,7 @@ uses
   {$IFDEF DCC4OrLater}
   ImgList,
   {$ENDIF}
-  ffsrbde;
+  ffsrbde, System.ImageList, Vcl.ImgList;
 
 type
   TdlgServerStats = class(TForm)
@@ -280,11 +280,11 @@ begin
   Result := Format('%d%s%.2d%s%.2d%s%.2d',
                    [
                    Dy,
-                   TimeSeparator,
+                   FormatSettings.TimeSeparator,
                    Hr,
-                   TimeSeparator,
+                   FormatSettings.TimeSeparator,
                    Mi,
-                   TimeSeparator,
+                   FormatSettings.TimeSeparator,
                    Se
                    ]);
 end;
@@ -317,13 +317,13 @@ begin
     with lvServers.Items[0], aServerStats do begin
       Caption := aServerStats.ssName;
       SubItems[0] := ssState;
-      SubItems[1] := FFCommaizeChL(ssClientCount, ThousandSeparator);
-      SubItems[2] := FFCommaizeChL(ssSessionCount, ThousandSeparator);
-      SubItems[3] := FFCommaizeChL(ssOpenDatabasesCount, ThousandSeparator);
-      SubItems[4] := FFCommaizeChL(ssOpenTablesCount, ThousandSeparator);
-      SubItems[5] := FFCommaizeChL(ssOpenCursorsCount, ThousandSeparator);
-      SubItems[6] := FFCommaizeChL(ssRAMUsed, ThousandSeparator);
-      SubItems[7] := FFCommaizeChL(ssMaxRAM, ThousandSeparator);
+      SubItems[1] := IntToStr(ssClientCount);
+      SubItems[2] := IntToStr(ssSessionCount);
+      SubItems[3] := IntToStr(ssOpenDatabasesCount);
+      SubItems[4] := IntToStr(ssOpenTablesCount);
+      SubItems[5] := IntToStr(ssOpenCursorsCount);
+      SubItems[6] := Formatfloat(',0', ssRAMUsed);
+      SubItems[7] := Formatfloat(',0', ssMaxRAM);
       SubItems[8] := ElapsedTimeToStr(ssUptimeSecs / (3600*24));
     end;
     { get transportcount }
@@ -357,8 +357,8 @@ begin
           Caption := tsName;
           SubItems[0] := tsAddress;
           SubItems[1] := tsState;
-          SubItems[2] := FFCommaizeChL(tsClientCount, ThousandSeparator);
-          SubItems[3] := FFCommaizeChL(tsMessageCount, ThousandSeparator);
+          SubItems[2] := IntToStr(tsClientCount);
+          SubItems[3] := FormatFloat(',0', tsMessageCount);
           SubItems[4] := FormatFloat('0.####', tsMessagesPerSec);
           SubItems[5] := IntToStr(CmdHandlerIdx);
         end;

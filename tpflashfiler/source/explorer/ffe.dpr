@@ -27,10 +27,10 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 
-{$I ffdefine.inc}
+
 
 program ffe;
-
+{$I ffdefine.inc}
 uses
   Forms,
   fmmain in 'fmmain.pas' {frmMain},
