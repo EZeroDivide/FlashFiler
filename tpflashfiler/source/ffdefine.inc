@@ -39,26 +39,9 @@
 
 
 {====Determination of compiler (do NOT change)====}
-{$IFDEF VER100}
-  {$DEFINE Delphi3}
-  {$DEFINE IsDelphi}
-  {$DEFINE ExprParserType1}
-  {$DEFINE CannotOverrideDispatch}
-{$ENDIF}
-{$IFDEF VER110}
-  {$DEFINE CBuilder3}
-  {$DEFINE ExprParserType1}
-{$ENDIF}
 {$IFDEF VER120}
   {$DEFINE Delphi4}
   {$DEFINE IsDelphi}
-  {$DEFINE DCC4OrLater}
-  {$DEFINE HasStrictCardinal}
-  {$DEFINE ResizePersistFields}
-  {$DEFINE ExprParserType2}
-{$ENDIF}
-{$IFDEF VER125}
-  {$DEFINE CBuilder4}
   {$DEFINE DCC4OrLater}
   {$DEFINE HasStrictCardinal}
   {$DEFINE ResizePersistFields}
@@ -137,50 +120,6 @@
 
 
 {====Global fixed compiler options (do NOT change)====}
-{---Delphi 3---}
-  {$IFDEF Delphi3}
-  {$B- Incomplete boolean evaluation}
-  {$H+ Long string support}
-  {$J+ Writeable typed constants}
-  {$P- No open string parameters}
-  {$T- No type-checked pointers}
-  {$V- No var string checking}
-  {$X+ Extended syntax}
-  {$Z1 Enumerations are word sized}
-  {$ENDIF}
-{---Delphi 4---}
-  {$IFDEF Delphi4}
-  {$B- Incomplete boolean evaluation}
-  {$H+ Long string support}
-  {$J+ Writeable typed constants}
-  {$P- No open string parameters}
-  {$T- No type-checked pointers}
-  {$V- No var string checking}
-  {$X+ Extended syntax}
-  {$Z1 Enumerations are word sized}
-  {$ENDIF}
-{---Delphi 5---}
-  {$IFDEF Delphi5}
-  {$B- Incomplete boolean evaluation}
-  {$H+ Long string support}
-  {$J+ Writeable typed constants}
-  {$P- No open string parameters}
-  {$T- No type-checked pointers}
-  {$V- No var string checking}
-  {$X+ Extended syntax}
-  {$Z1 Enumerations are word sized}
-  {$ENDIF}
-{---Delphi 6---}
-  {$IFDEF Delphi6}
-  {$B- Incomplete boolean evaluation}
-  {$H+ Long string support}
-  {$J+ Writeable typed constants}
-  {$P- No open string parameters}
-  {$T- No type-checked pointers}
-  {$V- No var string checking}
-  {$X+ Extended syntax}
-  {$Z1 Enumerations are word sized}
-  {$ENDIF}
 {---Delphi 7---}
   {$IFDEF Delphi7}
   {$B- Incomplete boolean evaluation}

@@ -268,7 +268,7 @@ begin
   for I := 0 to aNumParams - 1 do begin
     with aParamInfo^[I] do begin
       if piName = '' then                  { named parameter }
-        piName := ':' + IntToStr(piNum);   { unnamed parameter }
+        piName := ':' + ShortString(IntToStr(piNum));   { unnamed parameter }
       FieldBuffer := PffByteArray(DWord(aDataBuffer) + piOffset);
       case piType of
       fftBoolean :
@@ -442,39 +442,39 @@ function TffSqlEngine.ExecDirect(anEngine    : TffBaseServerEngine;
 var
   Statement: TffSqlPreparedStatement;
   L : Integer;
-  RowsAffected: Integer;                                               {!!.10}
-  RecordsRead: Integer;                                                {!!.10}
-  LiveResult: Boolean;                                                 {!!.10}
+  RowsAffected: Integer;
+  RecordsRead: Integer;
+  LiveResult: Boolean;
 begin
   {$IFNDEF SQLSupported}
   Result := DBIERR_NOTSUPPORTED;
   {$ELSE}
-  Result := DBIERR_NONE;
-  Assert(anEngine is TffServerEngine);                                 {!!.01}
+  { Result := DBIERR_NONE; } // never used
+  Assert(anEngine is TffServerEngine);
   Statement := nil;
   try
     aCursorID := 0;
 
-    Statement := TffSqlPreparedStatement.Create2(TffServerEngine(anEngine), {!!.01}
-                                                 aClientID,                 {!!.01}
+    Statement := TffSqlPreparedStatement.Create2(TffServerEngine(anEngine),
+                                                 aClientID,
                                                  aDatabaseID, aTimeout);
     try
       if Statement.Parse(aQueryText) then begin
-        LiveResult := aOpenMode = omReadWrite;                         {!!.10}
-        Result := Statement.Execute(LiveResult,                        {!!.10}
-          aCursorID, RowsAffected, RecordsRead);                       {!!.10}
+        LiveResult := aOpenMode = omReadWrite;
+        Result := Statement.Execute(LiveResult,
+          aCursorID, RowsAffected, RecordsRead);
         if Assigned(aStream) then begin
           if (aCursorID <> 0) then begin
             {query}
             aStream.Write(aCursorID, SizeOf(aCursorID));
             TffSrBaseCursor(ACursorID).Dictionary.WriteToStream(aStream);
-            aStream.Write(LiveResult, SizeOf(LiveResult));             {!!.10}
-            aStream.Write(RecordsRead, SizeOf(RecordsRead));           {!!.10}
+            aStream.Write(LiveResult, SizeOf(LiveResult));
+            aStream.Write(RecordsRead, SizeOf(RecordsRead));
           end else begin
             {data manipulation}
-            aStream.Write(aCursorID, SizeOf(aCursorID)); {zero}        {!!.10}
-            aStream.Write(RowsAffected, SizeOf(RowsAffected));         {!!.10}
-            aStream.Write(RecordsRead, SizeOf(RecordsRead));           {!!.10}
+            aStream.Write(aCursorID, SizeOf(aCursorID)); {zero}
+            aStream.Write(RowsAffected, SizeOf(RowsAffected));
+            aStream.Write(RecordsRead, SizeOf(RecordsRead));
           end;
         end;
       end else

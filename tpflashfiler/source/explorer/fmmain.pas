@@ -302,15 +302,14 @@ uses
   {$IFDEF USETeDEBUG}
   jcldebug,
   {$ENDIF}
-  ffclbase,                                                            {!!.07}
-  ffllcomm,                                                            {!!.07}
-  ffclreng,                                                            {!!.07}
-  ffclcfg,                                                             {!!.07}
+  ffclbase,
+  ffllcomm,
+  ffclreng,
+  ffclcfg,
   ffutil,
-  uFFComms,                                                            {!!.07}
-  {$IFDEF DCC6OrLater}
-  Types,                                                               {!!.07}
-  {$ENDIF}
+  uFFComms,
+  UITypes,
+  Types,
   ffabout,
   ubase,
   uconsts,
@@ -318,7 +317,7 @@ uses
   dgimport,
   dgregsrv,
   dgselidx,
-  ffllexcp,                                                            {!!.01}
+  ffllexcp,
   fmprog,
   fmstruct,
   dgautoin,
@@ -1919,7 +1918,6 @@ begin
         else
         if (Screen.Forms[Idx] is TdlgQuery) then
            TdlgQuery(Screen.Forms[Idx]).UpdateDefaultTimeout;
-      {End !!.11}
       res := False;
     except
       on EConvertError do begin
@@ -1928,6 +1926,5 @@ begin
     end;
   until not res;
 end;
-{End !!.11}
 end.
 

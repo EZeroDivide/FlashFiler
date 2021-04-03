@@ -156,8 +156,8 @@ type
       procedure ConfirmAlive(SendConfirm : boolean);
       procedure DepleteLife;
 
-      procedure HangupLock;                                            {!!.01}
-      procedure HangupUnlock;                                          {!!.01}
+      procedure HangupLock;
+      procedure HangupUnlock;
 
       procedure InitCode(const aStart : longint);
         { Initializes the encryption code used for communicating with the
@@ -168,20 +168,15 @@ type
 
       property ClientID : TffClientID read FClientID write FClientID;
       property Code : PffNetMsgCode read FCode;
-      property CodeStart : DWord read FCodeStart;                      {!!.10}
-      property Owner : TffBaseCommsProtocol
-         read FOwner;
-      property Handle : longint
-         read KeyAsInt;
-      property HangingUp : boolean
-         read FHangingUp write FHangingUp;
+      property CodeStart : DWord read FCodeStart;
+      property Owner : TffBaseCommsProtocol read FOwner;
+      property Handle : longint read KeyAsInt;
+      property HangingUp : boolean read FHangingUp write FHangingUp;
         { Set to True when we are deliberately hanging up the connection.
           This variable tells us whether we need to invoke the OnHangUp or
           OnConnectionLost event in the parent protocol. }
-      property HangupDone : boolean                                    {!!.01}
-         read FHangupDone write FHangupDone;                           {!!.01}
-      property RemoteName : AnsiString                                     {!!.10}
-         read GetRemoteName;
+      property HangupDone : boolean read FHangupDone write FHangupDone;
+      property RemoteName : AnsiString read GetRemoteName;
   end;
 
   { Defines the common interface for all legacy protocols.  This class is
@@ -190,7 +185,7 @@ type
     sections are used. }
   TffBaseCommsProtocol = class
     protected {private}
-      FConnLock          : TffPadlock;                               
+      FConnLock          : TffPadlock;
       FCSType            : TffClientServerType;
       FEventLog          : TffBaseLog;
       FHeardCall         : TffHeardCallEvent;

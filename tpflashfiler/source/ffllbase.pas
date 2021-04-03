@@ -1679,7 +1679,7 @@ procedure FFReallocMem(var P; OldSize, NewSize: Integer);
     for P. }
 
 {===String routines===}
-function  FFCommaizeChL(L : Longint; Ch : AnsiChar) : AnsiString;
+function  FFCommaizeChL(L : Longint; Ch : Char) : String;
   {-Convert a long integer to a string with Ch in comma positions}
 procedure FFShStrConcat(var Dest : TffShStr; const Src : TffShStr);
 procedure FFShStrAddChar(var Dest : TffShStr; C : AnsiChar);
@@ -2802,10 +2802,10 @@ const
   EmptyShStr : array [0..1] of AnsiChar = #0#0;
 
 {--------}
-function FFCommaizeChL(L : Longint; Ch : AnsiChar) : AnsiString;
+function FFCommaizeChL(L : Longint; Ch : Char) : String;
   {-Convert a long integer to a string with Ch in comma positions}
 var
-  Temp : AnsiString;
+  Temp : String;
   NumCommas, I, Len : Cardinal;
   Neg : Boolean;
 begin
@@ -3342,7 +3342,7 @@ end;
 
 function FFWideStrLToShStr(WS: PWideChar; MaxLen: Longint): TffShStr;
 begin
-  Result := WideCharLenToString(WS, MaxLen);
+  Result := ShortString(WideCharLenToString(WS, MaxLen));
 end;
 
 function FFNullStrLToWideStr(ZStr: PAnsiChar; WS: PWideChar; MaxLen: Longint): PWideChar;
@@ -3371,13 +3371,9 @@ end;
 {===File and Path name routines======================================}
 {===Helpers===}
 const
-{$IFDEF DCC6OrLater}
-  {$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$WARN SYMBOL_PLATFORM OFF}
   faNotNormal = faReadOnly or faHidden or faSysFile or faArchive;
-{$IFDEF DCC6OrLater}
-  {$WARN SYMBOL_PLATFORM ON}
-{$ENDIF}
+{$WARN SYMBOL_PLATFORM ON}
 {--------}
 procedure SearchRecConvertPrim(var SR : TffSearchRec);
 type
@@ -3393,20 +3389,14 @@ begin
     srSizeHigh := srData.nFileSizeHigh;
     if ((srData.dwFileAttributes and faDirectory) <> 0) then
       srType := ditDirectory
-    {$IFDEF DCC6OrLater}
       {$WARN SYMBOL_PLATFORM OFF}
-    {$ENDIF}
     else if ((srData.dwFileAttributes and faVolumeID) <> 0) then
-    {$IFDEF DCC6OrLater}
       {$WARN SYMBOL_PLATFORM ON}
-    {$ENDIF}
       srType := ditVolumeID
     else
       srType := ditFile;
     srAttr := [];
-    {$IFDEF DCC6OrLater}
       {$WARN SYMBOL_PLATFORM OFF}
-    {$ENDIF}
     if ((srData.dwFileAttributes and faHidden) <> 0) then
       include(srAttr, diaHidden);
     if ((srData.dwFileAttributes and faReadOnly) <> 0) then
@@ -3417,9 +3407,7 @@ begin
       include(srAttr, diaArchive);
     if ((srData.dwFileAttributes and faNotNormal) = 0) then
       include(srAttr, diaNormal);
-    {$IFDEF DCC6OrLater}
       {$WARN SYMBOL_PLATFORM ON}
-    {$ENDIF}
   end;
 end;
 {--------}
@@ -3427,30 +3415,21 @@ function TypeAndAttrMatch(OSAttr : TffWord32;
                           aType  : TffDirItemTypeSet;
                           aAttr  : TffDirItemAttrSet) : boolean;
 begin
-  {$IFDEF DCC6OrLater}
-    {$WARN SYMBOL_PLATFORM OFF}
-  {$ENDIF}
+  {$WARN SYMBOL_PLATFORM OFF}
   Result := ((ditFile in aType) and ((OSAttr and (faDirectory or faVolumeID)) = 0)) or
             ((ditDirectory in aType) and ((OSAttr and faDirectory) <> 0)) or
             ((ditVolumeID in aType) and ((OSAttr and faVolumeID) <> 0));
-  {$IFDEF DCC6OrLater}
-    {$WARN SYMBOL_PLATFORM ON}
-  {$ENDIF}
+  {$WARN SYMBOL_PLATFORM ON}
 
   if not Result then
     Exit;
-  {$IFDEF DCC6OrLater}
-    {$WARN SYMBOL_PLATFORM OFF}
-  {$ENDIF}
+  {$WARN SYMBOL_PLATFORM OFF}
   Result := ((diaReadOnly in aAttr) and ((OSAttr and faReadOnly) <> 0)) or
             ((diaHidden in aAttr) and ((OSAttr and faHidden) <> 0)) or
             ((diaSystem in aAttr) and ((OSAttr and faSysFile) <> 0)) or
             ((diaArchive in aAttr) and ((OSAttr and faArchive) <> 0)) or
             ((diaNormal in aAttr) and ((OSAttr and faNotNormal) = 0));
-  {$IFDEF DCC6OrLater}
-    {$WARN SYMBOL_PLATFORM ON}
-  {$ENDIF}
-
+  {$WARN SYMBOL_PLATFORM ON}
 end;
 {--------}
 procedure ExtractHelper(const PFN      : TffFullFileName;

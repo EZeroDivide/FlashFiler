@@ -82,10 +82,10 @@ var
   end;
 
 begin
-  if IsReadOnly then begin                                             {!!.01 - Start}
+  if IsReadOnly then begin
     Result := DBIERR_TABLEREADONLY;
     Exit;
-  end else                                                             {!!.01 - End}
+  end else
     Result := DBIERR_NONE;
   aRebuildID := -1;
   StartedTrans := False;
@@ -103,7 +103,7 @@ begin
       if Result <> DBIERR_NONE then
         exit;
 
-      FFGetMem(RebuildParamsPtr, SizeOf(RebuildParamsPtr^));           {!!.13}
+      FFGetMem(RebuildParamsPtr, SizeOf(RebuildParamsPtr^));
       FillChar(RebuildParamsPtr^, SizeOf(RebuildParamsPtr^), 0);
       with RebuildParamsPtr^ do begin
         rpDB := TffSrDatabase.Create(DB.Engine,
@@ -113,7 +113,7 @@ begin
                                      DB.OpenMode,
                                      DB.ShareMode,
                                      DB.Timeout,
-                                     DB.CheckSpace);                   {!!.11}
+                                     DB.CheckSpace);
         rpDB.State := ffosActive;
         { Update the folder's reference count. }
         DB.Folder.IncRefCount;

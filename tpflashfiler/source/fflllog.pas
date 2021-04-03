@@ -51,19 +51,17 @@ type
 
     { Internal variables }
     blLogCS : TRTLCriticalSection;
-{Begin !!.06}
     blTimer : TTimer;
       { When caching, flushes cache during periods of inactivity. The timer
         is enabled only when caching is enabled and something is written to
         the log. The timer is reset as more stuff is added to the log. }
-{End !!.06}
     { Property methods }
     function blGetFileName : TFileName;
   protected
     procedure blLockLog;
     procedure blUnlockLog;
     function blGetEnabled : Boolean;
-    procedure blOnTimer(Sender : TObject); virtual;                      {!!.06}
+    procedure blOnTimer(Sender : TObject); virtual;
     procedure blSetEnabled(const Value : Boolean); virtual;
     procedure blSetFileName(const Value : TFileName); virtual;
     procedure Clear; virtual;
@@ -71,7 +69,7 @@ type
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
 
-    procedure Flush; virtual;                                          {!!.06}
+    procedure Flush; virtual;
 
     procedure WriteBlock(const S : AnsiString; Buf : pointer;
                          BufLen : TffMemSize); virtual; abstract;
@@ -87,26 +85,15 @@ type
       { Used to write a block of strings to the event log. }
       
     { Properties }
-{Begin !!.06}
-    property CacheEnabled : Boolean
-      read FCache
-      write FCache
-      default True;
+    property CacheEnabled : Boolean read FCache write FCache default True;
       { If True then log lines are cached in memory and flushed to
         disk once the CacheLimit has been reached. }
 
-    property CacheLimit : Integer
-      read FCacheLimit
-      write FCacheLimit
-      default 500;
+    property CacheLimit : Integer read FCacheLimit write FCacheLimit default 500;
       { The maximum number of log lines that may be retained in
         memory. Not used if CacheEnabled is set to False. }
-{End !!.06}
 
-    property Enabled : Boolean
-       read blGetEnabled
-       write blSetEnabled
-       default False;                                                  {!!.01}
+    property Enabled : Boolean read blGetEnabled write blSetEnabled default False;
       { Enable/disable event logging. }
 
     property FileName : TFileName

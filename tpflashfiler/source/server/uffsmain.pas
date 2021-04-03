@@ -967,7 +967,7 @@ begin
           ListItem.SubItems.Add(IntToStr(DatabaseList.DatabaseCount));
           ListItem.SubItems.Add(IntToStr(TableList.TableCount));
           ListItem.SubItems.Add(IntToStr(CursorList.CursorCount));
-          ListItem.SubItems.Add(FFCommaizeChL(BufferManager.RAMUsed, AnsiChar(FormatSettings.ThousandSeparator)));
+          ListItem.SubItems.Add(FFCommaizeChL(BufferManager.RAMUsed, FormatSettings.ThousandSeparator));
 
         end;
         if i = SelServIdx then
@@ -1116,7 +1116,7 @@ begin
       SubItems[3] := IntToStr(DatabaseList.DatabaseCount);
       SubItems[4] := IntToStr(TableList.TableCount);
       SubItems[5] := IntToStr(CursorList.CursorCount);
-      SubItems[6] := FFCommaizeChL(BufferManager.RAMUsed, AnsiChar(FormatSettings.ThousandSeparator));
+      SubItems[6] := FFCommaizeChL(BufferManager.RAMUsed, FormatSettings.ThousandSeparator);
     end;
   end;
 end;
