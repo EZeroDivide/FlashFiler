@@ -51,13 +51,11 @@ const
 type
   EffStringResourceError = class(Exception);
 
-  TInt32 = Integer;
-
   PIndexRec = ^TIndexRec;
   TIndexRec = record
-    id : TInt32;
-    ofs: TInt32;
-    len: TInt32;
+    id : Integer;
+    ofs: Integer;
+    len: Integer;
   end;
   TIndexArray = array[0..(MaxInt div SizeOf(TIndexRec))-2] of TIndexRec;
 
@@ -79,15 +77,17 @@ type
     srPadlock     : TffPadlock;                                        {!!.03}
 
     {internal methods}
-    procedure srCloseResource;
-    function srFindIdent(Ident : TInt32) : PIndexRec;
-    function srGetCount : longInt;
+    procedure CloseResource;
+    function FindIdent(Ident : Integer) : PIndexRec;
+    function GetCount : Longint;
     procedure srLock;
     procedure srLoadResource(Instance : THandle; const ResourceName : string);
     procedure srOpenResource(Instance : THandle; const ResourceName : string);
     procedure srUnLock;
 
-    function GetAsciiZ(Ident : TInt32; Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
+    function GetStringAtIndex(const anIndex : longInt) : AnsiString;
+    function GetWideChar(Ident : Integer; Buffer : PWideChar; BufChars : Integer) : PWideChar;
+    function GetString(Ident : Integer) : String;
   public
     constructor Create(Instance : THandle; const ResourceName: string); virtual;
     destructor Destroy; override;
@@ -95,16 +95,10 @@ type
 
     function GetIdentAtIndex(const anIndex : longInt) : integer;
 
-    function GetString(Ident : TInt32) : AnsiString;
-    function GetStringAtIndex(const anIndex : longInt) : AnsiString;
-    function GetWideString(Ident : TInt32) : String;
-
-    // property Strings[Ident : TInt32] : AnsiString read GetString; default;
-    property Strings[Ident : TInt32] : String read GetWideString; default;
-    function GetWideChar(Ident : TInt32; Buffer : PWideChar; BufChars : Integer) : PWideChar;
+    property Strings[Ident : Integer] : String read GetString; default;
 
     /// <summary> -Returns the number of strings managed by this resource. <summary>
-    property Count : longInt read srGetCount;
+    property Count : Longint read GetCount;
 
     property ReportError : Boolean read FReportError write FReportError;
   end;
@@ -119,7 +113,7 @@ implementation
 
 procedure TffStringResource.ChangeResource(Instance : THandle; const ResourceName : string);
 begin
-  srCloseResource;
+  CloseResource;
   if ResourceName <> '' then
     srOpenResource(Instance, ResourceName);
 end;
@@ -134,7 +128,7 @@ end;
 {--------}
 destructor TffStringResource.Destroy;
 begin
-  srCloseResource;
+  CloseResource;
   srPadlock.Free;
   inherited Destroy;
 end;
@@ -150,7 +144,7 @@ begin
   Dest^ := #0;
 end;
 {--------}
-function TffStringResource.GetWideChar(Ident : TInt32;
+function TffStringResource.GetWideChar(Ident : Integer;
   Buffer : PWideChar; BufChars : Integer) : PWideChar;
 var
   OLen : Integer;
@@ -158,7 +152,7 @@ var
 begin
   srLock;
   try
-    P := srFindIdent(Ident);
+    P := FindIdent(Ident);
     if P = nil then
       Buffer[0] := #0
 
@@ -175,7 +169,7 @@ begin
   Result := Buffer;
 end;
 
-function TffStringResource.GetWideString(Ident: TInt32): String;
+function TffStringResource.GetString(Ident: Integer): String;
 var
   P : PIndexRec;
   Src : PWideChar;
@@ -183,7 +177,7 @@ var
 begin
   srLock;
   try
-    P := srFindIdent(Ident);
+    P := FindIdent(Ident);
     if P = nil then
       Result := ''
 
@@ -199,76 +193,13 @@ begin
 end;
 
 {--------}
-function TffStringResource.GetAsciiZ(Ident : TInt32; Buffer : PAnsiChar; BufChars : Integer) : PAnsiChar;
-var
-  P : PIndexRec;
-  Src : PWideChar;
-  Len, OLen : Integer;
-begin
-  srLock;
-  try
-    P := srFindIdent(Ident);
-    if P = nil then
-      OLen := 0
-
-    else begin
-      Src := PWideChar(PAnsiChar(srP)+P^.ofs);
-      Len := P^.len;
-
-      {see if entire string fits in Buffer}
-      OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
-
-      while OLen >= BufChars do begin
-        {reduce length to get what will fit}
-        dec(Len);
-        OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
-      end;
-
-      {copy to buffer}
-      OLen := WideCharToMultiByte(CP_ACP, 0, Src, Len, Buffer, BufChars, nil, nil)
-    end;
-  finally
-    srUnLock;
-  end;
-
-  {null terminate the result}
-  Buffer[OLen] := #0;
-  Result := Buffer;
-end;
-{--------}
 function TffStringResource.GetIdentAtIndex(const anIndex : longInt) : integer;
 begin
-  Result := -1;
   srLock;
   try
     if anIndex > pred(srP^.Count) then
       raise EffStringResourceError.CreateFmt(ffResStrings[6], [anIndex]);
     Result := PIndexRec(@srP^.index[anIndex])^.id;
-  finally
-    srUnLock;
-  end;
-end;
-{--------}
-function TffStringResource.GetString(Ident : TInt32) : Ansistring;
-var
-  P : PIndexRec;
-  Src : PWideChar;
-  Len, OLen : Integer;
-begin
-  srLock;
-  try
-    P := srFindIdent(Ident);
-    if P = nil then
-      Result := ''
-
-    else
-    begin
-      Src := PWideChar(PByte(srP)+P^.ofs);
-      Len := P^.len;
-      OLen :=  WideCharToMultiByte(CP_ACP, 0, Src, Len, nil, 0, nil, nil);
-      SetLength(Result, OLen);
-      WideCharToMultiByte(CP_ACP, 0, Src, Len, PAnsiChar(Result), OLen, nil, nil);
-    end;
   finally
     srUnLock;
   end;
@@ -301,7 +232,7 @@ begin
   end;
 end;
 {--------}
-procedure TffStringResource.srCloseResource;
+procedure TffStringResource.CloseResource;
 begin
   while Assigned(srP) do
     srUnLock;
@@ -312,9 +243,9 @@ begin
   end;
 end;
 {--------}
-function TffStringResource.srFindIdent(Ident : TInt32) : PIndexRec;
+function TffStringResource.FindIdent(Ident : Integer) : PIndexRec;
 var
-  L, R, M : TInt32;
+  L, R, M : Integer;
 begin
   Assert(srP <> nil, 'Lock not obtained on string resource');
   {binary search to find matching index record}
@@ -337,7 +268,7 @@ begin
     raise EffStringResourceError.CreateFmt(ffResStrings[1], [Ident]);
 end;
 {--------}
-function TffStringResource.srGetCount : longInt;
+function TffStringResource.GetCount : longInt;
 begin
   srLock;
   try
