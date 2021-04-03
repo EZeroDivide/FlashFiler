@@ -1178,7 +1178,7 @@ begin
 
     nftASCIIBool:
       if aTargetFFType = fftBoolean then
-        Boolean(FBuffer^) := (Char(aSourcePtr^) in ['T', 't', 'Y', 'y', '1'])
+        Boolean(FBuffer^) := (AnsiChar(aSourcePtr^) in ['T', 't', 'Y', 'y', '1'])
       else
         Result := DBIERR_INVALIDFLDXFORM;
 

@@ -373,6 +373,7 @@ begin
   deErrorCode := aErrorCode;
   Msg := deGetErrorString;
   inherited CreateFmt(ffStrResDataSet[ffdse_HasErrorCode], [Msg, aErrorCode, aErrorCode]);
+  //inherited CreateFmt(ffStrResDataSet.GetWideString(ffdse_HasErrorCode), [Msg, aErrorCode, aErrorCode]);
 end;
 {Begin !!.06}
 {--------}

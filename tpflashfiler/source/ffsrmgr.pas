@@ -98,10 +98,11 @@ type
 
     function GetString(Ident : TInt32) : AnsiString;
     function GetStringAtIndex(const anIndex : longInt) : AnsiString;
-
-    property Strings[Ident : TInt32] : AnsiString read GetString; default;
-    function GetWideChar(Ident : TInt32; Buffer : PWideChar; BufChars : Integer) : PWideChar;
     function GetWideString(Ident : TInt32) : String;
+
+    // property Strings[Ident : TInt32] : AnsiString read GetString; default;
+    property Strings[Ident : TInt32] : String read GetWideString; default;
+    function GetWideChar(Ident : TInt32; Buffer : PWideChar; BufChars : Integer) : PWideChar;
 
     /// <summary> -Returns the number of strings managed by this resource. <summary>
     property Count : longInt read srGetCount;
@@ -127,7 +128,7 @@ end;
 constructor TffStringResource.Create(Instance : THandle; const ResourceName : string);
 begin
   inherited Create;
-  srPadlock := TffPadlock.Create;                                      {!!.03}
+  srPadlock := TffPadlock.Create;
   FReportError := DefReportError;
   ChangeResource(Instance, ResourceName);
 end;
@@ -135,7 +136,7 @@ end;
 destructor TffStringResource.Destroy;
 begin
   srCloseResource;
-  srPadlock.Free;                                                      {!!.03}
+  srPadlock.Free;
   inherited Destroy;
 end;
 {--------}

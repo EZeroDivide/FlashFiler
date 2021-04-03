@@ -96,6 +96,7 @@
         <VerInfo_Locale>1031</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=;CFBundleName=</VerInfo_Keys>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Bde;Winapi;Vcl;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_DcuOutput>dcu</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
@@ -151,7 +152,6 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
-        <DCC_Description>TurboPower FlashFiler Designtime Package - VCL100</DCC_Description>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -201,7 +201,7 @@
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\pkgNetworkDiagram.bpl">(Unbenannt)</Excluded_Packages>
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\GLScene_Physics_DT.bpl">GLScene Physics Managers</Excluded_Packages>
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\GLScene_Sounds_DT.bpl">GLScene Sound Managers</Excluded_Packages>
-                    <Excluded_Packages Name="H:\Delphi\Komponenten\diagram\library\Bpl\Win32\TMSDiagram.bpl">Diagram Studio components</Excluded_Packages>
+                    <Excluded_Packages Name="H:\Delphi\Komponenten\diagram\library\Bpl\Win32\TMSDiagram.bpl">Datei H:\Delphi\Komponenten\diagram\library\Bpl\Win32\TMSDiagram.bpl nicht gefunden</Excluded_Packages>
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\pkgOpenCL.bpl">(Unbenannt)</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k250.bpl">Embarcadero C++Builder-Package für Office 2000-Server</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp250.bpl">Embarcadero C++Builder-Package für Office XP-Server</Excluded_Packages>

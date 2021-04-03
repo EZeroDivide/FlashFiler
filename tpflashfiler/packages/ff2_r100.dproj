@@ -78,6 +78,7 @@
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>1031</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=;CFBundleName=</VerInfo_Keys>
+        <DCC_DcuOutput>dcu</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
@@ -226,7 +227,7 @@
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\pkgNetworkDiagram.bpl">(Unbenannt)</Excluded_Packages>
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\GLScene_Physics_DT.bpl">GLScene Physics Managers</Excluded_Packages>
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\GLScene_Sounds_DT.bpl">GLScene Sound Managers</Excluded_Packages>
-                    <Excluded_Packages Name="H:\Delphi\Komponenten\diagram\library\Bpl\Win32\TMSDiagram.bpl">Diagram Studio components</Excluded_Packages>
+                    <Excluded_Packages Name="H:\Delphi\Komponenten\diagram\library\Bpl\Win32\TMSDiagram.bpl">Datei H:\Delphi\Komponenten\diagram\library\Bpl\Win32\TMSDiagram.bpl nicht gefunden</Excluded_Packages>
                     <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\pkgOpenCL.bpl">(Unbenannt)</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k250.bpl">Embarcadero C++Builder-Package für Office 2000-Server</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp250.bpl">Embarcadero C++Builder-Package für Office XP-Server</Excluded_Packages>
