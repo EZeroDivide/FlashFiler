@@ -91,13 +91,13 @@ const
   AutoObjName = '[automatic]';
 
 type
+  /// <summary> an event triggered once when the conneciton to the server is lost, and
+  /// onceafter code to retry, or clear associated components is complete. By
+  /// default aRetry is set to False. If this is set to true then the client
+  /// will try to reestablish the connection, and associated components. </summary>
   TffConnectionLostEvent = procedure (aSource   : TObject;
                                       aStarting : Boolean;
                                   var aRetry    : Boolean) of object;
-    {-an event triggered once when the conneciton to the server is lost, and
-      onceafter code to retry, or clear associated components is complete. By
-      default aRetry is set to False. If this is set to true then the client
-      will try to reestablish the connection, and associated components. }
 
   TffLoginEvent = procedure (aSource   : TObject;
                          var aUserName : TffName;

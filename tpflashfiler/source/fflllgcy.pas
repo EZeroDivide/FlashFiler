@@ -127,7 +127,7 @@ type
         does not perform any validation.  Transport subclasses should perform
         their own validation. }
 
-    procedure lcLog(const aMsg : AnsiString); override;
+    procedure lcLog(const aMsg : String); override;
       { Use this method to write an error string to the event log. }
 
     procedure ltFreeMsg(msg : PffDataMessage); virtual;                {!!.01}
@@ -755,7 +755,7 @@ begin
   Result := (scState = ffesStarted) and (FProtocol.ConnectionCount > 0);
 end;
 {--------}
-procedure TffLegacyTransport.lcLog(const aMsg : AnsiString);
+procedure TffLegacyTransport.lcLog(const aMsg : String);
 begin
   if FLogEnabled and assigned(FEventLog) and (fftpLogErrors in FLogOptions) then
     FEventLog.WriteString(aMsg);

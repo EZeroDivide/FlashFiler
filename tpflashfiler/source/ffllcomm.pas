@@ -824,11 +824,10 @@ type
         for a reply to the request. aCookie can be used as the transport sees
         fit. }
 
-    procedure tpLogReq(aRequest : TffRequest;
-                 const prefix : AnsiString); virtual;
+    procedure tpLogReq(aRequest : TffRequest; const prefix : String); virtual;
       { Write a request to the event log. }
 
-    procedure tpLogReq2(const aPrefix : AnsiString;
+    procedure tpLogReq2(const aPrefix : String;
                         const aRequestID : Longint;
                         const aClientID : TffClientID;
                         const aMsgID : Longint;
@@ -837,7 +836,7 @@ type
                         const aTimeout : Longint);
       { Write a reply to the event log.  Used by a transport in Listen mode. }
 
-   procedure tpLogReqMisc(const aMsg : AnsiString); virtual;
+   procedure tpLogReqMisc(const aMsg : String); virtual;
       { Write a request-related string to the event log. }
 
     procedure tpLogReply(aRequest : TffRequest); virtual;
@@ -1870,7 +1869,7 @@ begin
 end;
 {--------}
 procedure TffThreadedTransport.tpLogReq(aRequest : TffRequest;
-                                  const prefix : AnsiString);
+                                  const prefix : String);
 begin
   if FLogEnabled and (fftpLogRequests in FLogOptions) and
      assigned(FEventLog) and assigned(aRequest) then
@@ -1883,7 +1882,7 @@ begin
     end;
 end;
 {--------}
-procedure TffThreadedTransport.tpLogReq2(const aPrefix : AnsiString;
+procedure TffThreadedTransport.tpLogReq2(const aPrefix : String;
                                          const aRequestID : Longint;
                                          const aClientID : TffClientID;
                                          const aMsgID : Longint;
@@ -1897,7 +1896,7 @@ begin
   FEventLog.WriteBlock(ffc_Data, aData, aDataLen);
 end;
 {--------}
-procedure TffThreadedTransport.tpLogReqMisc(const aMsg : AnsiString);
+procedure TffThreadedTransport.tpLogReqMisc(const aMsg : String);
 begin
   if FLogEnabled and (fftpLogRequests in FLogOptions) and
      assigned(FEventLog) then

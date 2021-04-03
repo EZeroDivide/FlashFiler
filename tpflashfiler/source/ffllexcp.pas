@@ -35,7 +35,6 @@ interface
 
 uses
   SysUtils,
-  AnsiStrings,
   ffconst,
   ffllbase,
   ffsrmgr;
@@ -55,10 +54,8 @@ type
       constructor CreateEx(StrRes    : TffStringResource;
                            ErrorCode : integer;
                      const ExtraData : array of const);
-      constructor CreateNoData(StrRes    : TffStringResource;
-                               ErrorCode : integer);
-      property ErrorCode : integer
-         read FErrorCode;
+      constructor CreateNoData(StrRes: TffStringResource; ErrorCode : integer);
+      property ErrorCode : integer read FErrorCode;
   end;
   TffExceptionClass = class of EffException;
 
@@ -77,7 +74,7 @@ type
 
 {---Exception raising---}
 procedure FFRaiseException(ExceptionClass : TffExceptionClass;
-                           StringRes{ource} : TffStringResource;       {!!.10}
+                           StringRes{ource} : TffStringResource;
                            {conflict with StringResource directive fools some
                             source parsing tools}
                            ErrorCode      : integer;
@@ -86,7 +83,7 @@ procedure FFRaiseException(ExceptionClass : TffExceptionClass;
     is an array of const values defining the extra data required by
     the error code's string resource}
 procedure FFRaiseExceptionNoData(ExceptionClass : TffExceptionClass;
-                                 StringRes{ource} : TffStringResource; {!!.10}
+                                 StringRes{ource} : TffStringResource;
                                  {conflict with StringResource directive fools some
                                   source parsing tools}
                                  ErrorCode      : integer);
@@ -126,24 +123,15 @@ begin
 end;
 {====================================================================}
 
-procedure FinalizeUnit;
-begin
-  ffStrResGeneral.Free;
-  ffStrResBDE.Free;
-end;
-
-procedure InitializeUnit;
-begin
+initialization
   ffStrResGeneral := nil;
   ffStrResBDE := nil;
   ffStrResGeneral := TffStringResource.Create(hInstance, 'FF_GENERAL_STRINGS');
   ffStrResBDE := TffStringResource.Create(hInstance, 'FF_BDE_ERROR_STRINGS');
-end;
 
-initialization
-  InitializeUnit;
 
 finalization
-  FinalizeUnit;
+  ffStrResGeneral.Free;
+  ffStrResBDE.Free;
 
 end.

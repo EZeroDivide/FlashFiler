@@ -39,8 +39,8 @@ interface
 uses
   Windows,
   Classes,
-  SysUtils,                                                            {!!.03}
-  ffllbase;                                                            {!!.03}
+  SysUtils,
+  ffllbase;
 
 const
   DefReportError = False;
@@ -83,10 +83,9 @@ type
     procedure srLock;
     procedure srLoadResource(Instance : THandle; const ResourceName : string);
     procedure OpenResource(Instance : THandle; const ResourceName : string);
-    procedure srUnLock;
+    procedure UnLock;
 
     function GetStringAtIndex(const anIndex : longInt) : AnsiString;
-    function GetWideChar(Ident : Integer; Buffer : PWideChar; BufChars : Integer) : PWideChar;
     function GetString(Ident : Integer) : String;
   public
     constructor Create(Instance : THandle; const ResourceName: string); virtual;
@@ -97,7 +96,7 @@ type
 
     property Strings[Ident : Integer] : String read GetString; default;
 
-    /// <summary> -Returns the number of strings managed by this resource. <summary>
+    /// <summary> Returns the number of strings managed by this resource. <summary>
     property Count : Longint read GetCount;
 
     property ReportError : Boolean read FReportError write FReportError;
@@ -132,7 +131,7 @@ begin
   FPadlock.Free;
   inherited Destroy;
 end;
-{--------}
+{--------
 procedure WideCopy(Dest, Src : PWideChar; Len : Integer);
 begin
   while Len > 0 do begin
@@ -143,32 +142,7 @@ begin
   end;
   Dest^ := #0;
 end;
-{--------}
-function TffStringResource.GetWideChar(Ident : Integer;
-  Buffer : PWideChar; BufChars : Integer) : PWideChar;
-var
-  OLen : Integer;
-  P : PIndexRec;
-begin
-  srLock;
-  try
-    P := FindIdent(Ident);
-    if P = nil then
-      Buffer[0] := #0
-
-    else begin
-      OLen := P^.len;
-      if OLen >= BufChars then
-        OLen := BufChars-1;
-      WideCopy(Buffer, PWideChar(PByte(srP)+P^.ofs), OLen);
-    end;
-  finally
-    srUnLock;
-  end;
-
-  Result := Buffer;
-end;
-
+--------}
 function TffStringResource.GetString(Ident: Integer): String;
 var
   P : PIndexRec;
@@ -188,7 +162,7 @@ begin
       SetString(Result, Src, Len);
     end;
   finally
-    srUnLock;
+    UnLock;
   end;
 end;
 
@@ -201,7 +175,7 @@ begin
       raise EffStringResourceError.CreateFmt(ffResStrings[6], [anIndex]);
     Result := PIndexRec(@srP^.index[anIndex])^.id;
   finally
-    srUnLock;
+    UnLock;
   end;
 end;
 {--------}
@@ -228,14 +202,14 @@ begin
       WideCharToMultiByte(CP_ACP, 0, Src, Len, PAnsiChar(Result), OLen, nil, nil);
     end;
   finally
-    srUnLock;
+    UnLock;
   end;
 end;
 {--------}
 procedure TffStringResource.CloseResource;
 begin
   while Assigned(srP) do
-    srUnLock;
+    UnLock;
 
   if FHandle <> 0 then begin
     FreeResource(FHandle);
@@ -274,7 +248,7 @@ begin
   try
     Result := srP^.count;
   finally
-    srUnlock;
+    UnLock;
   end;
 end;
 {--------}
@@ -321,11 +295,11 @@ begin
     if srP^.id <> ResId then
       raise EffStringResourceError.Create(ffResStrings[5]);
   finally
-    srUnLock;
+    UnLock;
   end;
 end;
 {--------}
-procedure TffStringResource.srUnLock;
+procedure TffStringResource.UnLock;
 begin
   try                                                                  {!!.03}
     if not UnLockResource(FHandle) then

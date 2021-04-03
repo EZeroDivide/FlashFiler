@@ -86,13 +86,11 @@ type
 
     function lcGetLogEnabled : boolean; virtual;
 
-    procedure lcLog(const aString : AnsiString); virtual;
+    procedure lcLog(const aString : String); virtual;
       { Use this to write a string to the event log. }
 
-{Begin !!.06}
-    procedure lcLogFmt(const aMsg : AnsiString; const args : array of const); virtual;
+    procedure lcLogFmt(const aMsg : String; const args : array of const); virtual;
       { Use this method to write a formatted error string to the event log. }
-{End !!.06}
 
     procedure lcSetEventLog(anEventLog : TffBaseLog); virtual;
       { Sets the event log to be used by this component. }
@@ -105,8 +103,8 @@ type
 
     destructor Destroy; override;
 
-    procedure FFNotificationEx(const AOp : Byte; AFrom : TffComponent; {!!.11}
-                               const AData : TffWord32); override;     {!!.11}
+    procedure FFNotificationEx(const AOp : Byte; AFrom : TffComponent;
+                               const AData : TffWord32); override;
       { When the freeing of the TffBaseLog is detected, this method
         sets FEventLog to nil to avoid using the freed TffBaseLog. }
 
@@ -169,9 +167,7 @@ type
 
     destructor Destroy; override;
 
-    {$IFDEF DCC4OrLater}                                               {!!.03}
-    procedure BeforeDestruction; override;                             {!!.03}
-    {$ENDIF}                                                           {!!.03}
+    procedure BeforeDestruction; override;
 
     procedure Shutdown; virtual;
       { Sets the component's State to ffesInactive. }
@@ -201,25 +197,25 @@ type
   EffServerComponentError = class(Exception)
   protected
     sceErrorCode : longInt;
-    function sceGetErrorString : AnsiString;
+    function sceGetErrorString : String;
   public
-    constructor Create(const aMsg : AnsiString);
+    constructor Create(const aMsg : String);
     constructor CreateViaCode(const aErrorCode : Longint; aDummy : Boolean);
     constructor CreateViaCodeFmt(const aErrorCode : Longint; args : array of const; aDummy : Boolean);
-    constructor CreateWithObj(aObj : TComponent; const aMsg : AnsiString);
+    constructor CreateWithObj(aObj : TComponent; const aMsg : String);
 
     property ErrorCode : longInt read sceErrorCode;
   end;
 
 
 {---Helper routines---}
-function FFMapStateToString(const aState : TffState) : AnsiString;
+function FFMapStateToString(const aState : TffState) : String;
   { Maps a state value to a string. }
 procedure RaiseSCErrorCode(const aErrorCode : longInt);
 procedure RaiseSCErrorCodeFmt(const aErrorCode : longInt;
                                  args : array of const);
-procedure RaiseSCErrorMsg(const aMsg : AnsiString);
-procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : AnsiString);
+procedure RaiseSCErrorMsg(const aMsg : String);
+procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : String);
 
 
 var
@@ -298,7 +294,7 @@ end;
 destructor TffLoggableComponent.Destroy;
 begin
   if assigned(FEventLog) then
-    FEventLog.FFRemoveDependent(Self);                                 {!!.11}
+    FEventLog.FFRemoveDependent(Self);
   inherited Destroy;
 end;
 {--------}
@@ -307,22 +303,19 @@ begin
   Result := FLogEnabled;
 end;
 {--------}
-procedure TffLoggableComponent.lcLog(const aString : AnsiString);
+procedure TffLoggableComponent.lcLog(const aString : String);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteString(aString);
 end;
-{Begin !!.06}
 {--------}
-procedure TffLoggableComponent.lcLogFmt(const aMsg : AnsiString; const args : array of const);
+procedure TffLoggableComponent.lcLogFmt(const aMsg : String; const args : array of const);
 begin
   if FLogEnabled and assigned(FEventLog) then
     FEventLog.WriteStringFmt(aMsg, args);
 end;
-{End !!.06}
 {--------}
 procedure TffLoggableComponent.lcSetEventLog(anEventLog : TffBaseLog);
-{Rewritten !!.11}
 begin
   if FEventLog <> anEventLog then begin
     if assigned(FEventLog) then
@@ -339,7 +332,6 @@ begin
   FLogEnabled := aEnabled;
 end;
 {--------}
-{Rewritten !!.11}
 procedure TffLoggableComponent.FFNotificationEx(const AOp : Byte; AFrom : TffComponent;
                                                 const AData : TffWord32);
 begin
@@ -366,24 +358,20 @@ begin
     scSetState(ffesInactive);
   inherited Destroy;
 end;
-{Begin !!.03}
-{$IFDEF DCC4OrLater}
 {--------}
  procedure TffStateComponent.BeforeDestruction;
 begin
   inherited;
 
-  FFNotifyDependents(ffn_Deactivate);                                 {!!.04}
+  FFNotifyDependents(ffn_Deactivate);
 
   if scState <> ffesInactive then
     scSetState(ffesInactive);
 end;
-{$ENDIF}
-{End !!.03}
 {--------}
 procedure TffStateComponent.scCheckInactive;
 begin
-  if not (scState in [ffesInactive, ffesUnsupported, ffesFailed]) then  {!!.03}
+  if not (scState in [ffesInactive, ffesUnsupported, ffesFailed]) then
     RaiseSCErrorCode(ffsce_MustBeInactive);
 end;
 {--------}
@@ -451,7 +439,7 @@ end;
 {====================================================================}
 
 {===Interfaced helper routines=======================================}
-function FFMapStateToString(const aState : TffState) : AnsiString;
+function FFMapStateToString(const aState : TffState) : String;
 begin
   case aState of
     ffesInactive :      Result := ffcStateInactive;
@@ -479,19 +467,19 @@ begin
   raise EffServerComponentError.CreateViaCode(aErrorCode, False);
 end;
 {--------}
-procedure RaiseSCErrorMsg(const aMsg : AnsiString);
+procedure RaiseSCErrorMsg(const aMsg : String);
 begin
   raise EffServerComponentError.Create(aMsg);
 end;
 {--------}
-procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : AnsiString);
+procedure RaiseSCErrorObj(aObj : TComponent; const aMsg : String);
 begin
   raise EffServerComponentError.CreateWithObj(aObj, aMsg);
 end;
 {====================================================================}
 
 {===EffServerComponentError==========================================}
-constructor EffServerComponentError.Create(const aMsg : AnsiString);
+constructor EffServerComponentError.Create(const aMsg : String);
 begin
   sceErrorCode := 0;
   inherited CreateFmt(ffStrResServerCmp[ffsce_NoErrorCode], [aMsg]);
@@ -499,7 +487,7 @@ end;
 {--------}
 constructor EffServerComponentError.CreateViaCode(const aErrorCode : Longint; aDummy : Boolean);
 var
-  Msg : AnsiString;
+  Msg : String;
 begin
   sceErrorCode := aErrorCode;
   Msg := sceGetErrorString;
@@ -510,7 +498,7 @@ constructor EffServerComponentError.CreateViaCodeFmt(const aErrorCode : longInt;
                                                            args : array of const;
                                                            aDummy : Boolean);
 var
-  Msg : AnsiString;
+  Msg : String;
 begin
   sceErrorCode := aErrorCode;
   Msg := sceGetErrorString;
@@ -519,9 +507,9 @@ begin
 end;
 {--------}
 constructor EffServerComponentError.CreateWithObj(aObj : TComponent;
-                                     const aMsg : AnsiString);
+                                     const aMsg : String);
 var
-  ObjName : AnsiString;
+  ObjName : String;
 begin
   sceErrorCode := 0;
   if (aObj = nil) then
@@ -534,7 +522,7 @@ begin
   inherited CreateFmt(ffStrResServerCmp[ffsce_InstNoCode], [ObjName, aMsg]);
 end;
 {--------}
-function EffServerComponentError.sceGetErrorString : AnsiString;
+function EffServerComponentError.sceGetErrorString : String;
 begin
   Result := ffStrResServerCmp[sceErrorCode];
 end;
