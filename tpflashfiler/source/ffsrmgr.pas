@@ -72,9 +72,9 @@ type
     FReportError  : Boolean;             {true to raise exception if string not found}
 
     {internal variables}
-    srHandle      : THandle;             {handle for TPStrings resource}
-    srP           : PResourceRec;        {pointer to start of resource}
-    srPadlock     : TffPadlock;                                        {!!.03}
+    FHandle      : THandle;             {handle for TPStrings resource}
+    srP          : PResourceRec;        {pointer to start of resource}
+    FPadlock     : TffPadlock;                                        {!!.03}
 
     {internal methods}
     procedure CloseResource;
@@ -82,7 +82,7 @@ type
     function GetCount : Longint;
     procedure srLock;
     procedure srLoadResource(Instance : THandle; const ResourceName : string);
-    procedure srOpenResource(Instance : THandle; const ResourceName : string);
+    procedure OpenResource(Instance : THandle; const ResourceName : string);
     procedure srUnLock;
 
     function GetStringAtIndex(const anIndex : longInt) : AnsiString;
@@ -115,13 +115,13 @@ procedure TffStringResource.ChangeResource(Instance : THandle; const ResourceNam
 begin
   CloseResource;
   if ResourceName <> '' then
-    srOpenResource(Instance, ResourceName);
+    OpenResource(Instance, ResourceName);
 end;
 {--------}
 constructor TffStringResource.Create(Instance : THandle; const ResourceName : string);
 begin
   inherited Create;
-  srPadlock := TffPadlock.Create;
+  FPadlock := TffPadlock.Create;
   FReportError := DefReportError;
   ChangeResource(Instance, ResourceName);
 end;
@@ -129,7 +129,7 @@ end;
 destructor TffStringResource.Destroy;
 begin
   CloseResource;
-  srPadlock.Free;
+  FPadlock.Free;
   inherited Destroy;
 end;
 {--------}
@@ -237,9 +237,9 @@ begin
   while Assigned(srP) do
     srUnLock;
 
-  if srHandle <> 0 then begin
-    FreeResource(srHandle);
-    srHandle := 0;
+  if FHandle <> 0 then begin
+    FreeResource(FHandle);
+    FHandle := 0;
   end;
 end;
 {--------}
@@ -280,13 +280,13 @@ end;
 {--------}
 procedure TffStringResource.srLock;
 begin
-  srPadlock.Lock;                                                      {!!.03}
+  FPadlock.Lock;                                                      {!!.03}
   try                                                                  {!!.03}
-    srP := LockResource(srHandle);
+    srP := LockResource(FHandle);
     if not Assigned(srP) then
       raise EffStringResourceError.Create(ffResStrings[2]);
   except                                                               {!!.03}
-    srPadlock.Unlock;                                                  {!!.03}
+    FPadlock.Unlock;                                                  {!!.03}
     raise;                                                             {!!.03}
   end;                                                                 {!!.03}
 end;
@@ -304,13 +304,13 @@ begin
   if H = 0 then begin
     raise EffStringResourceError.CreateFmt(ffResStrings[3], [ResourceName]);
   end else begin
-    srHandle := LoadResource(Instance, H);
-    if srHandle = 0 then
+    FHandle := LoadResource(Instance, H);
+    if FHandle = 0 then
       raise EffStringResourceError.CreateFmt(ffResStrings[4], [ResourceName]);
   end;
 end;
 {--------}
-procedure TffStringResource.srOpenResource(Instance : THandle; const ResourceName : string);
+procedure TffStringResource.OpenResource(Instance : THandle; const ResourceName : string);
 begin
   {find and load the resource}
   srLoadResource(Instance, ResourceName);
@@ -328,10 +328,10 @@ end;
 procedure TffStringResource.srUnLock;
 begin
   try                                                                  {!!.03}
-    if not UnLockResource(srHandle) then
+    if not UnLockResource(FHandle) then
       srP := nil;
   finally                                                              {!!.03}
-    srPadlock.Unlock;                                                  {!!.03}
+    FPadlock.Unlock;                                                  {!!.03}
   end;                                                                 {!!.03}
 end;
 
