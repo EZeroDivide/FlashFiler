@@ -170,10 +170,8 @@ type
     { This class provides an interface to BLOBs in 2.1.0.1 and later. The logic
       supports the improved nesting algorithm that recycles all available
       BLOB segments regardless of size. }
-{Begin !!.12}
   protected
     function IsEmptyLookupEntry(Entry : PffBLOBLookupEntry) : Boolean;
-{End !!.12}
   public
     procedure Read(aFI         : PffFileInfo;
                    aTI         : PffTransInfo;
@@ -1709,7 +1707,6 @@ begin
 end;
 {--------}
 function TffBLOBEngine.IsEmptyLookupEntry(Entry : PffBLOBLookupEntry) : Boolean;
-{ Revised !!.13}
 const
   ciEmptyVal1 = 808464432;
     { This is because lookup segments prior to 2.13 were fillchar'd with 'O'

@@ -224,15 +224,15 @@ type
     function GetBLOBCount : TffWord32;
     function GetBlockSize : Longint;
     function GetDataDictBlockNum : TffWord32;
-    function GetDeletedBLOBHead : TffInt64;
-    function GetDeletedBLOBTail : TffInt64;
+    function GetDeletedBLOBHead : UInt64;
+    function GetDeletedBLOBTail : UInt64;
     function GetDeletedRecordCount : Longint;
     function GetEncrypted : Longint;
     function GetEstimatedUsedBlocks : TffWord32;
     function GetFFVersion : Longint;
     function GetFieldCount : Longint;
     function GetFirstDataBlock : TffWord32;
-    function GetFirstDeletedRecord : TffInt64;
+    function GetFirstDeletedRecord : UInt64;
     function GetFirstFreeBlock : TffWord32;
     function GetHasSequentialIndex : Longint;
     function GetIndexCount : Longint;
@@ -270,12 +270,12 @@ type
       { The block number of the data dictionary. If there is no data
         dictionary then this property returns the value zero. }
 
-    property DeletedBLOBHead : TffInt64
+    property DeletedBLOBHead : UInt64
       read GetDeletedBLOBHead;
       { The file-relative offset of the first segment in the deleted BLOB
         chain. }
 
-    property DeletedBLOBTail : TffInt64
+    property DeletedBLOBTail : UInt64
       read GetDeletedBLOBTail;
       { The file-relative offset of the last segment in the deleted BLOB
         chain. }
@@ -305,7 +305,7 @@ type
       read GetFirstDataBlock write SetFirstDataBlock;
       { The first data block in the chain of data blocks. }
 
-    property FirstDeletedRecord : TffInt64
+    property FirstDeletedRecord : UInt64
       read GetFirstDeletedRecord;
       { The offset of the first record in the deleted record chain. }
 
@@ -812,7 +812,7 @@ function FlagStr(const Flag : Byte; const ZeroStr, OneStr : string) : string;
 function ByteToHex(const B : byte) : string;
 procedure GenerateHexLines(Buf : pointer; BufLen : TffMemSize;
                            Strings: TStrings);
-function Int64ToStr(const Value : TffInt64) : string;
+function Int64ToStr(const Value : UInt64) : string;
 function LongintToChars(const L : Longint) : string;
 function LongintToHex(const L : Longint) : string;
 function Mirror(const Value : string) : string;
@@ -864,7 +864,7 @@ procedure GenerateHexLines(Buf : pointer; BufLen : TffMemSize;
 const
   HexPos : array [0..15] of byte =
     (1, 3, 5, 7, 10, 12, 14, 16, 19, 21, 23, 25, 28, 30, 32, 34);
-  HexChar : array [0..15] of char = '0123456789ABCDEF';
+  HexChar : array [0..15] of AnsiChar = '0123456789ABCDEF';
 var
   B : PffByteArray absolute Buf;
   ThisWidth,
@@ -890,7 +890,7 @@ begin
         Line[HexPos[j]+1] := HexChar[Work and $F];
         if (Work < 32) then
           Work := ord('.');
-        Line[39+j] := char(Work);
+        Line[39+j] := AnsiChar(Work);
       end;
       Strings.Add(Line);
       dec(BufLen, ThisWidth);
@@ -898,9 +898,9 @@ begin
   end;
 end;
 {--------}
-function Int64ToStr(const Value : TffInt64) : string;
+function Int64ToStr(const Value : UInt64) : string;
 begin
-  Result := IntToStr(Value.iHigh) + ':' + IntToStr(Value.iLow);
+  Result := IntToStr(Int64Rec(Value).Hi) + ':' + IntToStr(Int64Rec(Value).Lo);
 end;
 {--------}
 function LongintToChars(const L : Longint) : string;

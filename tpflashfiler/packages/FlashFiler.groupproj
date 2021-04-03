@@ -18,6 +18,9 @@
         <Projects Include="..\source\service\ffsrvice.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\source\Verify\FFVerify.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -71,14 +74,23 @@
     <Target Name="ffsrvice:Make">
         <MSBuild Projects="..\source\service\ffsrvice.dproj" Targets="Make"/>
     </Target>
+    <Target Name="FFVerify">
+        <MSBuild Projects="..\source\Verify\FFVerify.dproj"/>
+    </Target>
+    <Target Name="FFVerify:Clean">
+        <MSBuild Projects="..\source\Verify\FFVerify.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FFVerify:Make">
+        <MSBuild Projects="..\source\Verify\FFVerify.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ff2_r100;ff2_d100;Project2;ffserver;ffsrvice"/>
+        <CallTarget Targets="ff2_r100;ff2_d100;Project2;ffserver;ffsrvice;FFVerify"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ff2_r100:Clean;ff2_d100:Clean;Project2:Clean;ffserver:Clean;ffsrvice:Clean"/>
+        <CallTarget Targets="ff2_r100:Clean;ff2_d100:Clean;Project2:Clean;ffserver:Clean;ffsrvice:Clean;FFVerify:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ff2_r100:Make;ff2_d100:Make;Project2:Make;ffserver:Make;ffsrvice:Make"/>
+        <CallTarget Targets="ff2_r100:Make;ff2_d100:Make;Project2:Make;ffserver:Make;ffsrvice:Make;FFVerify:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

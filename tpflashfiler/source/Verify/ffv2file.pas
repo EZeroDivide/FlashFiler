@@ -120,15 +120,15 @@ type
     function GetBLOBCount : TffWord32; virtual;
     function GetBlockSize : Longint; virtual;
     function GetDataDictBlockNum : TffWord32; virtual;
-    function GetDeletedBLOBHead : TffInt64; virtual;
-    function GetDeletedBLOBTail : TffInt64; virtual;
+    function GetDeletedBLOBHead : UInt64; virtual;
+    function GetDeletedBLOBTail : UInt64; virtual;
     function GetDeletedRecordCount : Longint; virtual;
     function GetEncrypted : Longint; virtual;
     function GetEstimatedUsedBlocks : TffWord32; virtual;
     function GetFFVersion : Longint; virtual;
     function GetFieldCount : Longint; virtual;
     function GetFirstDataBlock : TffWord32; virtual;
-    function GetFirstDeletedRecord : TffInt64; virtual;
+    function GetFirstDeletedRecord : UInt64; virtual;
     function GetFirstFreeBlock : TffWord32; virtual;
     function GetHasSequentialIndex : Longint; virtual;
     function GetIndexCount : Longint; virtual;
@@ -174,12 +174,12 @@ type
       { The block number of the data dictionary. If there is no data
         dictionary then this property returns the value zero. }
 
-    property DeletedBLOBHead : TffInt64
+    property DeletedBLOBHead : UInt64
       read GetDeletedBLOBHead;
       { The file-relative offset of the first segment in the deleted BLOB
         chain. }
 
-    property DeletedBLOBTail : TffInt64
+    property DeletedBLOBTail : UInt64
       read GetDeletedBLOBTail;
       { The file-relative offset of the last segment in the deleted BLOB
         chain. }
@@ -210,7 +210,7 @@ type
       read GetFirstDataBlock write SetFirstDataBlock;
       { The first data block in the chain of data blocks. }
 
-    property FirstDeletedRecord : TffInt64
+    property FirstDeletedRecord : UInt64
       read GetFirstDeletedRecord;
       { The offset of the first record in the deleted record chain. }
 
@@ -366,7 +366,7 @@ type
     procedure SetRecCount(const Value : Longint); virtual;
     procedure SetRecLen(const Value : Longint); virtual;
 
-    procedure VerifyBLOB(const BLOBNr : TffInt64;
+    procedure VerifyBLOB(const BLOBNr : UInt64;
                            var ErrCode : Integer); virtual;
   public
     procedure VerifyRepair(const Repair : Boolean); override;
@@ -441,7 +441,7 @@ const
 
 type
   PRef = ^TRef;
-  TRef = TffInt64;
+  TRef = UInt64;
   PPageNum = ^TpageNum;
   TPageNum = TffWord32;
 
@@ -866,12 +866,12 @@ begin
   Result := PffBlockHeaderFile(FBlock)^.bhfDataDict;
 end;
 {--------}
-function TffFileHeaderBlock.GetDeletedBLOBHead : TffInt64;
+function TffFileHeaderBlock.GetDeletedBLOBHead : UInt64;
 begin
   Result := PffBlockHeaderFile(FBlock)^.bhfDelBLOBHead;
 end;
 {--------}
-function TffFileHeaderBlock.GetDeletedBLOBTail : TffInt64;
+function TffFileHeaderBlock.GetDeletedBLOBTail : UInt64;
 begin
   Result := PffBlockHeaderFile(FBlock)^.bhfDelBLOBTail;
 end;
@@ -888,10 +888,11 @@ end;
 {--------}
 function TffFileHeaderBlock.GetEstimatedUsedBlocks : TffWord32;
 var
-  CalcInt64Value : TffInt64;
+  CalcInt64Value : UInt64;
 begin
-  ffI64DivInt(FFGetFileSize(FFileInfo), BlockSize, CalcInt64Value);
-  Result := CalcInt64Value.iLow;
+  // ffI64DivInt(FFGetFileSize(FFileInfo), BlockSize, CalcInt64Value);
+  CalcInt64Value := FFGetFileSize(FFileInfo) div BlockSize;
+  Result := Int64Rec(CalcInt64Value).Lo;
 end;
 {--------}
 function TffFileHeaderBlock.GetFFVersion : Longint;
@@ -909,7 +910,7 @@ begin
   Result := PffBlockHeaderFile(FBlock)^.bhf1stDataBlock;
 end;
 {--------}
-function TffFileHeaderBlock.GetFirstDeletedRecord : TffInt64;
+function TffFileHeaderBlock.GetFirstDeletedRecord : UInt64;
 begin
   Result := PffBlockHeaderFile(FBlock)^.bhf1stDelRec;
 end;
@@ -1192,19 +1193,21 @@ begin
 
     { Is the deleted BLOB head valid?
       Future: Determine if it is a BLOB segment. }
-    if (DeletedBLOBHead.iLow <> ffc_W32NoValue) and
+    if (Int64Rec(DeletedBLOBHead).Lo <> ffc_W32NoValue) and
        Log2BlockSizeValid and
        (not FFVerifyBLOBNr(DeletedBLOBHead, Log2BlockSize)) then
-      DoReportError(rciInvalidInt64, ['Deleted BLOB head', DeletedBLOBHead.iHigh,
-                                      DeletedBLOBHead.iLow]);
+      DoReportError(rciInvalidInt64, ['Deleted BLOB head',
+                                      Int64Rec(DeletedBLOBHead).Hi,
+                                      Int64Rec(DeletedBLOBHead).Lo]);
 
     { Is the deleted BLOB tail valid?
       Future: Determine if it is a BLOB segment. }
-    if (DeletedBLOBTail.iLow <> ffc_W32NoValue) and
+    if (Int64Rec(DeletedBLOBTail).Lo <> ffc_W32NoValue) and
        Log2BlockSizeValid and
        (not FFVerifyBLOBNr(DeletedBLOBTail, Log2BlockSize)) then
-      DoReportError(rciInvalidInt64, ['Deleted BLOB tail', DeletedBLOBTail.iHigh,
-                                      DeletedBLOBTail.iLow]);
+      DoReportError(rciInvalidInt64, ['Deleted BLOB tail',
+                                      Int64Rec(DeletedBLOBTail).Hi,
+                                      Int64Rec(DeletedBLOBTail).Lo]);
 
 
     { Future: Verify deleted record count. }
@@ -1236,17 +1239,17 @@ begin
     { Verify ref to 1st deleted record.
       Future: Determine if it really is a deleted record. }
     if (DeletedRecordCount = 0) then begin
-      if FirstDeletedRecord.iLow <> ffc_W32NoValue then
+      if Int64Rec(FirstDeletedRecord).Lo <> ffc_W32NoValue then
         DoReportError(rciInvalidInt64, ['First Deleted Record',
-                                        FirstDeletedRecord.iHigh,
-                                        FirstDeletedRecord.iLow]);
+                                        Int64Rec(FirstDeletedRecord).Hi,
+                                        Int64Rec(FirstDeletedRecord).Lo]);
     end
     else if Log2BlockSizeValid and
             (not FFVerifyRefNr(FirstDeletedRecord, Log2BlockSize,
                                RecordLengthPlusTrailer)) then
       DoReportError(rciInvalidInt64, ['First Deleted Record',
-                                      FirstDeletedRecord.iHigh,
-                                      FirstDeletedRecord.iLow]);
+                                      Int64Rec(FirstDeletedRecord).Hi,
+                                      Int64Rec(FirstDeletedRecord).Lo]);
 
     { Verify ref to first free block. }
     if FirstFreeBlock <> ffc_W32NoValue then
@@ -1517,7 +1520,7 @@ var
   Inx : Integer;
   InxBlockNum,
   DataBlockNum : TffWord32;
-  RefNum, TempI64 : TffInt64;
+  RefNum, TempI64 : UInt64;
   PageNumBlock : PPageNumBlock;
   Modified : Boolean;
   Block : PffBlock;
@@ -1561,8 +1564,9 @@ begin
       for Inx := 0 to pred(KeyCount) do begin
         { Get the block number. }
         RefNum := DataRefBlock^[Inx];
-        ffShiftI64R(RefNum, FFileInfo^.fiLog2BlockSize, TempI64);
-        DataBlockNum := TempI64.iLow;
+        // ffShiftI64R(RefNum, FFileInfo^.fiLog2BlockSize, TempI64);
+        TempI64 := RefNum shr FFileInfo^.fiLog2BlockSize;
+        DataBlockNum := Int64Rec(TempI64).Lo;
 
         { Load the page.  Is it a data block? }
         try
@@ -1580,7 +1584,8 @@ begin
                 ValidStr := 'The RefNum is invalid.';
               DoReportError(rciInvalidLeafKeyBlockRef,
                             [Inx, BlockNum, IndexNum, DataBlockNum,
-                             RefNum.iHigh, RefNum.iLow, ValidStr]);
+                             Int64Rec(RefNum).Hi,
+                             Int64Rec(RefNum).Lo, ValidStr]);
             end
             else begin
               { It is a data block. Verify the key in the index page points
@@ -1589,7 +1594,7 @@ begin
                                    Info.RecLenPlusTrailer) then
                 DoReportError(rciInvalidLeafKeyRefNum,
                               [Inx, BlockNum, IndexNum, DataBlockNum,
-                               RefNum.iHigh, RefNum.iLow]);
+                               Int64Rec(RefNum).Hi, Int64Rec(RefNum).Lo]);
             end;  { if..else }
           finally
             RelMethod(Block);
@@ -1598,7 +1603,7 @@ begin
           ValidStr := 'The RefNum validity is undetermined.';
           DoReportError(rciInvalidLeafKeyBlockRef,
                         [Inx, BlockNum, IndexNum, DataBlockNum,
-                         RefNum.iHigh, RefNum.iLow, ValidStr]);
+                         Int64Rec(RefNum).Hi, Int64Rec(RefNum).Lo, ValidStr]);
         end;
       end;  { for }
     end
@@ -1637,7 +1642,7 @@ begin
                 ValidStr := 'The RefNum is invalid.';
               DoReportError(rciInvalidIntrnalKeyBlockRef,
                             [Inx, BlockNum, IndexNum, InxBlockNum,
-                             RefNum.iHigh, RefNum.iLow, ValidStr]);
+                             Int64Rec(RefNum).Hi, Int64Rec(RefNum).Lo, ValidStr]);
             end
             else begin
               { Yes, the target page is an index page.  Now verify this key points
@@ -1646,7 +1651,7 @@ begin
                                    Info.RecLenPlusTrailer) then
                 DoReportError(rciInvalidIntrnalKeyRefNum,
                               [Inx, BlockNum, IndexNum, InxBlockNum,
-                               RefNum.iHigh, RefNum.iLow]);
+                               Int64Rec(RefNum).Hi, Int64Rec(RefNum).Lo]);
             end;  { if }
           finally
             RelMethod(Block);
@@ -1655,7 +1660,7 @@ begin
           ValidStr := 'The RefNum validity is undetermined.';
           DoReportError(rciInvalidIntrnalKeyBlockRef,
                         [Inx, BlockNum, IndexNum, InxBlockNum,
-                         RefNum.iHigh, RefNum.iLow, ValidStr]);
+                         Int64Rec(RefNum).Hi, Int64Rec(RefNum).Lo, ValidStr]);
         end;
       end;  { for }
     end;  { if..else }
@@ -2016,17 +2021,20 @@ end;
 function TffDataBlock.IsEmptyLookupEntry(Entry : PffBLOBLookupEntry) : Boolean;
 const
   ciEmptyVal1 = 808464432;
-    { This is because the lookup segments are fillchar'd with 'O' instead of 0.
-      We have to check all 3 fields in the lookup entry for this value so that
-      we avoid a case where the value is valid. }
+    { This is because lookup segments prior to 2.13 were fillchar'd with 'O'
+      instead of 0. We have to check all 3 fields in the lookup entry for this
+      value so that we avoid a case where the value is valid. }
   ciEmptyVal2 = 1179010630;
     { Another value that indicates an empty lookup entry. }
 begin
-  Result := ((Entry^.bleSegmentOffset.iLow = ciEmptyVal1) and
-             (Entry^.bleSegmentOffset.iHigh = ciEmptyVal1) and
+  Result := (Int64Rec(Entry^.bleSegmentOffset).Lo = ffc_W32NoValue) or
+            ((Int64Rec(Entry^.bleSegmentOffset).Lo = 0) and
+             (Int64Rec(Entry^.bleSegmentOffset).Hi = 0)) or
+            ((Int64Rec(Entry^.bleSegmentOffset).Lo = ciEmptyVal1) and
+             (Int64Rec(Entry^.bleSegmentOffset).Hi = ciEmptyVal1) and
              (Entry^.bleContentLength = ciEmptyVal1)) or
-            ((Entry^.bleSegmentOffset.iLow = ciEmptyVal2) and
-             (Entry^.bleSegmentOffset.iHigh = ciEmptyVal2) and
+            ((Int64Rec(Entry^.bleSegmentOffset).Lo = ciEmptyVal2) and
+             (Int64Rec(Entry^.bleSegmentOffset).Hi = ciEmptyVal2) and
              (Entry^.bleContentLength = ciEmptyVal2));
 end;
 {--------}
@@ -2050,7 +2058,7 @@ begin
   PffBlockHeaderData(FBlock)^.bhdRecLength := Value;
 end;
 {--------}
-procedure TffDataBlock.VerifyBLOB(const BLOBNr : TffInt64;
+procedure TffDataBlock.VerifyBLOB(const BLOBNr : UInt64;
                                     var ErrCode : Integer);
 var
   BLOBBlock     : PffBlock;
@@ -2063,7 +2071,7 @@ var
   ContentEntry : PffBLOBSegmentHeader;
   LookupSegBlk, ContentSegBlk  : PffBlock;
   LookupSegPtr  : PffBLOBSegmentHeader;
-  NextSeg       : TffInt64;
+  NextSeg       : UInt64;
   OffsetInBlock, ContentOffsetInBlock : TffWord32;
   aLkpRelMethod,
   aContRelMethod,                                                    
@@ -2101,7 +2109,7 @@ begin
     ErrCode := rciBLOBHeaderSignature;
     Exit;
   end
-  else if BLOBHeader^.bbh1stLookupSeg.iLow = ffc_W32NoValue then
+  else if Int64Rec(BLOBHeader^.bbh1stLookupSeg).Lo = ffc_W32NoValue then
     { The BLOB has been truncated to length zero. This is a valid situation &
       there is nothing else to do. }
     Exit
@@ -2166,7 +2174,7 @@ begin
              (sizeof(TffBLOBSegmentHeader) +
              (succ(EntryCount) * sizeof(TffBLOBLookupEntry)))) then begin
             NextSeg := LookupSegPtr^.bshNextSegment;
-            if NextSeg.iLow <> ffc_W32NoValue then begin
+            if Int64Rec(NextSeg).Lo <> ffc_W32NoValue then begin
               aLkpRelMethod(LookupSegBlk);
               try
                 LookupSegBlk := ReadVfyBlobBlock2(FFileInfo, FTI, ffc_ReadOnly,
@@ -2210,7 +2218,7 @@ var
   RecPtrDel,
   RecPtrData : PffByteArray;
   Offset : Longint;
-  BLOBNr : TffInt64;
+  BLOBNr : UInt64;
   ErrCode : Integer;
 begin
   inherited;
@@ -2305,7 +2313,7 @@ begin
               if ErrCode <> 0 then begin
                 DoReportError(ErrCode,
                               [Info.BLOBFieldNames[BLOBInx],
-                               BLOBNr.iHigh, BLOBNr.iLow,
+                               Int64Rec(BLOBNr).Hi, Int64Rec(BLOBNr).Lo,
                                Info.KeyFieldValues(RecPtrData),
                                Inx, BlockNum]);
                 { If repairing then null out the BLOB reference. }
