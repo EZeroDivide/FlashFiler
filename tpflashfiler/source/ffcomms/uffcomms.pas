@@ -118,8 +118,8 @@ end;
 procedure TfrmFFCommsMain.FormCreate(Sender: TObject);
 var
   ProtocolName: TffShStr;
-  ServerAddress : string;
-  ServerName : string;
+  ServerAddress : AnsiString;
+  ServerName : AnsiString;
   Reg : TRegistry;                                                     {!!.06}
 begin
 
@@ -185,7 +185,7 @@ begin
     if chkAsHostName.Checked then                                      {!!.11}
       FFClientConfigWriteServerName(efServerName.Text + '@' + Addr)    {!!.02}
     else if FFWSInstalled then                                         {!!.11}
-      if WinsockRoutines.inet_addr(PChar(Addr)) <> INADDR_NONE then    {!!.11}
+      if WinsockRoutines.inet_addr(PAnsiChar(Addr)) <> INADDR_NONE then    {!!.11}
         FFClientConfigWriteServerName(efServerName.Text + '@' + Addr)  {!!.02}
       else begin                                                       {!!.11}
         ModalResult := mrNone;                                         {!!.11}
