@@ -27,7 +27,7 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 
-{$I ffdefine.inc}
+// {$I ffdefine.inc}
 
 program FFRebuild210;
 
