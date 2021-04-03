@@ -12,6 +12,12 @@
         <Projects Include="Tester\Project2.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\source\server\ffserver.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\source\service\ffsrvice.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +53,32 @@
     <Target Name="Project2:Make">
         <MSBuild Projects="Tester\Project2.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ffserver">
+        <MSBuild Projects="..\source\server\ffserver.dproj"/>
+    </Target>
+    <Target Name="ffserver:Clean">
+        <MSBuild Projects="..\source\server\ffserver.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ffserver:Make">
+        <MSBuild Projects="..\source\server\ffserver.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ffsrvice">
+        <MSBuild Projects="..\source\service\ffsrvice.dproj"/>
+    </Target>
+    <Target Name="ffsrvice:Clean">
+        <MSBuild Projects="..\source\service\ffsrvice.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ffsrvice:Make">
+        <MSBuild Projects="..\source\service\ffsrvice.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ff2_r100;ff2_d100;Project2"/>
+        <CallTarget Targets="ff2_r100;ff2_d100;Project2;ffserver;ffsrvice"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ff2_r100:Clean;ff2_d100:Clean;Project2:Clean"/>
+        <CallTarget Targets="ff2_r100:Clean;ff2_d100:Clean;Project2:Clean;ffserver:Clean;ffsrvice:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ff2_r100:Make;ff2_d100:Make;Project2:Make"/>
+        <CallTarget Targets="ff2_r100:Make;ff2_d100:Make;Project2:Make;ffserver:Make;ffsrvice:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

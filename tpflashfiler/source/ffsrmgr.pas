@@ -179,7 +179,7 @@ function TffStringResource.GetWideString(Ident: TInt32): String;
 var
   P : PIndexRec;
   Src : PWideChar;
-  Len, OLen : Integer;
+  Len : Integer;
 begin
   srLock;
   try

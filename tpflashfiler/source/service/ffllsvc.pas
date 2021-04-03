@@ -737,15 +737,15 @@ type
   TffServiceRecoveryEngine = class(TffRecoveryEngine)
   protected
     function reReportJournalState( JournalState : TJournalState;
-                                    Alias : String;
-                                    Path : String;
-                                    Filename : String;
-                                    ExceptionString : String ): Boolean; override;
+                                    Alias : AnsiString;
+                                    Path : AnsiString;
+                                    Filename : AnsiString;
+                                    ExceptionString : AnsiString ): Boolean; override;
   end;
 {--------}
 function TffServiceRecoveryEngine.reReportJournalState(
   JournalState: TJournalState;
-  Alias, Path, Filename, ExceptionString: string): Boolean;
+  Alias, Path, Filename, ExceptionString: Ansistring): Boolean;
 begin
   WriteEvent( ffc_JournalStateEventTypes[JournalState],
               ffc_GenError,

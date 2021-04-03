@@ -36,12 +36,10 @@ interface
 uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, Windows, Grids, ComCtrls, ToolWin, Menus,
-  {$IFDEF DCC4ORLATER}
   ImgList,
-  {$ENDIF}
   FFLLBase,
   ffllgrid,
-  FFSrEng;
+  FFSrEng, System.ImageList;
 
 type
   TffKeyProcItemRec = class(TffUCStrListItem)
@@ -423,7 +421,7 @@ var
   Inx   : integer;
   Path  : TffPath;
   Table : TffTableName;
-  errStr : array [0..127] of char;
+  errStr : array [0..127] of AnsiChar;
   aResult : TffResult;
 begin
 

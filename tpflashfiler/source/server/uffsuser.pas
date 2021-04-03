@@ -36,9 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, Grids, ComCtrls, ToolWin, Menus,
-  {$IFDEF DCC4ORLATER}
   ImgList,
-  {$ENDIF}
   FFLLBase,
   FFLLUNC,
   FFHash,
@@ -48,7 +46,7 @@ uses
   FFSrTran,
   FFSrCfg,
   FFSrEng,
-  ffllgrid;
+  ffllgrid, System.ImageList;
 
 type
   TFFUserForm = class(TForm)
@@ -537,7 +535,7 @@ end;
 procedure TFFUserForm.btnSaveClick(Sender: TObject);
 var
   Inx     : integer;
-  errStr : array [0..127] of char;
+  errStr : array [0..127] of Ansichar;
   aResult : TffResult;
   Rights  : TffUserRights;
   CanSave : Boolean;

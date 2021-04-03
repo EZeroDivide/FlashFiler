@@ -186,6 +186,10 @@ function FFKeyCompareI64(const Key1, Key2;
   {-Treat Key1 and Key2 as UInt64, compare}
 implementation
 
+uses
+  AnsiStrings;
+
+
 {===Key Comparison routines==========================================}
 function FFKeyCompareDWord(const Key1, Key2;
                            aData : PffCompareData) : integer;
@@ -233,10 +237,10 @@ begin
   with aData^ do
     if cdNoCase then
       Result := FFCheckDescend(cdAscend,
-                               SysUtils.StrLIComp(S1, S2, FFForceNonZero(cdPartLen, cdKeyLen)))
+                               AnsiStrings.StrLIComp(S1, S2, FFForceNonZero(cdPartLen, cdKeyLen)))
     else
       Result := FFCheckDescend(cdAscend,
-                               SysUtils.StrLComp(S1, S2, FFForceNonZero(cdPartLen, cdKeyLen)));
+                               AnsiStrings.StrLComp(S1, S2, FFForceNonZero(cdPartLen, cdKeyLen)));
 end;
 {--------}
 function FFKeyCompareAnsiStr(const Key1, Key2; aData : PffCompareData) : integer;
@@ -273,16 +277,16 @@ begin
                   Windows.CompareStringA(LOCALE_USER_DEFAULT,
                                          NORM_IGNORECASE,
                                          PAnsiChar(@S1[0]),
-                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), StrLen(S1)),
+                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), AnsiStrings.StrLen(S1)),
                                          PAnsiChar(@S2[0]),
-                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), StrLen(S2))) - 2)
+                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), AnsiStrings.StrLen(S2))) - 2)
     else
       Result := FFCheckDescend(cdAscend,
                   Windows.CompareStringA(LOCALE_USER_DEFAULT, 0,
                                          PAnsiChar(@S1[0]),
-                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), StrLen(S1)),
+                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), AnsiStrings.StrLen(S1)),
                                          PAnsiChar(@S2[0]),
-                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), StrLen(S2))) - 2);
+                                           FFMinI(FFForceNonZero(cdPartLen, cdKeyLen), AnsiStrings.StrLen(S2))) - 2);
 end;
 {--------}
 function FFKeyCompareWideChar(const Key1, Key2; aData : PffCompareData) : integer;

@@ -49,9 +49,7 @@ uses
   ffstdate,
   ffhash,
   ffsrbase,
-  {$IFDEF DCC6OrLater}
   Variants,
-  {$ENDIF}
   ffsrcur,
   ffsrixhl;
 
@@ -1371,7 +1369,7 @@ begin
       Result := StTimeToDateTime(PStTime(FieldBuffer)^);
     fftDateTime :
       begin
-        DT := PffDateTime(FieldBuffer)^ - 693594.0;
+        DT := PDateTime(FieldBuffer)^ - 693594.0;
         Result := DT;
       end;
     fftShortString :
@@ -1493,7 +1491,7 @@ begin
     fftStTime :
       PStTime(FieldBuffer)^ := DateTimeToStTime(Value);
     fftDateTime :
-      PffDateTime(FieldBuffer)^ := Value + 693594;
+      PDateTime(FieldBuffer)^ := Value + 693594;
 {Begin !!.11}
     fftShortString, fftShortAnsiStr :
       begin

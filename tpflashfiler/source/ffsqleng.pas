@@ -314,7 +314,7 @@ begin
         Value := StTimeToDateTime(PStTime(FieldBuffer)^);
       fftDateTime :
         begin
-          DT := PffDateTime(FieldBuffer)^;
+          DT := PDateTime(FieldBuffer)^;
           VarCast(Value, DT - 693594, varDate);                        {!!.11}
         end;
       fftShortString :

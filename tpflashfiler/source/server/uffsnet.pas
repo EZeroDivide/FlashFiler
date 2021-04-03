@@ -231,7 +231,7 @@ end;
 {--------}
 procedure TFFNetConfigForm.btnOKClick(Sender: TObject);
 var
-  errStr : array [0..127] of char;
+  errStr : array [0..127] of Ansichar;
   aResult : TffResult;
 begin
    if ValidateValues then begin

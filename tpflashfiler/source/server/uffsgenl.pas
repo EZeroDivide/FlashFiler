@@ -128,7 +128,7 @@ var
   LMInterval   : Longint;
   KAInterval   : Longint;
   KARetries    : Integer;
-  errStr       : array [0..127] of char;
+  errStr       : array [0..127] of AnsiChar;
   aResult      : TffResult;
   OverRideRO   : Boolean;
 begin

@@ -2614,7 +2614,6 @@ begin
         CDS.cbData := 0;
       end;
       CDS.dwData := ffsumDataMsg;
-{Begin !!.05}
       if not LongBool(SendMessageTimeout(FPartner, WM_COPYDATA, FClientID,
                                          longint(@CDS),
 {$IFDEF RunningUnitTests}
@@ -2624,7 +2623,6 @@ begin
 {$ENDIF}
                                          ffc_SendMessageTimeout, MsgResult)) or
         (MsgResult <> 0) then begin
-{Begin !!.06}
         Sleep(ffc_SUPErrorTimeout);
           { Experimentation shows the following:
             1. The first SendMessageTimeout will return False but
@@ -2638,7 +2636,6 @@ begin
                large table in FFE.
             4. Inserting a Sleep(25) resolves the latter case mentioned in
                Item 3. }
-{End !!.06}
         if not LongBool(SendMessageTimeout(FPartner, WM_COPYDATA, FClientID,
                                            longint(@CDS),
 {$IFDEF RunningUnitTests}
@@ -2651,7 +2648,6 @@ begin
           FOwner.LogStrFmt('Error %d sending message via SUP connection: %s',
                            [WinError, SysErrorMessage(WinError)]);
         end;
-{End !!.05}
       end;
     finally                                                           {!!.05}
       if aConnLock then                                               {!!.06}
@@ -2773,13 +2769,9 @@ end;
 {--------}
 function TffSingleUserProtocol.cpCreateNotifyWindow : boolean;
 begin
-  {$IFDEF DCC6OrLater}                                                 {!!.11}
-    {$WARN SYMBOL_DEPRECATED OFF}
-  {$ENDIF}
+  // {$WARN SYMBOL_DEPRECATED OFF}
   FNotifyWindow := AllocateHWnd(supMsgReceived);
-  {$IFDEF DCC6OrLater}                                                 {!!.11}
-    {$WARN SYMBOL_DEPRECATED ON}
-  {$ENDIF}
+  // {$WARN SYMBOL_DEPRECATED ON}
   Result := FNotifyWindow <> 0;
   if Result then begin
 {$IFDEF KALog}
@@ -2828,7 +2820,6 @@ begin
 end;
 {--------}
 procedure TffSingleUserProtocol.supHangupDetected(const aClientID : TffClientID);
-{Rewritten !!.06}
 var
   Conn : TffSingleUserConnection;
 begin
@@ -2918,25 +2909,23 @@ var
   WaitUntil : Tffword32;
   MsgResult : DWORD;
   Msg : TMsg;
-  StartTime : DWORD;                                                   {!!.05}
-  WinError : TffWord32;                                                {!!.05}
+  StartTime : DWORD;
+  WinError : TffWord32;
 begin
   supPartner:=0;
   PostMessage(HWND_BROADCAST, supPostMsgID, FNotifyWindow, ffsumCallServer);
   WaitUntil := GetTickCount + DWORD(timeout);
-  StartTime := GetTickCount;                                           {!!.05}
+  StartTime := GetTickCount;
   while (GetTickCount < WaitUntil) and (supPartner=0) do begin
     if PeekMessage(Msg, FNotifyWindow, ffm_ServerReply,
                    ffm_ServerReply, PM_REMOVE) then begin
       TranslateMessage(Msg);
       DispatchMessage(Msg);
-{Begin !!.05}
     end
     else if GetTickCount - StartTime > ffc_ConnectRetryTimeout then begin
       PostMessage(HWND_BROADCAST, supPostMsgID, FNotifyWindow, ffsumCallServer);
       StartTime := GetTickCount;
     end;
-{End !!.05}
     if supPartner = 0 then
       Breathe;
   end;
@@ -2946,7 +2935,6 @@ begin
                                    SMTO_ABORTIFHUNG or SMTO_BLOCK,
                                    timeout, MsgResult)) then begin
         if MsgResult <> ffsumCallServer{FF} then begin
-{Begin !!.05}
           if LongBool(SendMessageTimeout(Result, supMsgID, aClientID, FNotifyWindow,
                                          SMTO_ABORTIFHUNG or SMTO_BLOCK,
                                          timeout, MsgResult)) then
@@ -2957,7 +2945,6 @@ begin
               Result :=0;
             end;  { if }
         end;  { if }
-{End !!.05}
     end
     else
       Result := 0;

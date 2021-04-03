@@ -218,8 +218,10 @@ var
   f1, f2 : TField;
 begin
   nErr := 0;
-  if (dest.state in [dsEdit, dsInsert]) {= dsBrowse} then begin
-  end else begin
+  if (dest.state in [dsEdit, dsInsert]) {= dsBrowse} then
+  begin
+  end else
+  begin
     Dest.Edit;
   end;
   for I := 0 to (Dest.FieldCount - 1) do begin

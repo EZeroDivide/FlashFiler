@@ -991,7 +991,7 @@ end;
 {--------}
 procedure TffLegacyTransport.scStartup;
 begin
-  FTransportThread.Resume;
+  FTransportThread.Start; // Resume;
 
   { An exception during protocol startup might leave the thread in a terminated
     state.  If the thread is still going, wait for the thread to finish or fail
@@ -1744,7 +1744,7 @@ begin
     if assigned(FProtocol) then
       lcLogFmt('Transport thread (%s) prematurely stopped.', [GetName]);
     tpPrepareThread;
-    FTransportThread.Resume;
+    FTransportThread.Start; // Resume;
   end;
 end;
 {--------}

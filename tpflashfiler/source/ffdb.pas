@@ -39,7 +39,7 @@
   such as the InfoPower DBTreeView and the VCL DBGrid. }
 {$DEFINE RaiseBookmarksExcept}
 {$WARN IMPLICIT_STRING_CAST OFF}
-{.$WARN IMPLICIT_STRING_CAST_LOSS OFF}
+{$WARN IMPLICIT_STRING_CAST_LOSS OFF}
 unit ffdb;
 
 interface

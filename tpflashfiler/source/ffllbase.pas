@@ -161,9 +161,6 @@ const
 {===Extra 'primary' types===}
 type
   PffLongint = ^Longint;                    {pointer to a Longint}
-  PffDateTime = ^TDateTime;                 {pointer to a TDateTime; required
-                                             because we use PDateTime but it
-                                             occurs only in D5+ or BCB4+ }
   TffWord16 = word;                         {16-bit unsigned integer}
   TffWord32 = type DWORD;                   {32-bit unsigned integer}
   PffWord32 = ^TffWord32;                   {pointer to a 32-bit unsigned integer}
@@ -193,7 +190,6 @@ type
   TffBlockSizes = set of TffBlockSize;
 
   { The following types are used to improve parameter integrity. }
-{Begin !!.10}
   TffBaseID = type TffWord32;
   TffClientID   = type TffBaseID;
   TffCursorID   = type TffBaseID;
@@ -201,7 +197,6 @@ type
   TffSessionID  = type TffBaseID;
   TffSqlStmtID  = type TffBaseID;
   TffTransID    = type TffBaseID;
-{End !!.10}
 
 {===Important constants===}
 const

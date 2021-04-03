@@ -62,10 +62,8 @@ uses
   uffegmgr,
   ffsrintm,
   ComCtrls,
-  {$IFDEF DCC4ORLATER}
   ImgList,
-  {$ENDIF}
-  ToolWin;
+  ToolWin, System.ImageList;
 
 type
   TffServerState = (
@@ -187,7 +185,7 @@ type
     FClosingFromTray : Boolean;
     {$IFDEF UseTrayIcon}
     tiActive      : Boolean;
-    tiNotifyData  : TNotifyIconData;
+    tiNotifyData  : TNotifyIconDataA;
     tiPresent     : Boolean;
     {$ENDIF}
 
@@ -893,7 +891,7 @@ var
   Hr : integer;
   Mi : integer;
   Se : integer;
-  WorkSt : string[9];
+  WorkSt : String[9];
 begin
   Dy := trunc(T);
   T := frac(T) * 24.0;
@@ -903,23 +901,23 @@ begin
   Se := trunc(frac(T) * 60.0);
             {123456789012345678}
   Result := 'Up:     0:00:00:00';
-  Result[10] := TimeSeparator;
-  Result[12] := TimeSeparator;
-  Result[16] := TimeSeparator;
+  Result[10] := FormatSettings.TimeSeparator;
+  Result[12] := FormatSettings.TimeSeparator;
+  Result[16] := FormatSettings.TimeSeparator;
   Str(Dy:5, WorkSt);
   Move(WorkSt[1], Result[5], 5);
   Str(Hr:2, WorkSt);
-  Result[12] := WorkSt[2];
+  Result[12] := Char(WorkSt[2]);
   if (Hr > 9) then
-    Result[11] := WorkSt[1];
+    Result[11] := Char(WorkSt[1]);
   Str(Mi:2, WorkSt);
-  Result[15] := WorkSt[2];
+  Result[15] := Char(WorkSt[2]);
   if (Mi > 9) then
-    Result[14] := WorkSt[1];
+    Result[14] := Char(WorkSt[1]);
   Str(Se:2, WorkSt);
-  Result[18] := WorkSt[2];
+  Result[18] := Char(WorkSt[2]);
   if (Se > 9) then
-    Result[17] := WorkSt[1];
+    Result[17] := Char(WorkSt[1]);
 end;
 {--------}
 function TfrmFFServer.GetMsgsPerSecAsString(aMsgCount: Integer): string;
@@ -956,12 +954,21 @@ begin
           ListItem.Caption := Configuration.ServerName;
           ListItem.Data := Pointer(TffIntListItem(Servers[i]).KeyAsInt);
           ListItem.SubItems.Add(FFMapStateToString(State));
-          ListItem.SubItems.Add(FFCommaizeChL(ClientList.ClientCount, ThousandSeparator));
-          ListItem.SubItems.Add(FFCommaizeChL(SessionList.SessionCount, ThousandSeparator));
-          ListItem.SubItems.Add(FFCommaizeChL(DatabaseList.DatabaseCount, ThousandSeparator));
-          ListItem.SubItems.Add(FFCommaizeChL(TableList.TableCount, ThousandSeparator));
-          ListItem.SubItems.Add(FFCommaizeChL(CursorList.CursorCount, ThousandSeparator));
-          ListItem.SubItems.Add(FFCommaizeChL(BufferManager.RAMUsed, ThousandSeparator));
+          (*
+          ListItem.SubItems.Add(FFCommaizeChL(ClientList.ClientCount, FormatSettings.ThousandSeparator));
+          ListItem.SubItems.Add(FFCommaizeChL(SessionList.SessionCount, FormatSettings.ThousandSeparator));
+          ListItem.SubItems.Add(FFCommaizeChL(DatabaseList.DatabaseCount, FormatSettings.ThousandSeparator));
+          ListItem.SubItems.Add(FFCommaizeChL(TableList.TableCount, FormatSettings.ThousandSeparator));
+          ListItem.SubItems.Add(FFCommaizeChL(CursorList.CursorCount, FormatSettings.ThousandSeparator));
+          ListItem.SubItems.Add(FFCommaizeChL(BufferManager.RAMUsed, FormatSettings.ThousandSeparator));
+          *)
+          ListItem.SubItems.Add(IntToStr(ClientList.ClientCount));
+          ListItem.SubItems.Add(IntToStr(SessionList.SessionCount));
+          ListItem.SubItems.Add(IntToStr(DatabaseList.DatabaseCount));
+          ListItem.SubItems.Add(IntToStr(TableList.TableCount));
+          ListItem.SubItems.Add(IntToStr(CursorList.CursorCount));
+          ListItem.SubItems.Add(FFCommaizeChL(BufferManager.RAMUsed, AnsiChar(FormatSettings.ThousandSeparator)));
+
         end;
         if i = SelServIdx then
           lvServers.Selected := ListItem;
@@ -996,8 +1003,8 @@ begin
               NewTransItem.Data := Pointer(TffIntListItem(Transports[i]).KeyAsInt);
               NewTransItem.SubItems.Add(ServerName);
               NewTransItem.SubItems.Add(FFMapStateToString(State));
-              NewTransItem.SubItems.Add(FFCommaizeChL(ConnectionCount, ThousandSeparator));
-              NewTransItem.SubItems.Add(FFCommaizeChL(MsgCount, ThousandSeparator));
+              NewTransItem.SubItems.Add(IntToStr(ConnectionCount));
+              NewTransItem.SubItems.Add(IntToStr(MsgCount));
               NewTransItem.SubItems.Add(GetMsgsPerSecAsString(MsgCount));
             end;
           end;
@@ -1104,12 +1111,12 @@ begin
   for i := 0 to Pred(lvServers.Items.Count) do begin
     with lvServers.Items[i], TffServerEngine(lvServers.Items[i].Data) do begin
       SubItems[0] := FFMapStateToString(State);
-      SubItems[1] := FFCommaizeChL(ClientList.ClientCount, ThousandSeparator);
-      SubItems[2] := FFCommaizeChL(SessionList.SessionCount, ThousandSeparator);
-      SubItems[3] := FFCommaizeChL(DatabaseList.DatabaseCount, ThousandSeparator);
-      SubItems[4] := FFCommaizeChL(TableList.TableCount, ThousandSeparator);
-      SubItems[5] := FFCommaizeChL(CursorList.CursorCount, ThousandSeparator);
-      SubItems[6] := FFCommaizeChL(BufferManager.RAMUsed, ThousandSeparator);
+      SubItems[1] := IntToStr(ClientList.ClientCount);
+      SubItems[2] := IntToStr(SessionList.SessionCount);
+      SubItems[3] := IntToStr(DatabaseList.DatabaseCount);
+      SubItems[4] := IntToStr(TableList.TableCount);
+      SubItems[5] := IntToStr(CursorList.CursorCount);
+      SubItems[6] := FFCommaizeChL(BufferManager.RAMUsed, AnsiChar(FormatSettings.ThousandSeparator));
     end;
   end;
 end;
@@ -1123,8 +1130,8 @@ begin
          TffBaseTransport(lvTransports.Items[i].Data) do begin
       SubItems[0] := ServerName;
       SubItems[1] := FFMapStateToString(State);
-      SubItems[2] := FFCommaizeChL(ConnectionCount, ThousandSeparator);
-      SubItems[3] := FFCommaizeChL(MsgCount, ThousandSeparator);
+      SubItems[2] := IntToStr(ConnectionCount);
+      SubItems[3] := IntToStr(MsgCount);
       SubItems[4] := GetMsgsPerSecAsString(MsgCount);
     end;
   end;
@@ -1377,7 +1384,7 @@ begin
   if tiPresent then begin
     FillChar(tiNotifyData, sizeof(tiNotifyData), 0);
     with tiNotifyData do begin
-      cbSize := sizeof(tiNotifyData);
+      cbSize := System.sizeof(tiNotifyData);
       Wnd    := Handle;
       uID    := 1;
       uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;

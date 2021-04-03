@@ -37,9 +37,7 @@ uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ExtCtrls, Grids, Windows, ToolWin, Menus,
   ComCtrls, 
-  {$IFDEF DCC4ORLATER}
   ImgList,
-  {$ENDIF}
   FFLLBase,
   FFLLGrid,
   FFLLUNC,
@@ -47,7 +45,7 @@ uses
   FFSrBDE,
   FFSrTran,
   FFSrCfg,
-  FFSrEng;
+  FFSrEng, System.ImageList;
 
 type
   TFFAliasForm = class(TForm)
@@ -201,7 +199,7 @@ begin
   with Grid do begin
     if (aCol = cnPath) then begin
       aStr := Grid.Cells[aCol, aRow];
-      if (aStr <> '') and (not FFDirectoryExists(aStr)) then begin
+      if (aStr <> '') and (not DirectoryExists(aStr)) then begin
         Canvas.Brush.Color := clRed;
         Canvas.Font.Color := clWhite;
       end;
@@ -235,7 +233,7 @@ procedure TFFAliasForm.grdAliasesExitCell(Sender : TffStringGrid;
                                           aRow   : Integer;
                                     const Text   : string);
 begin
-  if (aCol = cnPath) and (Text <> '') and FFDirectoryExists(Text) then
+  if (aCol = cnPath) and (Text <> '') and DirectoryExists(Text) then
     Sender.Cells[aCol, aRow] := FFExpandUNCFileName(Text);
 end;
 {--------}
@@ -421,7 +419,7 @@ procedure TFFAliasForm.btnCommitClick(Sender : TObject);
 var
   aResult    : TffResult;
   Inx        : Integer;
-  errStr     : array [0..127] of Char;
+  errStr     : array [0..127] of AnsiChar;
   CheckSpace : Boolean;                                                {!!.11}
 begin
   { Get rid of the aliases. }
