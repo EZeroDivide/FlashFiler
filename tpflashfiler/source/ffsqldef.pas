@@ -1947,12 +1947,11 @@ type
     FInsertColumnList: TFFSqlInsertColumnList;
     FDefaultValues: Boolean;
     Bound: Boolean;
-//    T : TffSqlTableProxy;                                            {!!.11}
     FTableExp: TffSqlTableExp;
     procedure AddColumns(Node: TffSqlNode);
     procedure Bind;
     procedure ClearBindings(Node: TffSqlNode);
-    function Reduce: Boolean;                                          {!!.11}
+    function Reduce: Boolean;
   public
     destructor Destroy; override;
     property TableName : AnsiString read FTableName write FTableName;

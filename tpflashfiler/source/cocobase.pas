@@ -2,7 +2,6 @@ unit CocoBase;
 {Base components for Coco/R for Delphi grammars for use with version 1.1}
 
 interface
-{$WARN IMPLICIT_STRING_CAST OFF}
 {$I FFDEFINE.INC}
 
 uses
@@ -28,23 +27,23 @@ type
     FErrorCode : integer;
     FCol : integer;
     FLine : integer;
-    FData : AnsiString;
+    FData : String;
     FErrorType : integer;
   public
     property ErrorType : integer read FErrorType write FErrorType;
     property ErrorCode : integer read FErrorCode write FErrorCode;
     property Line : integer read FLine write FLine;
     property Col : integer read FCol write FCol;
-    property Data : AnsiString read FData write FData;
+    property Data : String read FData write FData;
   end; {TCocoError}
 
   TCommentItem = class(TObject)
   private
-    fComment: AnsiString;
+    fComment: String;
     fLine: integer;
     fColumn: integer;
   public
-    property Comment : AnsiString read fComment write fComment;
+    property Comment : String read fComment write fComment;
     property Line : integer read fLine write fLine;
     property Column : integer read fColumn write fColumn;
   end; {TCommentItem}
@@ -53,11 +52,11 @@ type
   private
     fList : TList;
 
-    function FixComment(const S : AnsiString) : AnsiString;
-    function GetComments(Idx: integer): AnsiString;
-    procedure SetComments(Idx: integer; const Value: AnsiString);
+    function FixComment(const S : String) : String;
+    function GetComments(Idx: integer): String;
+    procedure SetComments(Idx: integer; const Value: String);
     function GetCount: integer;
-    function GetText: AnsiString;
+    function GetText: String;
     function GetColumn(Idx: integer): integer;
     function GetLine(Idx: integer): integer;
     procedure SetColumn(Idx: integer; const Value: integer);
@@ -67,12 +66,12 @@ type
     destructor Destroy; override;
 
     procedure Clear;
-    procedure Add(const S : AnsiString; const aLine : integer; const aColumn : integer);
-    property Comments[Idx : integer] : AnsiString read GetComments write SetComments; default;
+    procedure Add(const S : String; const aLine : integer; const aColumn : integer);
+    property Comments[Idx : integer] : String read GetComments write SetComments; default;
     property Line[Idx : integer] : integer read GetLine write SetLine;
     property Column[Idx : integer] : integer read GetColumn write SetColumn;
     property Count : integer read GetCount;
-    property Text : AnsiString read GetText;
+    property Text : String read GetText;
   end; {TCommentList}
 
   TSymbolPosition = class(TObject)
@@ -96,23 +95,21 @@ type
   TBitSet = set of 0..15;
   PStartTable = ^TStartTable;
   TStartTable = array[0..255] of integer;
-  TCharSet = set of AnsiChar;
+  TCharSet = set of Char;
 
-  TAfterGenListEvent = procedure(Sender : TObject;
-    var PrintErrorCount : boolean) of object;
-  TAfterGrammarGetEvent = procedure(Sender : TObject;
-    var CurrentInputSymbol : integer) of object;
+  TAfterGenListEvent = procedure(Sender : TObject; var PrintErrorCount : boolean) of object;
+  TAfterGrammarGetEvent = procedure(Sender : TObject; var CurrentInputSymbol : integer) of object;
   TCommentEvent = procedure(Sender : TObject; CommentList : TCommentList) of object;
   TCustomErrorEvent = function(Sender : TObject; const ErrorCode : longint;
     const Data : String) : String of object;
   TErrorEvent = procedure(Sender : TObject; Error : TCocoError) of object;
   TErrorProc = procedure(ErrorCode : integer; Symbol : TSymbolPosition;
-    Data : AnsiString; ErrorType : integer) of object;
+    Data : String; ErrorType : integer) of object;
   TFailureEvent = procedure(Sender : TObject; NumErrors : integer) of object;
-  TGetCH = function(pos : longint) : AnsiChar of object;
+  TGetCH = function(pos : longint) : Char of object;
   TStatusUpdateProc = procedure(Sender : TObject;
       const StatusType : TCocoStatusType;
-      const Status : AnsiString;
+      const Status : String;
       const LineNum : integer) of object;
 
   TCocoRScanner = class(TObject)
@@ -122,9 +119,9 @@ type
     FContextLen : integer; {length of appendix (CONTEXT phrase)}
     FCurrentCh : TGetCH; {procedural variable to get current input character}
     FCurrentSymbol : TSymbolPosition; {position of the current symbol in the source stream}
-    FCurrInputCh : AnsiChar; {current input character}
+    FCurrInputCh : Char; {current input character}
     FCurrLine : integer; {current input line (may be higher than line)}
-    FLastInputCh : AnsiChar; {the last input character that was read}
+    FLastInputCh : Char; {the last input character that was read}
     FNextSymbol : TSymbolPosition; {position of the next symbol in the source stream}
     FNumEOLInComment : integer; {number of _EOLs in a comment}
     FOnStatusUpdate : TStatusUpdateProc;
@@ -133,7 +130,7 @@ type
     FSrcStream : TMemoryStream; {source memory stream}
     FStartOfLine : integer;
 
-    function GetNStr(Symbol : TSymbolPosition; ChProc : TGetCh) : AnsiString;
+    function GetNStr(Symbol : TSymbolPosition; ChProc : TGetCh) : String;
     function ExtractBookmarkChar(var aBookmark: String): Char;
   protected
     FStartState : TStartTable; {start state for every character}
@@ -141,7 +138,7 @@ type
     function Bookmark : String; virtual;
     procedure GotoBookmark(aBookmark : String); virtual;
 
-    function CapChAt(pos : longint) : AnsiChar;
+    function CapChAt(pos : longint) : Char;
     procedure Get(var sym : integer); virtual; abstract;
     procedure NextCh; virtual; abstract;
 
@@ -153,9 +150,9 @@ type
     property ContextLen : integer read fContextLen write fContextLen;
     property CurrentCh : TGetCh read fCurrentCh write fCurrentCh;
     property CurrentSymbol : TSymbolPosition read fCurrentSymbol write fCurrentSymbol;
-    property CurrInputCh : AnsiChar read fCurrInputCh write fCurrInputCh;
+    property CurrInputCh : Char read fCurrInputCh write fCurrInputCh;
     property CurrLine : integer read fCurrLine write fCurrLine;
-    property LastInputCh : AnsiChar read fLastInputCh write fLastInputCh;
+    property LastInputCh : Char read fLastInputCh write fLastInputCh;
     property NextSymbol : TSymbolPosition read fNextSymbol write fNextSymbol;
     property NumEOLInComment : integer read fNumEOLInComment write fNumEOLInComment;
     property OnStatusUpdate : TStatusUpdateProc read FOnStatusUpdate write FOnStatusUpdate;
@@ -168,9 +165,9 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function CharAt(pos : longint) : AnsiChar;
-    function GetName(Symbol : TSymbolPosition) : AnsiString; // Retrieves name of symbol of length len at position pos in source file
-    function GetString(Symbol : TSymbolPosition) : AnsiString; // Retrieves exact String of max length len from position pos in source file
+    function CharAt(pos : longint) : Char;
+    function GetName(Symbol : TSymbolPosition) : String; // Retrieves name of symbol of length len at position pos in source file
+    function GetString(Symbol : TSymbolPosition) : String; // Retrieves exact String of max length len from position pos in source file
     procedure _Reset;
   end; {TCocoRScanner}
 
@@ -192,7 +189,7 @@ type
     FOnStatusUpdate : TStatusUpdateProc;
     FOnSuccess : TNotifyEvent;
     FScanner : TCocoRScanner;
-    FSourceFileName : AnsiString;
+    FSourceFileName : String;
     fExtra : integer;
 
     function GetSourceStream : TMemoryStream;
@@ -204,18 +201,18 @@ type
   protected
     fCurrentInputSymbol : integer; // current input symbol
 
-    function Bookmark : AnsiString; virtual;
-    procedure GotoBookmark(aBookmark : AnsiString); virtual;
+    function Bookmark : String; virtual;
+    procedure GotoBookmark(aBookmark : String); virtual;
 
     procedure ClearErrors;
     function ErrorStr(const ErrorCode: integer; const Data: String): String; virtual; abstract;
     procedure Expect(n : integer);
     procedure GenerateListing;
     procedure Get; virtual; abstract;
-    procedure PrintErr(line : AnsiString; ErrorCode, col : integer;
-      Data : AnsiString);
+    procedure PrintErr(line : String; ErrorCode, col : integer;
+      Data : String);
     procedure StoreError(nr : integer; Symbol : TSymbolPosition;
-      Data : AnsiString; ErrorType : integer);
+      Data : String; ErrorType : integer);
 
     procedure DoAfterParse; virtual;
     procedure DoBeforeParse; virtual;
@@ -227,7 +224,7 @@ type
     property Extra : integer read fExtra write fExtra;
     property GenListWhen : TGenListType read fGenListWhen write fGenListWhen default glOnError;
     property ListStream : TMemoryStream read FListStream write FListStream;
-    property SourceFileName : AnsiString read FSourceFileName write FSourceFileName;
+    property SourceFileName : String read FSourceFileName write FSourceFileName;
     property SourceStream : TMemoryStream read GetSourceStream write SetSourceStream;
     property Successful : boolean read GetSuccessful;
 
@@ -246,15 +243,15 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
 
-    procedure GetLine(var pos : Integer; var line : AnsiString;
+    procedure GetLine(var pos : Integer; var line : String;
       var eof : boolean);
-    function LexName : AnsiString;
-    function LexString : AnsiString;
-    function LookAheadName : AnsiString;
-    function LookAheadString : AnsiString;
-    procedure _StreamLine(s : AnsiString);
-    procedure _StreamLn(s : AnsiString);
-    procedure SemError(const errNo : integer; const Data : AnsiString);
+    function LexName : String;
+    function LexString : String;
+    function LookAheadName : String;
+    function LookAheadString : String;
+    procedure _StreamLine(s : String);
+    procedure _StreamLn(s : String);
+    procedure SemError(const errNo : integer; const Data : String);
     procedure SynError(const errNo : integer);
 
     property Scanner : TCocoRScanner read fScanner write fScanner;
@@ -273,9 +270,9 @@ const
   { not only for errors but also for not finished states of scanner analysis }
   minErrDist = 2; { minimal distance (good tokens) between two errors }
 
-function PadL(S : AnsiString; ch : AnsiChar; L : integer) : AnsiString;
-function StrTok(var Text : AnsiString; const ch : AnsiChar) : AnsiString; overload;
-function StrTok(var Text : String; const ch : Char) : String; overload;
+function PadL(S : String; ch : Char; L : integer) : String;
+function StrTok(var Text : String; const ch : Char) : String;
+
 implementation
 
 const
@@ -283,7 +280,7 @@ const
   INVALID_INTEGER = 'Invalid Coco/R for Delphi bookmark integer';
   BOOKMARK_STR_SEPARATOR = ' ';
 
-function PadL(S : AnsiString; ch : AnsiChar; L : integer) : AnsiString;
+function PadL(S : String; ch : Char; L : integer) : String;
 var
   i : integer;
 begin
@@ -291,23 +288,6 @@ begin
     s := ch + s;
   Result := s;
 end; {PadL}
-
-function StrTok(var Text : AnsiString; const ch : AnsiChar) : AnsiString;
-var
-  apos : integer;
-begin
-  apos := Pos(ch, Text);
-  if (apos > 0) then
-  begin
-    Result := Copy(Text, 1, apos - 1);
-    Delete(Text, 1, apos);
-  end
-  else
-  begin
-    Result := Text;
-    Text := '';
-  end;
-end; {StrTok}
 
 function StrTok(var Text : String; const ch : Char) : String;
 var
@@ -325,7 +305,6 @@ begin
     Text := '';
   end;
 end; {StrTok}
-
 
 { TSymbolPosition }
 
@@ -408,8 +387,8 @@ begin
     NextSymbol.Len := StrToInt(BookmarkToken);
     BookmarkToken := StrTok(aBookmark, BOOKMARK_STR_SEPARATOR);
     NextSymbol.Pos := StrToInt(BookmarkToken);
-    CurrInputCh := AnsiChar(ExtractBookmarkChar(aBookmark));  // ToDo
-    LastInputCh := AnsiChar(ExtractBookmarkChar(aBookmark));
+    CurrInputCh := Char(ExtractBookmarkChar(aBookmark));  // ToDo
+    LastInputCh := Char(ExtractBookmarkChar(aBookmark));
   except
     on EConvertError do
       Raise ECocoBookmark.Create(INVALID_INTEGER);
@@ -437,14 +416,14 @@ begin
   inherited;
 end; {Destroy}
 
-function TCocoRScanner.CapChAt(pos : longint) : AnsiChar;
+function TCocoRScanner.CapChAt(pos : longint) : Char;
 begin
   Result := UpCase(CharAt(pos));
 end; {CapCharAt}
 
-function TCocoRScanner.CharAt(pos : longint) : AnsiChar;
+function TCocoRScanner.CharAt(pos : longint) : Char;
 var
-  ch : AnsiChar;
+  ch : Char;
 begin
   if pos >= SourceLen then
   begin
@@ -459,7 +438,7 @@ begin
     Result := _EF
 end; {CharAt}
 
-function TCocoRScanner.GetNStr(Symbol : TSymbolPosition; ChProc : TGetCh) : AnsiString;
+function TCocoRScanner.GetNStr(Symbol : TSymbolPosition; ChProc : TGetCh) : String;
 var
   i : integer;
   p : longint;
@@ -475,7 +454,7 @@ begin
   end;
 end; {GetNStr}
 
-function TCocoRScanner.GetName(Symbol : TSymbolPosition) : AnsiString;
+function TCocoRScanner.GetName(Symbol : TSymbolPosition) : String;
 begin
   Result := GetNStr(Symbol, CurrentCh);
 end; {GetName}
@@ -490,7 +469,7 @@ begin
   fStartState := aStartTable^;
 end; {SetStartState}
 
-function TCocoRScanner.GetString(Symbol : TSymbolPosition) : AnsiString;
+function TCocoRScanner.GetString(Symbol : TSymbolPosition) : String;
 begin
   Result := GetNStr(Symbol, CharAt);
 end; {GetString}
@@ -562,7 +541,7 @@ var
   eof : boolean;
   lnr, errC : integer;
   srcPos : longint;
-  line : AnsiString;
+  line : String;
   PrintErrorCount : boolean;
 begin
   if Assigned(BeforeGenList) then
@@ -611,11 +590,11 @@ begin
 end; {GenerateListing}
 
 procedure TCocoRGrammar.GetLine(var pos : longint;
-  var line : AnsiString;
+  var line : String;
   var eof : boolean);
   { Read a source line. Return empty line if eof }
 var
-  ch : AnsiChar;
+  ch : Char;
   i : integer;
 begin
   i := 1;
@@ -653,27 +632,27 @@ begin
   Result := ErrorList.Count = 0;
 end; {GetSuccessful}
 
-function TCocoRGrammar.LexName : AnsiString;
+function TCocoRGrammar.LexName : String;
 begin
   Result := Scanner.GetName(Scanner.CurrentSymbol)
 end; {LexName}
 
-function TCocoRGrammar.LexString : AnsiString;
+function TCocoRGrammar.LexString : String;
 begin
   Result := Scanner.GetString(Scanner.CurrentSymbol)
 end; {LexString}
 
-function TCocoRGrammar.LookAheadName : AnsiString;
+function TCocoRGrammar.LookAheadName : String;
 begin
   Result := Scanner.GetName(Scanner.NextSymbol)
 end; {LookAheadName}
 
-function TCocoRGrammar.LookAheadString : AnsiString;
+function TCocoRGrammar.LookAheadString : String;
 begin
   Result := Scanner.GetString(Scanner.NextSymbol)
 end; {LookAheadString}
 
-procedure TCocoRGrammar.PrintErr(line : AnsiString; ErrorCode : integer; col : integer; Data : AnsiString);
+procedure TCocoRGrammar.PrintErr(line : String; ErrorCode : integer; col : integer; Data : String);
   { Print an error message }
 
   procedure DrawErrorPointer;
@@ -699,20 +678,20 @@ begin {PrintErr}
   _StreamLine('')
 end; {PrintErr}
 
-procedure TCocoRGrammar.SemError(const errNo : integer; const Data : AnsiString);
+procedure TCocoRGrammar.SemError(const errNo : integer; const Data : String);
 begin
   if errDist >= minErrDist then
     Scanner.ScannerError(errNo, Scanner.CurrentSymbol, Data, etSymantic);
   errDist := 0;
 end; {SemError}
 
-procedure TCocoRGrammar._StreamLn(s : AnsiString);
+procedure TCocoRGrammar._StreamLn(s : String);
 begin
   if length(s) > 0 then
     ListStream.WriteBuffer(s[1], length(s));
 end; {_StreamLn}
 
-procedure TCocoRGrammar._StreamLine(s : AnsiString);
+procedure TCocoRGrammar._StreamLine(s : String);
 begin
   s := s + chEOL;
   _StreamLn(s);
@@ -737,7 +716,7 @@ begin
 end; {SetSourceStream}
 
 procedure TCocoRGrammar.StoreError(nr : integer; Symbol : TSymbolPosition;
-  Data : AnsiString; ErrorType : integer);
+  Data : String; ErrorType : integer);
   { Store an error message for later printing }
 var
   Error : TCocoError;
@@ -787,16 +766,16 @@ begin
     fAfterParse(Self);
 end; {DoAfterParse}
 
-function TCocoRGrammar.Bookmark: AnsiString;
+function TCocoRGrammar.Bookmark: String;
 begin
   Result :=
         IntToStr(fCurrentInputSymbol) + BOOKMARK_STR_SEPARATOR
       + Scanner.Bookmark;
 end; {Bookmark}
 
-procedure TCocoRGrammar.GotoBookmark(aBookmark: AnsiString);
+procedure TCocoRGrammar.GotoBookmark(aBookmark: String);
 var
-  BookmarkToken : AnsiString;
+  BookmarkToken : String;
 begin
   try
     BookmarkToken := StrTok(aBookmark, BOOKMARK_STR_SEPARATOR);
@@ -812,7 +791,7 @@ end; {GotoBookmark}
 
 { TCommentList }
 
-procedure TCommentList.Add(const S : AnsiString; const aLine : integer;
+procedure TCommentList.Add(const S : String; const aLine : integer;
     const aColumn : integer);
 var
   CommentItem : TCommentItem;
@@ -853,7 +832,7 @@ begin
   inherited;
 end; {Destroy}
 
-function TCommentList.FixComment(const S: AnsiString): AnsiString;
+function TCommentList.FixComment(const S: String): String;
 begin
   Result := S;
   while (length(Result) > 0) AND (Result[length(Result)] < #32) do
@@ -865,7 +844,7 @@ begin
   Result := TCommentItem(fList[Idx]).Column;
 end; {GetColumn}
 
-function TCommentList.GetComments(Idx: integer): AnsiString;
+function TCommentList.GetComments(Idx: integer): String;
 begin
   Result := TCommentItem(fList[Idx]).Comment;
 end; {GetComments}
@@ -880,7 +859,7 @@ begin
   Result := TCommentItem(fList[Idx]).Line;
 end; {GetLine}
 
-function TCommentList.GetText: AnsiString;
+function TCommentList.GetText: String;
 var
   i : integer;
 begin
@@ -898,7 +877,7 @@ begin
   TCommentItem(fList[Idx]).Column := Value;
 end; {SetColumn}
 
-procedure TCommentList.SetComments(Idx: integer; const Value: AnsiString);
+procedure TCommentList.SetComments(Idx: integer; const Value: String);
 begin
   TCommentItem(fList[Idx]).Comment := Value;
 end; {SetComments}
