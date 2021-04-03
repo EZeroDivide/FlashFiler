@@ -2,7 +2,7 @@ unit CocoBase;
 {Base components for Coco/R for Delphi grammars for use with version 1.1}
 
 interface
-
+{$WARN IMPLICIT_STRING_CAST OFF}
 {$I FFDEFINE.INC}
 
 uses
@@ -104,7 +104,7 @@ type
     var CurrentInputSymbol : integer) of object;
   TCommentEvent = procedure(Sender : TObject; CommentList : TCommentList) of object;
   TCustomErrorEvent = function(Sender : TObject; const ErrorCode : longint;
-    const Data : AnsiString) : AnsiString of object;
+    const Data : String) : String of object;
   TErrorEvent = procedure(Sender : TObject; Error : TCocoError) of object;
   TErrorProc = procedure(ErrorCode : integer; Symbol : TSymbolPosition;
     Data : AnsiString; ErrorType : integer) of object;
@@ -134,12 +134,12 @@ type
     FStartOfLine : integer;
 
     function GetNStr(Symbol : TSymbolPosition; ChProc : TGetCh) : AnsiString;
-    function ExtractBookmarkChar(var aBookmark: AnsiString): AnsiChar;
+    function ExtractBookmarkChar(var aBookmark: String): Char;
   protected
     FStartState : TStartTable; {start state for every character}
 
-    function Bookmark : AnsiString; virtual;
-    procedure GotoBookmark(aBookmark : AnsiString); virtual;
+    function Bookmark : String; virtual;
+    procedure GotoBookmark(aBookmark : String); virtual;
 
     function CapChAt(pos : longint) : AnsiChar;
     procedure Get(var sym : integer); virtual; abstract;
@@ -208,7 +208,7 @@ type
     procedure GotoBookmark(aBookmark : AnsiString); virtual;
 
     procedure ClearErrors;
-    function ErrorStr(const ErrorCode : integer; const Data : AnsiString) : AnsiString; virtual; abstract;
+    function ErrorStr(const ErrorCode: integer; const Data: String): String; virtual; abstract;
     procedure Expect(n : integer);
     procedure GenerateListing;
     procedure Get; virtual; abstract;
@@ -274,10 +274,8 @@ const
   minErrDist = 2; { minimal distance (good tokens) between two errors }
 
 function PadL(S : AnsiString; ch : AnsiChar; L : integer) : AnsiString;
-function StrTok(
-    var Text : AnsiString;
-    const ch : AnsiChar) : AnsiString;
-
+function StrTok(var Text : AnsiString; const ch : AnsiChar) : AnsiString; overload;
+function StrTok(var Text : String; const ch : Char) : String; overload;
 implementation
 
 const
@@ -294,9 +292,7 @@ begin
   Result := s;
 end; {PadL}
 
-function StrTok(
-    var Text : AnsiString;
-    const ch : AnsiChar) : AnsiString;
+function StrTok(var Text : AnsiString; const ch : AnsiChar) : AnsiString;
 var
   apos : integer;
 begin
@@ -312,6 +308,24 @@ begin
     Text := '';
   end;
 end; {StrTok}
+
+function StrTok(var Text : String; const ch : Char) : String;
+var
+  apos : integer;
+begin
+  apos := Pos(ch, Text);
+  if (apos > 0) then
+  begin
+    Result := Copy(Text, 1, apos - 1);
+    Delete(Text, 1, apos);
+  end
+  else
+  begin
+    Result := Text;
+    Text := '';
+  end;
+end; {StrTok}
+
 
 { TSymbolPosition }
 
@@ -333,7 +347,7 @@ end; { Clear }
 
 { TCocoRScanner }
 
-function TCocoRScanner.Bookmark: AnsiString;
+function TCocoRScanner.Bookmark: String;
 begin
   Result := IntToStr(bpCurrToken) + BOOKMARK_STR_SEPARATOR
       + IntToStr(BufferPosition) + BOOKMARK_STR_SEPARATOR
@@ -353,7 +367,7 @@ begin
       + LastInputCh
 end; {Bookmark}
 
-function TCocoRScanner.ExtractBookmarkChar(var aBookmark : AnsiString) : AnsiChar;
+function TCocoRScanner.ExtractBookmarkChar(var aBookmark : String) : Char;
 begin
   if length(aBookmark) > 0 then
     Result := aBookmark[1]
@@ -361,10 +375,9 @@ begin
     Raise ECocoBookmark.Create(INVALID_CHAR);
 end; {ExtractBookmarkChar}
 
-procedure TCocoRScanner.GotoBookmark(aBookmark: AnsiString
-);
+procedure TCocoRScanner.GotoBookmark(aBookmark: String);
 var
-  BookmarkToken : AnsiString;
+  BookmarkToken : String;
 begin
   try
     BookmarkToken := StrTok(aBookmark, BOOKMARK_STR_SEPARATOR);
@@ -395,8 +408,8 @@ begin
     NextSymbol.Len := StrToInt(BookmarkToken);
     BookmarkToken := StrTok(aBookmark, BOOKMARK_STR_SEPARATOR);
     NextSymbol.Pos := StrToInt(BookmarkToken);
-    CurrInputCh := ExtractBookmarkChar(aBookmark);
-    LastInputCh := ExtractBookmarkChar(aBookmark);
+    CurrInputCh := AnsiChar(ExtractBookmarkChar(aBookmark));  // ToDo
+    LastInputCh := AnsiChar(ExtractBookmarkChar(aBookmark));
   except
     on EConvertError do
       Raise ECocoBookmark.Create(INVALID_INTEGER);

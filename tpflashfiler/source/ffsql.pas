@@ -1,6 +1,6 @@
 unit FFSQL;
 
-
+{$WARN IMPLICIT_STRING_CAST OFF}
 
 
 {==============================================================================
@@ -222,7 +222,7 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
 
-    function ErrorStr(const ErrorCode : integer; const Data : AnsiString) : AnsiString; override;
+    function ErrorStr(const ErrorCode : integer; const Data : String) : String; override;
     procedure Execute;
     function GetScanner : TFFSQLScanner;
     procedure Parse;
@@ -260,6 +260,7 @@ type
 
 implementation
 
+uses AnsiStrings;
 
 
 const
@@ -420,7 +421,7 @@ var
 begin                                                               
   Result := copy(SQLNameString,2,length(SQLNameString) - 2);
   if NOT fAllowReservedWordNames 
-      AND fReservedWordList.Find(UpperCase(Result), Idx) then
+      AND fReservedWordList.Find(AnsiStrings.UpperCase(Result), Idx) then
     SemError(203, Result); 
 end;
       
@@ -1539,10 +1540,10 @@ FReservedWordList.Free;
   inherited;
 end; {Destroy}
 
-function TFFSQL.ErrorStr(const ErrorCode : integer; const Data : AnsiString) : AnsiString;
+function TFFSQL.ErrorStr(const ErrorCode : integer; const Data : String) : String;
 begin
   case ErrorCode of
-       0 : Result := 'EOF expected';
+   0 : Result := 'EOF expected';
    1 : Result := 'ident expected';
    2 : Result := 'integer_ expected';
    3 : Result := 'float expected';
